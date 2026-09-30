@@ -18,6 +18,11 @@ extends MeshInstance3D
 
 
 func _ready() -> void:
+	var road_path: Path3D = get_node_or_null("../RoadPath") as Path3D
+
+	if road_path != null and road_path.curve != null:
+		road_path.curve.changed.connect(update_road)
+
 	update_road()
 
 

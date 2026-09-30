@@ -1,9 +1,9 @@
-[gd_scene format=4 uid="uid://cbb17nhy7gcj7"]
+[gd_scene format=4 uid="uid://c4fiv67y1jyln"]
 
-[ext_resource type="Material" uid="uid://cthgb51ay72ib" path="res://DriftGame/assets/materials/grass_material.tres" id="1_2b4ik"]
-[ext_resource type="Material" uid="uid://crnb0d7wq56st" path="res://DriftGame/assets/materials/asphalt_material.tres" id="2_34iia"]
-[ext_resource type="Script" uid="uid://ckmk6evt8amgb" path="res://DriftGame/scripts/road_mesh.gd" id="2_gqvnh"]
-[ext_resource type="PackedScene" uid="uid://cc78e5ufabr4g" path="res://DriftGame/scenes/start_finish_line.tscn" id="4_c6eqt"]
+[ext_resource type="Material" uid="uid://cthgb51ay72ib" path="res://DriftGame/assets/materials/grass_material.tres" id="1_2mvc3"]
+[ext_resource type="Material" uid="uid://crnb0d7wq56st" path="res://DriftGame/assets/materials/asphalt_material.tres" id="2_5ehdx"]
+[ext_resource type="Script" uid="uid://ckmk6evt8amgb" path="res://DriftGame/scripts/road_mesh.gd" id="3_2gmv2"]
+[ext_resource type="PackedScene" uid="uid://cc78e5ufabr4g" path="res://DriftGame/scenes/start_finish_line.tscn" id="4_nnjn4"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_edvm6"]
 size = Vector2(250, 220)
@@ -32,7 +32,7 @@ _surfaces = [{
 [node name="Location02" type="Node3D" unique_id=107844007]
 
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=1495151687]
-material_override = ExtResource("1_2b4ik")
+material_override = ExtResource("1_2mvc3")
 mesh = SubResource("PlaneMesh_edvm6")
 
 [node name="Racetrack" type="Node3D" parent="." unique_id=1423644866]
@@ -41,9 +41,9 @@ mesh = SubResource("PlaneMesh_edvm6")
 curve = SubResource("Curve3D_34iia")
 
 [node name="RoadMesh" type="MeshInstance3D" parent="Racetrack" unique_id=1710406939]
-material_override = ExtResource("2_34iia")
+material_override = ExtResource("2_5ehdx")
 mesh = SubResource("ArrayMesh_c6eqt")
-script = ExtResource("2_gqvnh")
+script = ExtResource("3_2gmv2")
 point_widths = PackedFloat32Array(8, 7.5, 8, 8.5, 9, 9.5, 10, 9.5, 10, 10.5, 10, 9.5, 9)
 road_width = 8.1
 
@@ -55,5 +55,5 @@ shadow_enabled = true
 [node name="CarSpawn" type="Marker3D" parent="." unique_id=1427220650]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.183426, 0, -28.625101)
 
-[node name="StartFinishLine" parent="CarSpawn" unique_id=423812783 instance=ExtResource("4_c6eqt")]
+[node name="StartFinishLine" parent="CarSpawn" unique_id=423812783 instance=ExtResource("4_nnjn4")]
 transform = Transform3D(0.9945219, 0, 0.104528464, 0, 1, 0, -0.104528464, 0, 0.9945219, 0, 0, 3)

@@ -103,6 +103,7 @@ func _draw() -> void:
 	draw_ticks(center)
 	draw_numbers(center)
 	draw_rpm_text(center)
+	draw_gear(center)
 	draw_needle(center)
 	draw_center(center)
 
@@ -428,7 +429,7 @@ func draw_rpm_text(center: Vector2) -> void:
 
 func draw_needle(center: Vector2) -> void:
 	var rpm_ratio: float = clampf(
-		car.rpm / car.max_rpm,
+		car.display_rpm  / car.max_rpm,
 		0.0,
 		1.0
 	)
@@ -514,4 +515,24 @@ func draw_center(center: Vector2) -> void:
 		center,
 		6.0,
 		Color.RED
+	)
+
+
+func draw_gear(center: Vector2) -> void:
+	var font: Font = ThemeDB.fallback_font
+	var gear_text: String = str(car.current_gear)
+
+	if car.current_gear == 0:
+		gear_text = "N"
+	elif car.current_gear == -1:
+		gear_text = "R"
+
+	draw_string(
+		font,
+		center + Vector2(-12.0, 105.0),
+		gear_text,
+		HORIZONTAL_ALIGNMENT_LEFT,
+		-1,
+		30,
+		Color(1.0, 0.7, 0.1)
 	)

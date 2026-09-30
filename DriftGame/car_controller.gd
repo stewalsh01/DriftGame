@@ -125,6 +125,9 @@ var drive_state: int = DriveState.NORMAL
 var drift_direction: float = 0.0
 
 var rpm: float = 900.0
+var display_rpm: float = 900.0
+var current_gear: int = 0
+var neutral_timer: float = 0.0
 
 var launch_charging: bool = false
 
@@ -363,6 +366,55 @@ func _physics_process(delta: float) -> void:
 		throttle,
 		handbrake
 	)
+	
+	if throttle > 0.0 and drive_state == DriveState.NORMAL:
+		var rpm_climb_rate: float = 10000.0
+
+		if current_gear == 2:
+			rpm_climb_rate = 3500.0
+		elif current_gear == 3:
+			rpm_climb_rate = 2500.0
+		elif current_gear == 4:
+			rpm_climb_rate = 1800.0
+		elif current_gear == 5:
+			rpm_climb_rate = 1200.0
+
+		display_rpm = move_toward(display_rpm, max_rpm, rpm_climb_rate * delta)
+	else:
+		if drive_state == DriveState.NORMAL and throttle <= 0.0:
+			display_rpm = move_toward(display_rpm, idle_rpm, 1800.0 * delta)
+		else:
+			display_rpm = move_toward(display_rpm, rpm, 3000.0 * delta)
+	
+	if drive_state == DriveState.NORMAL:
+		if throttle < 0.0:
+			current_gear = -1
+			neutral_timer = 0.0
+
+		elif throttle > 0.0:
+			if current_gear < 1:
+				current_gear = 1
+
+			# Upshift one gear when accelerating at redline.
+			if current_gear < 5 and display_rpm >= 6500.0 and speed > 0.5:
+				current_gear += 1
+				display_rpm = 3500.0
+
+			neutral_timer = 0.0
+
+		elif speed < 0.2:
+			neutral_timer += delta
+
+			if neutral_timer >= 2.0:
+				current_gear = 0
+
+		else:
+			neutral_timer = 0.0
+
+			# Downshift one gear when coasting below 5,000 RPM.
+			if current_gear > 1 and display_rpm <= 5000.0:
+				current_gear -= 1
+				display_rpm = 6000.0
 
 
 	# ------------------------------------------------

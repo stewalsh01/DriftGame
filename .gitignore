@@ -6,6 +6,6 @@
 
 # OS files
 .DS_Store
-Thumbs.dba# Godot 4+ specific ignores
+Thumbs.db# Godot 4+ specific ignores
 .godot/
 /android/
