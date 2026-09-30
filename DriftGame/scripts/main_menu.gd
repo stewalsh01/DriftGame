@@ -14,3 +14,10 @@ func _on_location_1_button_pressed() -> void:
 
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()
+
+
+func _on_location_2_button_pressed() -> void:
+	LocationSelection.selected_location = preload(
+		"res://DriftGame/scenes/location_02_environment.tscn"
+	)
+	get_tree().change_scene_to_file("res://DriftGame/scenes/game.tscn")

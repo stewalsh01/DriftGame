@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bcwpfdsjkttkc"]
 
-[ext_resource type="Shader" uid="uid://ijwxqtyupgm0" path="res://DriftGame/asphalt.gdshader" id="1_lrouh"]
+[ext_resource type="Material" uid="uid://crnb0d7wq56st" path="res://DriftGame/assets/materials/asphalt_material.tres" id="1_dixj2"]
 [ext_resource type="Texture2D" uid="uid://bs7x1k00el4hq" path="res://DriftGame/assets/markings/circle.png" id="2_dixj2"]
 [ext_resource type="Texture2D" uid="uid://ebbrfruo7grm" path="res://DriftGame/assets/markings/blackyellowboundary.png" id="3_1g1jn"]
 [ext_resource type="Texture2D" uid="uid://b1rbotu0sv8ki" path="res://DriftGame/assets/markings/donutzone.png" id="4_083ba"]
@@ -14,40 +14,15 @@
 [ext_resource type="Texture2D" uid="uid://bkgbfwsyrfrwa" path="res://DriftGame/assets/markings/roadcrack2.png" id="12_aylno"]
 [ext_resource type="Texture2D" uid="uid://dj6v3a6rmwrp5" path="res://DriftGame/assets/markings/roadcrack3.png" id="13_pcew6"]
 [ext_resource type="Texture2D" uid="uid://bj6lqeg301xsq" path="res://DriftGame/assets/markings/finishline.png" id="14_l144w"]
-[ext_resource type="Shader" uid="uid://vxkaesie835g" path="res://DriftGame/assets/materials/grass.gdshader" id="15_ufdvn"]
+[ext_resource type="Material" uid="uid://cthgb51ay72ib" path="res://DriftGame/assets/materials/grass_material.tres" id="15_1g1jn"]
 [ext_resource type="PackedScene" uid="uid://7tunk3w4ris6" path="res://DriftGame/assets/models/buildings/building_test.glb" id="16_dixj2"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_1avvb"]
-noise_type = 3
-frequency = 0.35
-fractal_octaves = 2
-fractal_gain = 0.45
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dkvj6"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_1avvb")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4kcym"]
-render_priority = 0
-shader = ExtResource("1_lrouh")
-shader_parameter/asphalt_color = Color(0.4, 0.41, 0.42, 1)
-shader_parameter/asphalt_noise = SubResource("NoiseTexture2D_dkvj6")
-shader_parameter/grain_strength = 0.0250000011875
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_1tv2y"]
-material = SubResource("ShaderMaterial_4kcym")
+material = ExtResource("1_dixj2")
 size = Vector2(150, 100)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xjxrw"]
-render_priority = 0
-shader = ExtResource("15_ufdvn")
-shader_parameter/grass_dark = Color(0.1, 0.22, 0.055, 1)
-shader_parameter/grass_mid = Color(0.18, 0.34, 0.09, 1)
-shader_parameter/grass_light = Color(0.3, 0.46, 0.13, 1)
-
 [sub_resource type="CylinderMesh" id="CylinderMesh_isqnn"]
-material = SubResource("ShaderMaterial_xjxrw")
+material = ExtResource("15_1g1jn")
 top_radius = 10.0
 bottom_radius = 10.0
 height = 0.02
@@ -209,3 +184,6 @@ transform = Transform3D(0.99999774, 0, -0.0021331485, 0, 1, 0, 0.0021331485, 0, 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1588046219]
 transform = Transform3D(0.8660254, 0.43301272, -0.24999999, 0, 0.49999997, 0.86602545, 0.5, -0.75, 0.43301266, 0, 0, 0)
 shadow_enabled = true
+
+[node name="CarSpawn" type="Marker3D" parent="." unique_id=1989133078]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30.023674)

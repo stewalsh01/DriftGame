@@ -1,0 +1,21 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://crnb0d7wq56st"]
+
+[ext_resource type="Shader" uid="uid://ijwxqtyupgm0" path="res://DriftGame/asphalt.gdshader" id="1_5d2t7"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1avvb"]
+noise_type = 3
+frequency = 0.35
+fractal_octaves = 2
+fractal_gain = 0.45
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dkvj6"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_1avvb")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_5d2t7")
+shader_parameter/asphalt_color = Color(0.4, 0.41, 0.42, 1)
+shader_parameter/asphalt_noise = SubResource("NoiseTexture2D_dkvj6")
+shader_parameter/grain_strength = 0.0250000011875

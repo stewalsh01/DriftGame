@@ -6,6 +6,11 @@
 [ext_resource type="Script" uid="uid://dqrk0ot6ueouw" path="res://DriftGame/skid_marks.gd" id="3_y2k86"]
 [ext_resource type="Script" uid="uid://cq64lxjr7lopc" path="res://DriftGame/rpm_gauge.gd" id="4_ykfaq"]
 [ext_resource type="PackedScene" uid="uid://b5e8jaymh1tvp" path="res://DriftGame/scenes/pause_menu.tscn" id="5_qd5k7"]
+[ext_resource type="Script" uid="uid://cvod3s04xw3c" path="res://DriftGame/scenes/drift_scoring.gd" id="7_qd5k7"]
+
+[sub_resource type="SystemFont" id="SystemFont_qd5k7"]
+font_names = PackedStringArray("Impact")
+font_weight = 800
 
 [node name="Game" type="Node3D" unique_id=307019888]
 script = ExtResource("1_qd5k7")
@@ -41,7 +46,55 @@ script = ExtResource("4_ykfaq")
 redline_glow_strength = 0.2
 glow_width = 9.0
 
+[node name="TotalScoreLabel" type="Label" parent="HUD" unique_id=1234119371]
+offset_left = 30.0
+offset_top = 945.0
+offset_right = 148.0
+offset_bottom = 984.0
+theme_override_font_sizes/font_size = 28
+text = "TOTAL: 0"
+
+[node name="DriftScoreLabel" type="Label" parent="HUD" unique_id=1962165221]
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -1112.0
+offset_top = 30.0
+offset_right = -808.0
+offset_bottom = 153.0
+grow_horizontal = 0
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = SubResource("SystemFont_qd5k7")
+theme_override_font_sizes/font_size = 80
+text = "0"
+horizontal_alignment = 1
+
+[node name="ComboLabel" type="Label" parent="HUD" unique_id=1862337382]
+visible = false
+offset_left = 808.0
+offset_top = 115.0
+offset_right = 1112.0
+offset_bottom = 160.0
+theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
+theme_override_font_sizes/font_size = 28
+text = "x1 COMBO"
+horizontal_alignment = 1
+
+[node name="BankedScoreLabel" type="Label" parent="HUD" unique_id=2035911338]
+visible = false
+offset_left = 30.0
+offset_top = 860.0
+offset_right = 430.0
+offset_bottom = 948.0
+theme_override_colors/font_color = Color(0.33333334, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 64
+text = "+3000"
+
 [node name="PauseMenu" parent="." unique_id=1919010377 instance=ExtResource("5_qd5k7")]
+
+[node name="DriftScoring" type="Node3D" parent="." unique_id=989257217]
+script = ExtResource("7_qd5k7")
 
 [editable path="Car"]
 [editable path="Car/SportsCar2"]

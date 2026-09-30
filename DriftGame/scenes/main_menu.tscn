@@ -43,10 +43,16 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "DRIFT YARD"
 
+[node name="Location2Button" type="Button" parent="MenuCenter/MenuBox" unique_id=900157256]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "GT Drift Track"
+
 [node name="QuitButton" type="Button" parent="MenuCenter/MenuBox" unique_id=8602614]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Quit"
 
 [connection signal="pressed" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_pressed"]
+[connection signal="pressed" from="MenuCenter/MenuBox/Location2Button" to="." method="_on_location_2_button_pressed"]
 [connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]

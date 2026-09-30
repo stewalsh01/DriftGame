@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cthgb51ay72ib"]
+
+[ext_resource type="Shader" uid="uid://vxkaesie835g" path="res://DriftGame/assets/materials/grass.gdshader" id="1_nokye"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_nokye")
+shader_parameter/grass_dark = Color(0.1, 0.22, 0.055, 1)
+shader_parameter/grass_mid = Color(0.18, 0.34, 0.09, 1)
+shader_parameter/grass_light = Color(0.3, 0.46, 0.13, 1)

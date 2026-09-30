@@ -28,6 +28,9 @@ var grass_mark_material: StandardMaterial3D
 @export var grass_area_path: NodePath
 
 var grass_area: Area3D
+var road_path: Path3D
+var road_width: float = 8.0
+var road_mesh: MeshInstance3D
 
 # ================================================================
 # READY
@@ -41,10 +44,33 @@ func _ready() -> void:
 # ================================================================
 
 func is_on_grass(position: Vector3) -> bool:
+	# Location 2: grass is everywhere outside the road.
+	if road_path != null:
+		var local_position: Vector3 = road_path.to_local(position)
+		var curve: Curve3D = road_path.curve
+
+		if curve == null:
+			return false
+
+		var closest_offset: float = curve.get_closest_offset(local_position)
+		var closest_point: Vector3 = curve.sample_baked(closest_offset)
+
+		var distance_from_road: float = Vector2(
+			local_position.x - closest_point.x,
+			local_position.z - closest_point.z
+		).length()
+
+		var current_width: float = road_width
+
+		if road_mesh != null:
+			current_width = road_mesh.get_width_at_distance(curve, closest_offset)
+
+		return distance_from_road > current_width * 0.5
+
+	# Location 1: keep the existing circular grass detection.
 	if grass_area == null:
 		return false
 
-	# Keep the rest of your existing function below.
 	var shape: CollisionShape3D = grass_area.get_node("CollisionShape3D")
 	var cylinder: CylinderShape3D = shape.shape as CylinderShape3D
 
@@ -78,8 +104,8 @@ func create_mark_materials() -> void:
 		)
 
 		var opacity: float = lerpf(
-			0.12,
-			0.95,
+			0.18,
+			1.0,
 			ratio
 		)
 
