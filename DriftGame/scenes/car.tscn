@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://b4inxilp3pijq"]
 
-[ext_resource type="Script" uid="uid://cffaapancdx1l" path="res://DriftGame/car_controller.gd" id="1_640n6"]
+[ext_resource type="Script" uid="uid://cffaapancdx1l" path="res://DriftGame/scripts/car_controller.gd" id="1_640n6"]
 [ext_resource type="PackedScene" uid="uid://d18pxbfg2nw7p" path="res://DriftGame/assets/models/SportsCar2.glb" id="2_atbgf"]
-[ext_resource type="Script" uid="uid://bmt6oqf6bv2rl" path="res://DriftGame/car_visuals.gd" id="3_i0cy3"]
-[ext_resource type="Script" uid="uid://mxkrgwkaodi4" path="res://DriftGame/car_effects.gd" id="4_mktpu"]
+[ext_resource type="Script" uid="uid://bmt6oqf6bv2rl" path="res://DriftGame/scripts/car_visuals.gd" id="3_i0cy3"]
+[ext_resource type="Script" uid="uid://mxkrgwkaodi4" path="res://DriftGame/scripts/car_effects.gd" id="4_mktpu"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_edvm6"]
 

@@ -1,5 +1,8 @@
 extends CharacterBody3D
+const CarSettings = preload("res://DriftGame/scripts/car_settings.gd")
 
+@export var selected_car: int = 1
+var car_config: Dictionary
 
 # ================================================================
 # DRIVE STATES
@@ -21,108 +24,97 @@ enum DriveState {
 
 
 # ================================================================
-# ENGINE
+# CAR CONFIG
 # ================================================================
 
-@export_category("Engine")
+var acceleration: float
+var reverse_acceleration: float
 
-@export var acceleration: float = 12.0
-@export var reverse_acceleration: float = 7.0
+var gear_1_acceleration: float
+var gear_2_acceleration: float
+var gear_3_acceleration: float
+var gear_4_acceleration: float
+var gear_5_acceleration: float
 
-@export var max_speed: float = 14.0
-@export var gear_1_max_speed: float = 12.0
-@export var gear_2_max_speed: float = 14.0
-@export var gear_3_max_speed: float = 15.0
-@export var gear_4_max_speed: float = 18.0
-@export var gear_5_max_speed: float = 20.0
-@export var max_reverse_speed: float = 6.0
+var max_speed: float
 
-@export var friction: float = 7.0
-@export var brake_force: float = 25.0
+var gear_1_max_speed: float
+var gear_2_max_speed: float
+var gear_3_max_speed: float
+var gear_4_max_speed: float
+var gear_5_max_speed: float
 
+var max_reverse_speed: float
+
+var friction: float
+var coast_deceleration: float
+var brake_force: float
 
 # ================================================================
 # NORMAL STEERING
 # ================================================================
 
-@export_category("Normal Steering")
-
-@export var low_speed_steering: float = 2.4
-@export var high_speed_steering: float = 1.15
-
-@export var min_steering_speed: float = 0.5
-@export var normal_grip: float = 8.0
-
+var low_speed_steering: float
+var high_speed_steering: float
+var min_steering_speed: float
+var normal_grip: float
 
 # ================================================================
 # DRIFTING
 # ================================================================
 
-@export_category("Drifting")
+var drift_entry_speed: float
+var drift_entry_steering: float
 
-@export var drift_entry_speed: float = 5.0
-@export var drift_entry_steering: float = 0.25
+var drift_grip: float
+var drift_tightening_grip: float
 
-@export var drift_grip: float = 1.5
-@export var drift_tightening_grip: float = 2.5
+var drift_steering: float
+var drift_throttle_rotation: float
 
-@export var drift_steering: float = 1.3
-@export var drift_throttle_rotation: float = 0.45
+var drift_exit_angle: float
+var drift_exit_speed: float
 
-@export var drift_exit_angle: float = 8.0
-@export var drift_exit_speed: float = 2.2
-
-@export var handbrake_drift_slowdown: float = 6.0
-@export var handbrake_drift_grip: float = 0.7
-
+var handbrake_drift_slowdown: float
+var handbrake_drift_grip: float
 
 # ================================================================
 # WHEELSPIN
 # ================================================================
 
-@export_category("Wheelspin")
+var wheelspin_entry_rpm: float
+var wheelspin_exit_rpm: float
 
-@export var wheelspin_entry_rpm: float = 5000.0
-@export var wheelspin_exit_rpm: float = 3500.0
+var wheelspin_grip: float
+var wheelspin_steering: float
 
-@export var wheelspin_grip: float = 2.0
-@export var wheelspin_steering: float = 1.1
-
-@export var chain_drift_angle: float = 12.0
-@export var wheelspin_min_throttle: float = 0.4
-
+var chain_drift_angle: float
+var wheelspin_min_throttle: float
 
 # ================================================================
 # LAUNCH
 # ================================================================
 
-@export_category("Launch")
+var launch_hold_max_speed: float
 
-@export var launch_hold_max_speed: float = 0.8
+var launch_min_rpm: float
+var launch_target_rpm: float
 
-@export var launch_min_rpm: float = 4500.0
-@export var launch_target_rpm: float = 7000.0
-
-@export var launch_acceleration_multiplier: float = 1.35
-@export var launch_wheelspin_time: float = 1.0
+var launch_acceleration_multiplier: float
+var launch_wheelspin_time: float
 
 
 # ================================================================
 # ENGINE RPM
 # ================================================================
 
-@export_category("Engine RPM")
+var idle_rpm: float
+var max_rpm: float
+var rpm_response: float
 
-@export var idle_rpm: float = 900.0
-@export var max_rpm: float = 8000.0
-@export var rpm_response: float = 6.0
-
-@export var throttle_rpm_boost: float = 1200.0
-@export var drift_rpm_boost: float = 800.0
-@export var wheelspin_rpm_boost: float = 1400.0
-
-@export var shift_rpm: float = 6500.0
-@export var shift_rpm_climb_rate: float = 1000.0
+var throttle_rpm_boost: float
+var drift_rpm_boost: float
+var wheelspin_rpm_boost: float
 
 # ================================================================
 # STATE
@@ -131,8 +123,8 @@ enum DriveState {
 var drive_state: int = DriveState.NORMAL
 var drift_direction: float = 0.0
 
-var rpm: float = 900.0
-var display_rpm: float = 900.0
+var rpm: float
+var display_rpm: float
 var current_gear: int = 0
 var speed_kmh: float = 0.0
 var neutral_timer: float = 0.0
@@ -142,8 +134,80 @@ var launch_charging: bool = false
 var wheelspin_from_launch: bool = false
 var wheelspin_timer: float = 0.0
 
-var debug_timer: float = 0.0
+func _ready() -> void:
+	car_config = CarSettings.get_car(selected_car)
 
+	acceleration = car_config["acceleration"]
+	reverse_acceleration = car_config["reverse_acceleration"]
+
+	gear_1_acceleration = car_config["gear_acceleration"][0]
+	gear_2_acceleration = car_config["gear_acceleration"][1]
+	gear_3_acceleration = car_config["gear_acceleration"][2]
+	gear_4_acceleration = car_config["gear_acceleration"][3]
+	gear_5_acceleration = car_config["gear_acceleration"][4]
+
+	max_speed = car_config["max_speed"]
+
+	gear_1_max_speed = car_config["gear_max_speed"][0]
+	gear_2_max_speed = car_config["gear_max_speed"][1]
+	gear_3_max_speed = car_config["gear_max_speed"][2]
+	gear_4_max_speed = car_config["gear_max_speed"][3]
+	gear_5_max_speed = car_config["gear_max_speed"][4]
+
+	max_reverse_speed = car_config["max_reverse_speed"]
+
+	friction = car_config["friction"]
+	coast_deceleration = car_config["coast_deceleration"]
+	brake_force = car_config["brake_force"]
+
+	low_speed_steering = car_config["low_speed_steering"]
+	high_speed_steering = car_config["high_speed_steering"]
+	min_steering_speed = car_config["min_steering_speed"]
+	normal_grip = car_config["normal_grip"]
+
+	drift_entry_speed = car_config["drift_entry_speed"]
+	drift_entry_steering = car_config["drift_entry_steering"]
+
+	drift_grip = car_config["drift_grip"]
+	drift_tightening_grip = car_config["drift_tightening_grip"]
+
+	drift_steering = car_config["drift_steering"]
+	drift_throttle_rotation = car_config["drift_throttle_rotation"]
+
+	drift_exit_angle = car_config["drift_exit_angle"]
+	drift_exit_speed = car_config["drift_exit_speed"]
+
+	handbrake_drift_slowdown = car_config["handbrake_drift_slowdown"]
+	handbrake_drift_grip = car_config["handbrake_drift_grip"]
+	
+	wheelspin_entry_rpm = car_config["wheelspin_entry_rpm"]
+	wheelspin_exit_rpm = car_config["wheelspin_exit_rpm"]
+
+	wheelspin_grip = car_config["wheelspin_grip"]
+	wheelspin_steering = car_config["wheelspin_steering"]
+
+	chain_drift_angle = car_config["chain_drift_angle"]
+	wheelspin_min_throttle = car_config["wheelspin_min_throttle"]
+	
+	launch_hold_max_speed = car_config["launch_hold_max_speed"]
+
+	launch_min_rpm = car_config["launch_min_rpm"]
+	launch_target_rpm = car_config["launch_target_rpm"]
+
+	launch_acceleration_multiplier = car_config["launch_acceleration_multiplier"]
+	launch_wheelspin_time = car_config["launch_wheelspin_time"]
+	
+	idle_rpm = car_config["idle_rpm"]
+	max_rpm = car_config["max_rpm"]
+	rpm_response = car_config["rpm_response"]
+
+	throttle_rpm_boost = car_config["throttle_rpm_boost"]
+	drift_rpm_boost = car_config["drift_rpm_boost"]
+	wheelspin_rpm_boost = car_config["wheelspin_rpm_boost"]
+
+	# Initialise RPM using this car's configured idle RPM.
+	rpm = idle_rpm
+	display_rpm = idle_rpm
 
 # ================================================================
 # PHYSICS PROCESS
@@ -219,19 +283,32 @@ func _physics_process(delta: float) -> void:
 	if launch_charging:
 		horizontal_velocity = horizontal_velocity.move_toward(
 			Vector3.ZERO,
-			friction * 2.0 * delta
+			friction * delta
 		)
+
 
 	elif throttle > 0.0:
 		var acceleration_amount: float = acceleration
+
+		# Use separate acceleration values for normal forward driving.
+		if drive_state == DriveState.NORMAL:
+			match current_gear:
+				1:
+					acceleration_amount = gear_1_acceleration
+				2:
+					acceleration_amount = gear_2_acceleration
+				3:
+					acceleration_amount = gear_3_acceleration
+				4:
+					acceleration_amount = gear_4_acceleration
+				5:
+					acceleration_amount = gear_5_acceleration
 
 		if (
 			drive_state == DriveState.WHEELSPIN
 			and wheelspin_from_launch
 		):
-			acceleration_amount *= (
-				launch_acceleration_multiplier
-			)
+			acceleration_amount *= launch_acceleration_multiplier
 
 		horizontal_velocity += (
 			forward
@@ -249,9 +326,10 @@ func _physics_process(delta: float) -> void:
 		)
 
 	else:
+		# Coast when the accelerator is released.
 		horizontal_velocity = horizontal_velocity.move_toward(
 			Vector3.ZERO,
-			friction * delta
+			coast_deceleration * delta
 		)
 
 
@@ -395,15 +473,24 @@ func _physics_process(delta: float) -> void:
 		handbrake
 	)
 	
-# ------------------------------------------------
-# DISPLAY RPM
-# ------------------------------------------------
 
-	if drive_state == DriveState.NORMAL and current_gear == 1:
-		var first_gear_speed: float = horizontal_velocity.length()
 
+	# ------------------------------------------------
+	# DISPLAY RPM
+	# ------------------------------------------------
+
+	if handbrake and throttle > 0.0 and horizontal_velocity.length() < 0.5:
+		# Show the existing launch RPM while revving at a standstill.
+		display_rpm = move_toward(
+			display_rpm,
+			rpm,
+			10000.0 * delta
+		)
+
+	elif drive_state == DriveState.NORMAL and current_gear == 1:
+		# 1st gear: idle RPM at 0 speed, 6300 RPM at its speed limit.
 		var speed_ratio: float = clampf(
-			first_gear_speed / gear_1_max_speed,
+			horizontal_velocity.length() / maxf(gear_1_max_speed - 0.05, 0.01),
 			0.0,
 			1.0
 		)
@@ -420,89 +507,182 @@ func _physics_process(delta: float) -> void:
 			10000.0 * delta
 		)
 
-	else:
-		# Preserve the existing RPM behaviour outside 1st gear.
-		if throttle > 0.0 and drive_state == DriveState.NORMAL:
-			var rpm_climb_rate: float = 10000.0
+	elif drive_state == DriveState.NORMAL and current_gear == 2:
+		# 2nd gear: 5000 RPM at 1st gear's speed limit,
+		# rising to 6300 RPM at 2nd gear's speed limit.
+		var second_gear_speed: float = horizontal_velocity.length()
 
-			if current_gear == 2:
-				rpm_climb_rate = 3500.0
-			elif current_gear == 3:
-				rpm_climb_rate = 2500.0
-			elif current_gear == 4:
-				rpm_climb_rate = 1800.0
-			elif current_gear == 5:
-				rpm_climb_rate = 1200.0
+		var speed_ratio: float = clampf(
+			(second_gear_speed - gear_1_max_speed)
+			/ maxf((gear_2_max_speed - 0.05) - gear_1_max_speed, 0.01),
+			0.0,
+			1.0
+		)
+
+		var target_display_rpm: float = lerpf(
+			5000.0,
+			6300.0,
+			speed_ratio
+		)
+
+		display_rpm = move_toward(
+			display_rpm,
+			target_display_rpm,
+			10000.0 * delta
+		)
+	
+	elif drive_state == DriveState.NORMAL and current_gear == 3:
+		# 3rd gear: 5000 RPM at 2nd gear's speed limit,
+		# rising to 6300 RPM at 3rd gear's speed limit.
+		var third_gear_speed: float = horizontal_velocity.length()
+
+		var speed_ratio: float = clampf(
+			(third_gear_speed - gear_2_max_speed)
+			/ maxf((gear_3_max_speed - 0.05) - gear_2_max_speed, 0.01),
+			0.0,
+			1.0
+		)
+
+		var target_display_rpm: float = lerpf(
+			5000.0,
+			6300.0,
+			speed_ratio
+		)
+
+		display_rpm = move_toward(
+			display_rpm,
+			target_display_rpm,
+			10000.0 * delta
+		)
+		
+	
+	elif drive_state == DriveState.NORMAL and current_gear == 4:
+		# 4th gear: 5000 RPM at 3rd gear's speed limit,
+		# rising to 6300 RPM at 4th gear's speed limit.
+		var fourth_gear_speed: float = horizontal_velocity.length()
+
+		var speed_ratio: float = clampf(
+			(fourth_gear_speed - gear_3_max_speed)
+			/ maxf((gear_4_max_speed - 0.05) - gear_3_max_speed, 0.01),
+			0.0,
+			1.0
+		)
+
+		var target_display_rpm: float = lerpf(
+			5000.0,
+			6300.0,
+			speed_ratio
+		)
+
+		display_rpm = move_toward(
+			display_rpm,
+			target_display_rpm,
+			10000.0 * delta
+		)
+	
+	
+	elif drive_state == DriveState.NORMAL and current_gear == 5:
+		# 5th gear: 5000 RPM at 4th gear's speed limit,
+		# rising to 6300 RPM at 5th gear's speed limit.
+		var fifth_gear_speed: float = horizontal_velocity.length()
+
+		var speed_ratio: float = clampf(
+			(fifth_gear_speed - gear_4_max_speed)
+			/ maxf((gear_5_max_speed - 0.05) - gear_4_max_speed, 0.01),
+			0.0,
+			1.0
+		)
+
+		var target_display_rpm: float = lerpf(
+			5000.0,
+			6300.0,
+			speed_ratio
+		)
+
+		display_rpm = move_toward(
+			display_rpm,
+			target_display_rpm,
+			10000.0 * delta
+		)
+
+
+	else:
+		if drive_state == DriveState.NORMAL and throttle <= 0.0:
+			var rpm_fall_rate: float = 1800.0
+
+			if normal_brake or down_braking:
+				rpm_fall_rate = 6000.0
 
 			display_rpm = move_toward(
 				display_rpm,
-				max_rpm,
-				rpm_climb_rate * delta
+				idle_rpm,
+				rpm_fall_rate * delta
 			)
+
 		else:
-			if drive_state == DriveState.NORMAL and throttle <= 0.0:
-				var rpm_fall_rate: float = 1800.0
+			display_rpm = move_toward(
+				display_rpm,
+				rpm,
+				3000.0 * delta
+			)
 
-				if normal_brake or down_braking:
-					rpm_fall_rate = 6000.0
 
-				display_rpm = move_toward(
-					display_rpm,
-					idle_rpm,
-					rpm_fall_rate * delta
-				)
-			else:
-				display_rpm = move_toward(
-					display_rpm,
-					rpm,
-					3000.0 * delta
-				)
 
-	# Gearbox logic continues below.	
+	# ------------------------------------------------
+	# GEARBOX
+	# ------------------------------------------------
+
 	if drive_state == DriveState.NORMAL:
 		if throttle < 0.0:
+			# Reverse.
 			current_gear = -1
 			neutral_timer = 0.0
 
-		elif throttle > 0.0:
-			if current_gear < 1:
+		else:
+			# Engage 1st when moving forward from neutral or reverse.
+			if throttle > 0.0 and current_gear < 1:
 				current_gear = 1
 
-			#if current_gear < 5 and display_rpm >= 6500.0 and speed > 0.5:
-				#current_gear += 1
-				#display_rpm = 3500.0
+			# ------------------------------------------------
+			# SPEED-BASED DOWNSHIFTING
+			# ------------------------------------------------
 
-			neutral_timer = 0.0
+			# Check every frame, including while braking or
+			# reapplying the accelerator.
+			if current_gear == 3 and speed <= gear_2_max_speed:
+				current_gear = 2
 
-		else:
-			var downshift_speed: float = 0.0
+			if current_gear == 2 and speed <= gear_1_max_speed:
+				current_gear = 1
 
-			match current_gear:
-				5:
-					downshift_speed = gear_4_max_speed
-				4:
-					downshift_speed = gear_3_max_speed
-				3:
-					downshift_speed = gear_2_max_speed
-				2:
-					downshift_speed = gear_1_max_speed
+			if current_gear == 4 and speed <= gear_3_max_speed - 0.5:
+				current_gear = 3
 
-			var braking_downshift: bool = (
-				(normal_brake or down_braking)
-				and current_gear > 1
-				and speed <= downshift_speed
-			)
+			if current_gear == 5 and speed <= gear_4_max_speed - 0.5:
+				current_gear = 4
 
-			var rolling_downshift: bool = (
-				current_gear > 1
-				and display_rpm <= 5000.0
-			)
+			# Do not force display_rpm to a fixed value here.
+			# The DISPLAY RPM section will move the needle
+			# towards the RPM appropriate for the new gear.
 
-			if braking_downshift or rolling_downshift:
-				current_gear -= 1
-				display_rpm = 6000.0
+			# ------------------------------------------------
+			# UPSHIFTING
+			# ------------------------------------------------
 
-			if speed < 0.2:
+			# Allow upshifts through all five gears.
+			if throttle > 0.0:
+				if current_gear >= 1 and current_gear < 5 and display_rpm >= 6300.0 and speed > 0.5:
+					current_gear += 1
+					display_rpm = 5000.0
+
+			# ------------------------------------------------
+			# NEUTRAL
+			# ------------------------------------------------
+
+			if throttle > 0.0:
+				neutral_timer = 0.0
+
+			elif speed < 0.2:
 				neutral_timer += delta
 
 				if neutral_timer >= 2.0:
@@ -559,17 +739,6 @@ func _physics_process(delta: float) -> void:
 		is_skidding,
 		skid_intensity
 	)
-
-
-	# ------------------------------------------------
-	# DEBUG
-	# ------------------------------------------------
-
-	debug_timer += delta
-
-	if debug_timer >= 0.25:
-		debug_timer = 0.0
-
 
 # ================================================================
 # NORMAL DRIVING
@@ -1017,20 +1186,3 @@ func get_skid_intensity() -> float:
 		)
 
 	return 0.0
-
-
-func get_state_name() -> String:
-	match drive_state:
-		DriveState.NORMAL:
-			return "NORMAL"
-
-		DriveState.DRIFT:
-			return "DRIFT"
-
-		DriveState.WHEELSPIN:
-			if wheelspin_from_launch:
-				return "WHEELSPIN - LAUNCH"
-
-			return "WHEELSPIN"
-
-	return "UNKNOWN"
