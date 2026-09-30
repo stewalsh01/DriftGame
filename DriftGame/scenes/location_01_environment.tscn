@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://bj6lqeg301xsq" path="res://DriftGame/assets/markings/finishline.png" id="14_l144w"]
 [ext_resource type="Material" uid="uid://cthgb51ay72ib" path="res://DriftGame/assets/materials/grass_material.tres" id="15_1g1jn"]
 [ext_resource type="PackedScene" uid="uid://7tunk3w4ris6" path="res://DriftGame/assets/models/buildings/building_test.glb" id="16_dixj2"]
+[ext_resource type="PackedScene" uid="uid://ce1jgiqegpmnn" path="res://DriftGame/assets/models/track/RedWhiteApexCurve.glb" id="17_1g1jn"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_1tv2y"]
 material = ExtResource("1_dixj2")
@@ -187,3 +188,15 @@ shadow_enabled = true
 
 [node name="CarSpawn" type="Marker3D" parent="." unique_id=1989133078]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30.023674)
+
+[node name="RedWhiteApexCurve" parent="." unique_id=1773217602 instance=ExtResource("17_1g1jn")]
+transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, -0.0759449, 0, 0.22303915)
+
+[node name="RedWhiteApexCurve2" parent="." unique_id=1652778942 instance=ExtResource("17_1g1jn")]
+transform = Transform3D(-7.430936e-08, 0, 1.7, 0, 1.7, 0, -1.7, 0, -7.430936e-08, 0.24970913, 0, 0.2573111)
+
+[node name="RedWhiteApexCurve3" parent="." unique_id=1387314162 instance=ExtResource("17_1g1jn")]
+transform = Transform3D(-1.7, 0, -1.4861872e-07, 0, 1.7, 0, 1.4861872e-07, 0, -1.7, 0.16293144, 0, -0.51734865)
+
+[node name="RedWhiteApexCurve4" parent="." unique_id=1875043042 instance=ExtResource("17_1g1jn")]
+transform = Transform3D(-7.430936e-08, 0, -1.7, 0, 1.7, 0, 1.7, 0, -7.430936e-08, -0.030749321, 0, -0.52976894)

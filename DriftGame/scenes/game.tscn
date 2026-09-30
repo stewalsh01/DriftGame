@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b4inxilp3pijq" path="res://DriftGame/scenes/car.tscn" id="1_u5ws8"]
 [ext_resource type="Script" uid="uid://opb0touvh2d1" path="res://DriftGame/scripts/camera.gd" id="2_148kw"]
 [ext_resource type="Script" uid="uid://m0lqr85fqii6" path="res://DriftGame/scripts/car_audio.gd" id="3_unl6j"]
+[ext_resource type="PackedScene" uid="uid://bew0qer8ue0hx" path="res://DriftGame/assets/models/car2.glb" id="3_x372x"]
 [ext_resource type="Script" uid="uid://dqrk0ot6ueouw" path="res://DriftGame/scripts/skid_marks.gd" id="3_y2k86"]
 [ext_resource type="Script" uid="uid://cq64lxjr7lopc" path="res://DriftGame/scripts/rpm_gauge.gd" id="4_ykfaq"]
 [ext_resource type="PackedScene" uid="uid://b5e8jaymh1tvp" path="res://DriftGame/scenes/pause_menu.tscn" id="5_qd5k7"]
@@ -26,8 +27,26 @@ script = ExtResource("1_qd5k7")
 
 [node name="Car" parent="." unique_id=431588838 instance=ExtResource("1_u5ws8")]
 
+[node name="SportsCar2" parent="Car" index="0" unique_id=859367144]
+visible = false
+
 [node name="CarEffects" parent="Car" index="2" unique_id=1538640517]
 skid_marks_path = NodePath("../../SkidMarks")
+
+[node name="Car2" parent="Car" unique_id=671212632 instance=ExtResource("3_x372x")]
+transform = Transform3D(0.89, 0, 0, 0, 0.89, 0, 0, 0, 0.89, 0, 0, 0)
+
+[node name="BrakeLightRight" type="OmniLight3D" parent="Car/Car2" unique_id=219941269]
+transform = Transform3D(1.1235955, 0, -7.1054274e-14, 0, 1.1235955, 0, 7.1054274e-14, 0, 1.1235955, -0.51827353, 0.7650756, -2.0086477)
+light_color = Color(1, 0, 0, 1)
+omni_range = 1.0
+omni_attenuation = 2.0
+
+[node name="BrakeLightLeft" type="OmniLight3D" parent="Car/Car2" unique_id=635913056]
+transform = Transform3D(1.1235955, 0, -6.3948846e-14, 0, 1.1235955, 0, 6.3948846e-14, 0, 1.1235955, 0.6222694, 0.75844634, -1.9884413)
+light_color = Color(1, 0, 0, 1)
+omni_range = 1.0
+omni_attenuation = 2.0
 
 [node name="CarAudio" type="Node" parent="Car" unique_id=1037054325]
 script = ExtResource("3_unl6j")
@@ -215,3 +234,4 @@ script = ExtResource("8_w2q3i")
 
 [editable path="Car"]
 [editable path="Car/SportsCar2"]
+[editable path="Car/Car2"]

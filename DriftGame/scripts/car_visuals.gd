@@ -1,5 +1,8 @@
 extends Node
 
+const CarVisualSettings = preload(
+	"res://DriftGame/scripts/car_visual_settings.gd"
+)
 
 # ================================================================
 # WHEELS
@@ -11,19 +14,18 @@ extends Node
 @export var wheel_steer_speed: float = 10.0
 @export var wheel_radius: float = 0.30
 
+var visual_config: Dictionary
+var car_model: Node3D
 
-@onready var front_left_wheel: Node3D = (
-	$"../SportsCar2/SportsCar_FrontLeftWheel"
-)
+var front_left_steer: Node3D
+var front_right_steer: Node3D
 
-@onready var front_right_wheel: Node3D = (
-	$"../SportsCar2/SportsCar_FrontRightWheel"
-)
+var front_left_spin: Array[Node3D] = []
+var front_right_spin: Array[Node3D] = []
+var rear_left_spin: Array[Node3D] = []
+var rear_right_spin: Array[Node3D] = []
 
-@onready var back_wheels: Node3D = (
-	$"../SportsCar2/SportsCar_BackWheels"
-)
-
+@onready var car: CharacterBody3D = get_parent()
 
 var wheel_spin: float = 0.0
 
@@ -60,25 +62,37 @@ func update_wheel_steering(
 		-wheel_steer_angle * steering_input
 	)
 
-	front_left_wheel.rotation.y = lerp_angle(
-		front_left_wheel.rotation.y,
-		target_angle,
-		clampf(
-			wheel_steer_speed * delta,
-			0.0,
-			1.0
-		)
+	var steer_weight: float = clampf(
+		wheel_steer_speed * delta,
+		0.0,
+		1.0
 	)
 
-	front_right_wheel.rotation.y = lerp_angle(
-		front_right_wheel.rotation.y,
-		target_angle,
-		clampf(
-			wheel_steer_speed * delta,
-			0.0,
-			1.0
+	if visual_config["steer_axis"] == "z":
+		front_left_steer.rotation.z = lerp_angle(
+			front_left_steer.rotation.z,
+			target_angle,
+			steer_weight
 		)
-	)
+
+		front_right_steer.rotation.z = lerp_angle(
+			front_right_steer.rotation.z,
+			target_angle,
+			steer_weight
+		)
+
+	else:
+		front_left_steer.rotation.y = lerp_angle(
+			front_left_steer.rotation.y,
+			target_angle,
+			steer_weight
+		)
+
+		front_right_steer.rotation.y = lerp_angle(
+			front_right_steer.rotation.y,
+			target_angle,
+			steer_weight
+		)
 
 
 # ================================================================
@@ -95,35 +109,99 @@ func update_wheel_rotation(
 		* delta
 	)
 
-	front_left_wheel.rotation.x = wheel_spin
-	front_right_wheel.rotation.x = wheel_spin
-	back_wheels.rotation.x = wheel_spin
+	for wheel: Node3D in front_left_spin:
+		wheel.rotation.x = wheel_spin
+
+	for wheel: Node3D in front_right_spin:
+		wheel.rotation.x = wheel_spin
+
+	for wheel: Node3D in rear_left_spin:
+		wheel.rotation.x = wheel_spin
+
+	for wheel: Node3D in rear_right_spin:
+		wheel.rotation.x = wheel_spin
+
 
 # ================================================================
 # LIGHTS
 # ================================================================
 
-@onready var brake_light_left: OmniLight3D = (
-	$"../SportsCar2/BrakeLightLeft"
-)
+var brake_lights: Array[Node3D] = []
 
-@onready var brake_light_right: OmniLight3D = (
-	$"../SportsCar2/BrakeLightRight"
-)
 
 # ================================================================
 # READY
 # ================================================================
 
 func _ready() -> void:
+	visual_config = CarVisualSettings.get_car(
+		car.selected_car
+	)
+
+	car_model = get_parent().find_child(
+		visual_config["model_node"],
+		true,
+		false
+	) as Node3D
+
+	front_left_steer = find_visual_node(
+		visual_config["front_left_steer"]
+	)
+
+	front_right_steer = find_visual_node(
+		visual_config["front_right_steer"]
+	)
+
+	front_left_spin = find_visual_nodes(
+		visual_config["front_left_spin"]
+	)
+
+	front_right_spin = find_visual_nodes(
+		visual_config["front_right_spin"]
+	)
+
+	rear_left_spin = find_visual_nodes(
+		visual_config["rear_left_spin"]
+	)
+
+	rear_right_spin = find_visual_nodes(
+		visual_config["rear_right_spin"]
+	)
+
+	brake_lights = find_visual_nodes(
+		visual_config["brake_lights"]
+	)
+
 	set_brake_lights(false)
 	
+func find_visual_node(node_name: String) -> Node3D:
+	return car_model.find_child(
+		node_name,
+		true,
+		false
+	) as Node3D
+
+
+func find_visual_nodes(node_names: Array) -> Array[Node3D]:
+	var nodes: Array[Node3D] = []
+
+	for node_name: String in node_names:
+		var visual_node: Node3D = find_visual_node(
+			node_name
+		)
+
+		if visual_node != null:
+			nodes.append(visual_node)
+
+	return nodes
+
+
 # ================================================================
 # BRAKE LIGHTS
 # ================================================================
 
 func set_brake_lights(enabled: bool) -> void:
-	brake_light_left.visible = enabled
-	brake_light_right.visible = enabled
+	for brake_light: Node3D in brake_lights:
+		brake_light.visible = enabled
 	
 	

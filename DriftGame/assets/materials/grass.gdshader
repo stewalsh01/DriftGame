@@ -1,8 +1,8 @@
 shader_type spatial;
 
-uniform vec3 grass_dark : source_color = vec3(0.10, 0.22, 0.055);
-uniform vec3 grass_mid : source_color = vec3(0.18, 0.34, 0.09);
-uniform vec3 grass_light : source_color = vec3(0.30, 0.46, 0.13);
+uniform vec3 grass_dark : source_color = vec3(0.07, 0.16, 0.035);
+uniform vec3 grass_mid : source_color = vec3(0.12, 0.27, 0.06);
+uniform vec3 grass_light : source_color = vec3(0.22, 0.38, 0.10);
 
 float hash(vec2 p) {
 	return fract(

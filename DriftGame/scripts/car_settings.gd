@@ -9,7 +9,6 @@ const SHARED := {
 	# Movement
 	"friction": 7.0,
 	"coast_deceleration": 2.0,
-	"brake_force": 25.0,
 
 	# Steering
 	"low_speed_steering": 2.4,
@@ -26,7 +25,6 @@ const SHARED := {
 	"drift_throttle_rotation": 0.45,
 	"drift_exit_angle": 8.0,
 	"drift_exit_speed": 2.2,
-	"handbrake_drift_slowdown": 6.0,
 	"handbrake_drift_grip": 0.7,
 
 	# Wheelspin
@@ -62,6 +60,12 @@ const SHARED := {
 const CAR_1 := {
 	"name": "Car 1",
 	"engine_sound": 1,
+	
+	"brake_force": 16.0,
+	"high_speed_brake_force": 10.0,
+	
+	"handbrake_force": 7.0,
+	"high_speed_handbrake_force": 4.0,
 
 	"acceleration": 5.0,
 	"reverse_acceleration": 7.0,
@@ -95,6 +99,12 @@ const CAR_1 := {
 const CAR_2 := {
 	"name": "Car 2 - Test",
 	"engine_sound": 1,
+	
+	"brake_force": 16.0,
+	"high_speed_brake_force": 10.0,
+	
+	"handbrake_force": 7.0,
+	"high_speed_handbrake_force": 4.0,
 
 	"acceleration": 5.0,
 	"reverse_acceleration": 7.0,

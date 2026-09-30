@@ -3,6 +3,8 @@ const CarSettings = preload("res://DriftGame/scripts/car_settings.gd")
 
 @export var selected_car: int = 2
 var car_config: Dictionary
+@onready var car_1_model: Node3D = $SportsCar2
+@onready var car_2_model: Node3D = $Car2
 
 # ================================================================
 # DRIVE STATES
@@ -13,7 +15,6 @@ enum DriveState {
 	DRIFT,
 	WHEELSPIN
 }
-
 
 # ================================================================
 # COMPONENTS
@@ -49,7 +50,12 @@ var max_reverse_speed: float
 
 var friction: float
 var coast_deceleration: float
+
 var brake_force: float
+var high_speed_brake_force: float
+
+var handbrake_force: float
+var high_speed_handbrake_force: float
 
 # ================================================================
 # NORMAL STEERING
@@ -76,7 +82,6 @@ var drift_throttle_rotation: float
 var drift_exit_angle: float
 var drift_exit_speed: float
 
-var handbrake_drift_slowdown: float
 var handbrake_drift_grip: float
 
 # ================================================================
@@ -135,6 +140,7 @@ var neutral_timer: float = 0.0
 var launch_charging: bool = false
 var launch_shift_timer: float = 0.0
 var launch_rpm_drop_timer: float = 0.0
+var brake_revving: bool = false
 
 var wheelspin_from_launch: bool = false
 var wheelspin_timer: float = 0.0
@@ -142,6 +148,8 @@ var wheelspin_timer: float = 0.0
 
 func _ready() -> void:
 	car_config = CarSettings.get_car(selected_car)
+	car_1_model.visible = selected_car == 1
+	car_2_model.visible = selected_car == 2
 
 	acceleration = car_config["acceleration"]
 	reverse_acceleration = car_config["reverse_acceleration"]
@@ -164,7 +172,9 @@ func _ready() -> void:
 
 	friction = car_config["friction"]
 	coast_deceleration = car_config["coast_deceleration"]
+
 	brake_force = car_config["brake_force"]
+	high_speed_brake_force = car_config["high_speed_brake_force"]
 
 	low_speed_steering = car_config["low_speed_steering"]
 	high_speed_steering = car_config["high_speed_steering"]
@@ -183,8 +193,12 @@ func _ready() -> void:
 	drift_exit_angle = car_config["drift_exit_angle"]
 	drift_exit_speed = car_config["drift_exit_speed"]
 
-	handbrake_drift_slowdown = car_config["handbrake_drift_slowdown"]
 	handbrake_drift_grip = car_config["handbrake_drift_grip"]
+	brake_force = car_config["brake_force"]
+	high_speed_brake_force = car_config["high_speed_brake_force"]
+
+	handbrake_force = car_config["handbrake_force"]
+	high_speed_handbrake_force = car_config["high_speed_handbrake_force"]
 	
 	wheelspin_entry_rpm = car_config["wheelspin_entry_rpm"]
 	wheelspin_exit_rpm = car_config["wheelspin_exit_rpm"]
@@ -287,8 +301,15 @@ func _physics_process(delta: float) -> void:
 		and speed < launch_hold_max_speed
 		and throttle > 0.0
 	)
+	
+	brake_revving = (
+		drive_state == DriveState.NORMAL
+		and normal_brake
+		and speed < launch_hold_max_speed
+		and throttle > 0.0
+	)
 
-	if launch_charging:
+	if launch_charging or brake_revving:
 		horizontal_velocity = horizontal_velocity.move_toward(
 			Vector3.ZERO,
 			friction * delta
@@ -391,9 +412,21 @@ func _physics_process(delta: float) -> void:
 	# ------------------------------------------------
 
 	if normal_brake or down_braking:
+		var brake_speed_ratio: float = clampf(
+			speed / max_speed,
+			0.0,
+			1.0
+		)
+
+		var current_brake_force: float = lerpf(
+			brake_force,
+			high_speed_brake_force,
+			brake_speed_ratio
+		)
+
 		horizontal_velocity = horizontal_velocity.move_toward(
 			Vector3.ZERO,
-			brake_force * delta
+			current_brake_force * delta
 		)
 
 
@@ -487,7 +520,11 @@ func _physics_process(delta: float) -> void:
 	# DISPLAY RPM
 	# ------------------------------------------------
 
-	if handbrake and throttle > 0.0 and horizontal_velocity.length() < 0.5:
+	if (
+		(handbrake or normal_brake)
+		and throttle > 0.0
+		and horizontal_velocity.length() < 0.5
+	):
 		# Show the existing launch RPM while revving at a standstill.
 		display_rpm = move_toward(
 			display_rpm,
@@ -798,6 +835,14 @@ func handle_normal_driving(
 			speed_ratio
 		)
 
+		var low_speed_factor: float = clampf(
+			speed / 4.0,
+			0.0,
+			1.0
+		)
+
+		steering *= low_speed_factor
+
 		var movement_direction: float = 1.0
 
 		if forward_speed < 0.0:
@@ -861,14 +906,21 @@ func handle_drift(
 	if handbrake:
 		current_drift_grip = handbrake_drift_grip
 
-		var handbrake_force: float = (
-			handbrake_drift_slowdown
-			+ acceleration * maxf(throttle, 0.0)
+		var handbrake_speed_ratio: float = clampf(
+			speed / max_speed,
+			0.0,
+			1.0
+		)
+
+		var current_handbrake_force: float = lerpf(
+			handbrake_force,
+			high_speed_handbrake_force,
+			handbrake_speed_ratio
 		)
 
 		horizontal_velocity = horizontal_velocity.move_toward(
 			Vector3.ZERO,
-			handbrake_force * delta
+			current_handbrake_force * delta
 		)
 
 	horizontal_velocity = apply_grip(
@@ -946,8 +998,12 @@ func handle_wheelspin(
 
 		return horizontal_velocity
 
-	# Launch wheelspin gets a guaranteed minimum duration.
+	# Launch wheelspin requires continued throttle.
 	if wheelspin_from_launch:
+		if throttle < wheelspin_min_throttle:
+			enter_normal()
+			return horizontal_velocity
+
 		if wheelspin_timer > 0.0:
 			return horizontal_velocity
 
@@ -1061,8 +1117,8 @@ func update_rpm(
 		* throttle_rpm_boost
 	)
 
-	# Stationary handbrake lets the engine rev freely.
-	if launch_charging and handbrake:
+	# Stationary handbrake or normal brake lets the engine rev freely.
+	if launch_charging or brake_revving:
 		target_rpm = maxf(
 			target_rpm,
 			launch_target_rpm
@@ -1104,18 +1160,6 @@ func update_rpm(
 			1.0
 		)
 	)
-
-	if drive_state == DriveState.WHEELSPIN:
-		print(
-			"WHEELSPIN | launch=",
-			wheelspin_from_launch,
-			" | rpm=",
-			rpm,
-			" | display=",
-			display_rpm,
-			" | gear=",
-			current_gear
-		)
 
 # ================================================================
 # STATE CHANGES
