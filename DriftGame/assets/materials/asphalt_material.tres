@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://crnb0d7wq56st"]
 
-[ext_resource type="Shader" uid="uid://ijwxqtyupgm0" path="res://DriftGame/asphalt.gdshader" id="1_5d2t7"]
+[ext_resource type="Shader" uid="uid://ijwxqtyupgm0" path="res://DriftGame/assets/materials/asphalt.gdshader" id="1_5d2t7"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_1avvb"]
 noise_type = 3

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b4inxilp3pijq" path="res://DriftGame/scenes/car.tscn" id="1_u5ws8"]
 [ext_resource type="Script" uid="uid://opb0touvh2d1" path="res://DriftGame/scripts/camera.gd" id="2_148kw"]
 [ext_resource type="Script" uid="uid://m0lqr85fqii6" path="res://DriftGame/scripts/car_audio.gd" id="3_unl6j"]
-[ext_resource type="PackedScene" uid="uid://bew0qer8ue0hx" path="res://DriftGame/assets/models/car2.glb" id="3_x372x"]
+[ext_resource type="PackedScene" uid="uid://bew0qer8ue0hx" path="res://DriftGame/assets/models/cars/Car2.glb" id="3_x372x"]
 [ext_resource type="Script" uid="uid://dqrk0ot6ueouw" path="res://DriftGame/scripts/skid_marks.gd" id="3_y2k86"]
 [ext_resource type="Script" uid="uid://cq64lxjr7lopc" path="res://DriftGame/scripts/rpm_gauge.gd" id="4_ykfaq"]
 [ext_resource type="PackedScene" uid="uid://b5e8jaymh1tvp" path="res://DriftGame/scenes/pause_menu.tscn" id="5_qd5k7"]
