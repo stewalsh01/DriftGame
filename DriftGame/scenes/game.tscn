@@ -4,14 +4,16 @@
 [ext_resource type="PackedScene" uid="uid://b4inxilp3pijq" path="res://DriftGame/scenes/car.tscn" id="1_u5ws8"]
 [ext_resource type="Script" uid="uid://opb0touvh2d1" path="res://DriftGame/camera.gd" id="2_148kw"]
 [ext_resource type="Script" uid="uid://dqrk0ot6ueouw" path="res://DriftGame/skid_marks.gd" id="3_y2k86"]
-[ext_resource type="Script" uid="uid://cq64lxjr7lopc" path="res://DriftGame/rpm_gauge.gd" id="4_ykfaq"]
+[ext_resource type="Script" uid="uid://cq64lxjr7lopc" path="res://DriftGame/scripts/rpm_gauge.gd" id="4_ykfaq"]
 [ext_resource type="PackedScene" uid="uid://b5e8jaymh1tvp" path="res://DriftGame/scenes/pause_menu.tscn" id="5_qd5k7"]
+[ext_resource type="Script" uid="uid://t1e20q5aslpg" path="res://DriftGame/scripts/speedometer_label.gd" id="6_ffbl6"]
 [ext_resource type="Script" uid="uid://cvod3s04xw3c" path="res://DriftGame/scenes/drift_scoring.gd" id="7_qd5k7"]
 [ext_resource type="Script" uid="uid://3m443ftg0w3n" path="res://DriftGame/scripts/lap_manager.gd" id="8_w2q3i"]
 
 [sub_resource type="SystemFont" id="SystemFont_qd5k7"]
 font_names = PackedStringArray("Impact")
 font_weight = 800
+subpixel_positioning = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w2q3i"]
 content_margin_left = 50.0
@@ -184,6 +186,25 @@ layout_mode = 2
 size_flags_vertical = 8
 theme_override_font_sizes/font_size = 40
 text = "00:00.00"
+
+[node name="SpeedometerLabel" type="Label" parent="HUD" unique_id=919227234]
+offset_left = 1510.0
+offset_top = 924.0
+offset_right = 1690.0
+offset_bottom = 994.0
+theme_override_font_sizes/font_size = 36
+text = "0 km/h"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("6_ffbl6")
+
+[node name="SpeedUnitLabel" type="Label" parent="HUD/SpeedometerLabel" unique_id=1603481217]
+layout_mode = 0
+offset_left = 127.0
+offset_top = 31.0
+offset_right = 168.0
+offset_bottom = 54.0
+text = "km/h"
 
 [node name="PauseMenu" parent="." unique_id=1919010377 instance=ExtResource("5_qd5k7")]
 

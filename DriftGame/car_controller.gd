@@ -30,6 +30,11 @@ enum DriveState {
 @export var reverse_acceleration: float = 7.0
 
 @export var max_speed: float = 14.0
+@export var gear_1_max_speed: float = 12.0
+@export var gear_2_max_speed: float = 14.0
+@export var gear_3_max_speed: float = 15.0
+@export var gear_4_max_speed: float = 18.0
+@export var gear_5_max_speed: float = 20.0
 @export var max_reverse_speed: float = 6.0
 
 @export var friction: float = 7.0
@@ -116,6 +121,8 @@ enum DriveState {
 @export var drift_rpm_boost: float = 800.0
 @export var wheelspin_rpm_boost: float = 1400.0
 
+@export var shift_rpm: float = 6500.0
+@export var shift_rpm_climb_rate: float = 1000.0
 
 # ================================================================
 # STATE
@@ -127,6 +134,7 @@ var drift_direction: float = 0.0
 var rpm: float = 900.0
 var display_rpm: float = 900.0
 var current_gear: int = 0
+var speed_kmh: float = 0.0
 var neutral_timer: float = 0.0
 
 var launch_charging: bool = false
@@ -251,11 +259,31 @@ func _physics_process(delta: float) -> void:
 	# SPEED LIMIT
 	# ------------------------------------------------
 
-	if horizontal_velocity.length() > max_speed:
-		horizontal_velocity = (
-			horizontal_velocity.normalized()
-			* max_speed
-		)
+	var gear_speed_limit: float = max_speed
+
+	match current_gear:
+		1:
+			gear_speed_limit = gear_1_max_speed
+		2:
+			gear_speed_limit = gear_2_max_speed
+		3:
+			gear_speed_limit = gear_3_max_speed
+		4:
+			gear_speed_limit = gear_4_max_speed
+		5:
+			gear_speed_limit = gear_5_max_speed
+
+	# Limit acceleration in the current gear without removing
+	# momentum the car already had before a downshift.
+	if throttle > 0.0 and not launch_charging:
+		var previous_speed: float = get_horizontal_velocity().length()
+		var allowed_speed: float = maxf(gear_speed_limit, previous_speed)
+
+		if horizontal_velocity.length() > allowed_speed:
+			horizontal_velocity = (
+				horizontal_velocity.normalized()
+				* allowed_speed
+			)
 
 	speed = horizontal_velocity.length()
 
@@ -367,25 +395,70 @@ func _physics_process(delta: float) -> void:
 		handbrake
 	)
 	
-	if throttle > 0.0 and drive_state == DriveState.NORMAL:
-		var rpm_climb_rate: float = 10000.0
+# ------------------------------------------------
+# DISPLAY RPM
+# ------------------------------------------------
 
-		if current_gear == 2:
-			rpm_climb_rate = 3500.0
-		elif current_gear == 3:
-			rpm_climb_rate = 2500.0
-		elif current_gear == 4:
-			rpm_climb_rate = 1800.0
-		elif current_gear == 5:
-			rpm_climb_rate = 1200.0
+	if drive_state == DriveState.NORMAL and current_gear == 1:
+		var first_gear_speed: float = horizontal_velocity.length()
 
-		display_rpm = move_toward(display_rpm, max_rpm, rpm_climb_rate * delta)
+		var speed_ratio: float = clampf(
+			first_gear_speed / gear_1_max_speed,
+			0.0,
+			1.0
+		)
+
+		var target_display_rpm: float = lerpf(
+			idle_rpm,
+			6300.0,
+			speed_ratio
+		)
+
+		display_rpm = move_toward(
+			display_rpm,
+			target_display_rpm,
+			10000.0 * delta
+		)
+
 	else:
-		if drive_state == DriveState.NORMAL and throttle <= 0.0:
-			display_rpm = move_toward(display_rpm, idle_rpm, 1800.0 * delta)
+		# Preserve the existing RPM behaviour outside 1st gear.
+		if throttle > 0.0 and drive_state == DriveState.NORMAL:
+			var rpm_climb_rate: float = 10000.0
+
+			if current_gear == 2:
+				rpm_climb_rate = 3500.0
+			elif current_gear == 3:
+				rpm_climb_rate = 2500.0
+			elif current_gear == 4:
+				rpm_climb_rate = 1800.0
+			elif current_gear == 5:
+				rpm_climb_rate = 1200.0
+
+			display_rpm = move_toward(
+				display_rpm,
+				max_rpm,
+				rpm_climb_rate * delta
+			)
 		else:
-			display_rpm = move_toward(display_rpm, rpm, 3000.0 * delta)
-	
+			if drive_state == DriveState.NORMAL and throttle <= 0.0:
+				var rpm_fall_rate: float = 1800.0
+
+				if normal_brake or down_braking:
+					rpm_fall_rate = 6000.0
+
+				display_rpm = move_toward(
+					display_rpm,
+					idle_rpm,
+					rpm_fall_rate * delta
+				)
+			else:
+				display_rpm = move_toward(
+					display_rpm,
+					rpm,
+					3000.0 * delta
+				)
+
+	# Gearbox logic continues below.	
 	if drive_state == DriveState.NORMAL:
 		if throttle < 0.0:
 			current_gear = -1
@@ -395,26 +468,48 @@ func _physics_process(delta: float) -> void:
 			if current_gear < 1:
 				current_gear = 1
 
-			# Upshift one gear when accelerating at redline.
-			if current_gear < 5 and display_rpm >= 6500.0 and speed > 0.5:
-				current_gear += 1
-				display_rpm = 3500.0
+			#if current_gear < 5 and display_rpm >= 6500.0 and speed > 0.5:
+				#current_gear += 1
+				#display_rpm = 3500.0
 
 			neutral_timer = 0.0
-
-		elif speed < 0.2:
-			neutral_timer += delta
-
-			if neutral_timer >= 2.0:
-				current_gear = 0
 
 		else:
-			neutral_timer = 0.0
+			var downshift_speed: float = 0.0
 
-			# Downshift one gear when coasting below 5,000 RPM.
-			if current_gear > 1 and display_rpm <= 5000.0:
+			match current_gear:
+				5:
+					downshift_speed = gear_4_max_speed
+				4:
+					downshift_speed = gear_3_max_speed
+				3:
+					downshift_speed = gear_2_max_speed
+				2:
+					downshift_speed = gear_1_max_speed
+
+			var braking_downshift: bool = (
+				(normal_brake or down_braking)
+				and current_gear > 1
+				and speed <= downshift_speed
+			)
+
+			var rolling_downshift: bool = (
+				current_gear > 1
+				and display_rpm <= 5000.0
+			)
+
+			if braking_downshift or rolling_downshift:
 				current_gear -= 1
 				display_rpm = 6000.0
+
+			if speed < 0.2:
+				neutral_timer += delta
+
+				if neutral_timer >= 2.0:
+					current_gear = 0
+					display_rpm = idle_rpm
+			else:
+				neutral_timer = 0.0
 
 
 	# ------------------------------------------------
@@ -426,6 +521,8 @@ func _physics_process(delta: float) -> void:
 	velocity.y = 0.0
 
 	move_and_slide()
+
+	speed_kmh = get_horizontal_velocity().length() * 3.6
 
 
 	# ------------------------------------------------
