@@ -18,3 +18,27 @@ func _ready() -> void:
 
 	if skid_marks.road_mesh != null:
 		skid_marks.road_width = skid_marks.road_mesh.road_width
+
+	var start_finish_line: Node3D = selected_location.get_node_or_null(
+		"CarSpawn/StartFinishLine"
+	)
+
+	var is_track_mode: bool = start_finish_line != null
+
+	$HUD/LapInfoPanel.visible = is_track_mode
+	$HUD/LapInfoBackground.visible = is_track_mode
+	$HUD/LapInfoAccent.visible = is_track_mode
+	$HUD/LapDriftScoreLabel.visible = is_track_mode
+	$HUD/BestLapScoreLabel.visible = is_track_mode
+	$HUD/LastLapScoreLabel.visible = is_track_mode
+
+	$HUD/TotalScoreLabel.visible = not is_track_mode
+	$HUD/LapInfoPanel.visible = is_track_mode
+	$HUD/LapDriftScoreLabel.visible = is_track_mode
+
+	if start_finish_line != null:
+		start_finish_line.car_crossed.connect(
+			$LapManager._on_car_crossed
+		)
+	
+	$DriftScoring.score_banked.connect($LapManager._on_score_banked)

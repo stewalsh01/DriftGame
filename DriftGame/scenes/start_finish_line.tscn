@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://cc78e5ufabr4g"]
+
+[ext_resource type="Script" uid="uid://itwec3fjs00g" path="res://DriftGame/scripts/start_finish_line.gd" id="1_sk5ko"]
+[ext_resource type="Texture2D" uid="uid://da2w0ibyeorx5" path="res://DriftGame/assets/markings/sfline.png" id="2_yp5p6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_34iia"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_edvm6"]
+material = SubResource("StandardMaterial3D_34iia")
+size = Vector3(8.5, 0.02, 0.35)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_edvm6"]
+size = Vector3(8.5, 2, 0.5)
+
+[node name="StartFinishLine" type="Node3D" unique_id=423812783]
+transform = Transform3D(0.9945219, 0, 0.104528464, 0, 1, 0, -0.104528464, 0, 0.9945219, 0, 0, 0)
+script = ExtResource("1_sk5ko")
+
+[node name="LineVisual" type="MeshInstance3D" parent="." unique_id=572930932]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.03, 0)
+visible = false
+mesh = SubResource("BoxMesh_edvm6")
+
+[node name="CrossingDetector" type="Area3D" parent="." unique_id=1984581409]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CrossingDetector" unique_id=1835543238]
+shape = SubResource("BoxShape3D_edvm6")
+
+[node name="LineMarking" type="Sprite3D" parent="." unique_id=493145958]
+transform = Transform3D(0.5, 0, 0, 0, -2.1855694e-08, 0.5, 0, -0.5, -2.1855694e-08, 0.2, 0.045, 0)
+modulate = Color(1, 1, 1, 0.7058824)
+render_priority = -1
+texture = ExtResource("2_yp5p6")
+
+[connection signal="body_entered" from="CrossingDetector" to="." method="_on_crossing_detector_body_entered"]

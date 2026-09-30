@@ -22,19 +22,29 @@ func toggle_pause() -> void:
 
 	if is_paused:
 		resume_button.grab_focus()
+		$MenuMoveSound.stop()
 
 
 func _on_resume_button_pressed() -> void:
+	$MenuSelectSound.play()
+	await $MenuSelectSound.finished
+
 	get_tree().paused = false
 	hide()
 
 
 func _on_restart_button_pressed() -> void:
+	$MenuSelectSound.play()
+	await $MenuSelectSound.finished
+
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 
 
 func _on_main_menu_button_pressed() -> void:
+	$MenuSelectSound.play()
+	await $MenuSelectSound.finished
+
 	get_tree().paused = false
 	get_tree().change_scene_to_file(
         "res://DriftGame/scenes/main_menu.tscn"
@@ -42,5 +52,27 @@ func _on_main_menu_button_pressed() -> void:
 
 
 func _on_quit_button_pressed() -> void:
+	$MenuSelectSound.play()
+	await $MenuSelectSound.finished
+
 	get_tree().paused = false
 	get_tree().quit()
+
+func _on_menu_button_focus_entered() -> void:
+	$MenuMoveSound.play()
+
+
+func _on_resume_button_focus_entered() -> void:
+	$MenuMoveSound.play()
+
+
+func _on_restart_button_focus_entered() -> void:
+	$MenuMoveSound.play()
+
+
+func _on_main_menu_button_focus_entered() -> void:
+	$MenuMoveSound.play()
+
+
+func _on_quit_button_focus_entered() -> void:
+	$MenuMoveSound.play()

@@ -1,5 +1,7 @@
 extends Node
 
+signal score_banked(points: int)
+
 @export var minimum_speed: float = 3.0
 @export var minimum_drift_angle: float = 10.0
 @export var points_per_second: float = 100.0
@@ -96,14 +98,7 @@ func _physics_process(delta: float) -> void:
 		combo_timer = maxf(combo_timer - delta, 0.0)
 
 		if combo_timer <= 0.0:
-			var final_score: int = roundi(
-				current_drift_score * combo_multiplier
-			)
-
-			total_score += final_score
-			banked_score_label.text = "+%d" % final_score
-			banked_score_label.visible = true
-			total_label.add_theme_color_override("font_color", Color("#55ff66"))
+			bank_current_drift()
 			total_label.pivot_offset = Vector2(0, total_label.size.y)
 
 			var pop_tween: Tween = create_tween()
@@ -135,3 +130,38 @@ func _physics_process(delta: float) -> void:
 	)
 	total_label.text = "TOTAL: %d" % total_score
 	was_scoring = is_scoring
+
+func bank_current_drift() -> void:
+	if current_drift_score <= 0.0 or drift_invalidated:
+		return
+
+	var final_score: int = roundi(
+		current_drift_score * combo_multiplier
+	)
+
+	total_score += final_score
+	score_banked.emit(final_score)
+
+	banked_score_label.text = "+%d" % final_score
+	banked_score_label.visible = true
+
+	total_label.add_theme_color_override(
+		"font_color", Color("#55ff66")
+	)
+	total_label.pivot_offset = Vector2(0, total_label.size.y)
+
+	var pop_tween: Tween = create_tween()
+	pop_tween.tween_property(
+		total_label, "scale", Vector2(1.2, 1.2), 0.12
+	)
+	pop_tween.tween_property(
+		total_label, "scale", Vector2.ONE, 0.25
+	)
+
+	current_drift_score = 0.0
+	combo_multiplier = 1
+	combo_timer = 0.0
+
+	await get_tree().create_timer(1.5).timeout
+	banked_score_label.visible = false
+	total_label.remove_theme_color_override("font_color")

@@ -7,10 +7,16 @@
 [ext_resource type="Script" uid="uid://cq64lxjr7lopc" path="res://DriftGame/rpm_gauge.gd" id="4_ykfaq"]
 [ext_resource type="PackedScene" uid="uid://b5e8jaymh1tvp" path="res://DriftGame/scenes/pause_menu.tscn" id="5_qd5k7"]
 [ext_resource type="Script" uid="uid://cvod3s04xw3c" path="res://DriftGame/scenes/drift_scoring.gd" id="7_qd5k7"]
+[ext_resource type="Script" uid="uid://3m443ftg0w3n" path="res://DriftGame/scripts/lap_manager.gd" id="8_w2q3i"]
 
 [sub_resource type="SystemFont" id="SystemFont_qd5k7"]
 font_names = PackedStringArray("Impact")
 font_weight = 800
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w2q3i"]
+content_margin_left = 50.0
+bg_color = Color(0.06666667, 0.09411765, 0.09019608, 0)
+border_color = Color(1, 0.83137256, 0.23137255, 1)
 
 [node name="Game" type="Node3D" unique_id=307019888]
 script = ExtResource("1_qd5k7")
@@ -19,6 +25,11 @@ script = ExtResource("1_qd5k7")
 
 [node name="CarEffects" parent="Car" index="2" unique_id=1538640517]
 skid_marks_path = NodePath("../../SkidMarks")
+
+[node name="EngineSound" type="AudioStreamPlayer" parent="Car" unique_id=1142392112]
+autoplay = true
+
+[node name="RevSound" type="AudioStreamPlayer" parent="Car" unique_id=27649090]
 
 [node name="CameraPivot" type="Node3D" parent="." unique_id=260947002]
 
@@ -91,10 +102,96 @@ theme_override_colors/font_color = Color(0.33333334, 1, 0.4, 1)
 theme_override_font_sizes/font_size = 64
 text = "+3000"
 
+[node name="LapDriftScoreLabel" type="Label" parent="HUD" unique_id=42032712]
+offset_left = 30.0
+offset_top = 945.0
+offset_right = 208.0
+offset_bottom = 984.0
+theme_override_font_sizes/font_size = 28
+text = "LAP SCORE: 0"
+
+[node name="BestLapScoreLabel" type="Label" parent="HUD" unique_id=1354590917]
+offset_left = 1580.0
+offset_top = 30.0
+offset_right = 1830.0
+offset_bottom = 69.0
+theme_override_font_sizes/font_size = 28
+text = "BEST LAP SCORE: 0"
+
+[node name="LastLapScoreLabel" type="Label" parent="HUD" unique_id=314111043]
+offset_left = 1580.0
+offset_top = 70.0
+offset_right = 1830.0
+offset_bottom = 109.0
+theme_override_font_sizes/font_size = 28
+text = "LAST LAP SCORE: 0"
+
+[node name="LapInfoBackground" type="Polygon2D" parent="HUD" unique_id=1124842733]
+position = Vector2(20, 20)
+color = Color(0.06666667, 0.09411765, 0.09019608, 1)
+polygon = PackedVector2Array(20, 0, 380, 0, 355, 90, 0, 90)
+
+[node name="LapInfoAccent" type="Polygon2D" parent="HUD" unique_id=1805456418]
+position = Vector2(20, 20)
+color = Color(1, 0.83137256, 0.23137255, 1)
+polygon = PackedVector2Array(20, 0, 25, 0, 5, 90, 0, 90)
+
+[node name="LapInfoPanel" type="PanelContainer" parent="HUD" unique_id=2091604837]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 320.0
+offset_bottom = 110.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_w2q3i")
+
+[node name="LapInfoRow" type="HBoxContainer" parent="HUD/LapInfoPanel" unique_id=1056700709]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="LapSection" type="VBoxContainer" parent="HUD/LapInfoPanel/LapInfoRow" unique_id=1757569649]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="LapHeading" type="Label" parent="HUD/LapInfoPanel/LapInfoRow/LapSection" unique_id=101941534]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "LAP"
+
+[node name="LapLabel" type="Label" parent="HUD/LapInfoPanel/LapInfoRow/LapSection" unique_id=1425980507]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -10)
+theme_override_colors/font_color = Color(1, 0.83137256, 0.23137255, 1)
+theme_override_constants/line_spacing = 3
+theme_override_font_sizes/font_size = 55
+text = "0"
+
+[node name="Divider" type="ColorRect" parent="HUD/LapInfoPanel/LapInfoRow" unique_id=1160245266]
+custom_minimum_size = Vector2(2, 50)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="TimeSection" type="VBoxContainer" parent="HUD/LapInfoPanel/LapInfoRow" unique_id=1850445114]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TimeHeading" type="Label" parent="HUD/LapInfoPanel/LapInfoRow/TimeSection" unique_id=1184178855]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "TIME"
+
+[node name="LapTimerLabel" type="Label" parent="HUD/LapInfoPanel/LapInfoRow/TimeSection" unique_id=694663787]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 40
+text = "00:00.00"
+
 [node name="PauseMenu" parent="." unique_id=1919010377 instance=ExtResource("5_qd5k7")]
 
 [node name="DriftScoring" type="Node3D" parent="." unique_id=989257217]
 script = ExtResource("7_qd5k7")
+
+[node name="LapManager" type="Node3D" parent="." unique_id=563464561]
+script = ExtResource("8_w2q3i")
 
 [editable path="Car"]
 [editable path="Car/SportsCar2"]
