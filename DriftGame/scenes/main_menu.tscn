@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://dl6af43p8q05u"]
+
+[ext_resource type="Script" uid="uid://c1esrgj2kohb8" path="res://DriftGame/scripts/main_menu.gd" id="1_e2x04"]
+
+[node name="MainMenu" type="Control" unique_id=1417694871]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_e2x04")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1647137848]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0627451, 0.07058824, 0.08627451, 1)
+
+[node name="MenuCenter" type="CenterContainer" parent="." unique_id=1513668970]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuBox" type="VBoxContainer" parent="MenuCenter" unique_id=543233730]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="MenuCenter/MenuBox" unique_id=663814960]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Drift Game"
+horizontal_alignment = 1
+
+[node name="Track1Button" type="Button" parent="MenuCenter/MenuBox" unique_id=1749924754]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "DRIFT YARD"
+
+[node name="QuitButton" type="Button" parent="MenuCenter/MenuBox" unique_id=8602614]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Quit"
+
+[connection signal="pressed" from="MenuCenter/MenuBox/Track1Button" to="." method="_on_track_1_button_pressed"]
+[connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]

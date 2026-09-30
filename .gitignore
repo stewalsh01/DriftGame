@@ -1,0 +1,12 @@
+# Godot 4+ specific ignores
+/android/
+
+# Godot generated files
+.godot/
+
+# Imported/generated files
+*.import
+
+# OS files
+.DS_Store
+Thumbs.db
