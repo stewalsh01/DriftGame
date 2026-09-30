@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b12l2aa74h17b" path="res://DriftGame/scripts/game.gd" id="1_qd5k7"]
 [ext_resource type="PackedScene" uid="uid://b4inxilp3pijq" path="res://DriftGame/scenes/car.tscn" id="1_u5ws8"]
 [ext_resource type="Script" uid="uid://opb0touvh2d1" path="res://DriftGame/scripts/camera.gd" id="2_148kw"]
+[ext_resource type="Script" uid="uid://m0lqr85fqii6" path="res://DriftGame/scripts/car_audio.gd" id="3_unl6j"]
 [ext_resource type="Script" uid="uid://dqrk0ot6ueouw" path="res://DriftGame/scripts/skid_marks.gd" id="3_y2k86"]
 [ext_resource type="Script" uid="uid://cq64lxjr7lopc" path="res://DriftGame/scripts/rpm_gauge.gd" id="4_ykfaq"]
 [ext_resource type="PackedScene" uid="uid://b5e8jaymh1tvp" path="res://DriftGame/scenes/pause_menu.tscn" id="5_qd5k7"]
@@ -28,10 +29,8 @@ script = ExtResource("1_qd5k7")
 [node name="CarEffects" parent="Car" index="2" unique_id=1538640517]
 skid_marks_path = NodePath("../../SkidMarks")
 
-[node name="EngineSound" type="AudioStreamPlayer" parent="Car" unique_id=1142392112]
-autoplay = true
-
-[node name="RevSound" type="AudioStreamPlayer" parent="Car" unique_id=27649090]
+[node name="CarAudio" type="Node" parent="Car" unique_id=1037054325]
+script = ExtResource("3_unl6j")
 
 [node name="CameraPivot" type="Node3D" parent="." unique_id=260947002]
 

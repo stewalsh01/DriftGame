@@ -61,10 +61,9 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "QUIT"
 
-[node name="OptionsButton" type="Button" parent="Background/MenuCenter/MenuBox" unique_id=884454133]
+[node name="OptionsButton" type="Button" parent="Background/MenuCenter/MenuBox" unique_id=1244104330]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "OPTIONS"
+text = "Options"
 
 [node name="OptionsCenter" type="CenterContainer" parent="Background" unique_id=1865458776]
 visible = false
@@ -113,9 +112,8 @@ pitch_scale = 1.5
 [connection signal="pressed" from="Background/MenuCenter/MenuBox/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="focus_entered" from="Background/MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_focus_entered"]
 [connection signal="pressed" from="Background/MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]
-[connection signal="focus_entered" from="Background/MenuCenter/MenuBox/OptionsButton" to="." method="_on_quit_button_focus_entered"]
 [connection signal="pressed" from="Background/MenuCenter/MenuBox/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="focus_entered" from="Background/OptionsCenter/MenuBox/SoundButton" to="." method="_on_restart_button_focus_entered"]
-[connection signal="pressed" from="Background/OptionsCenter/MenuBox/SoundButton" to="." method="_on_sound_button_pressed"]
+[connection signal="pressed" from="Background/OptionsCenter/MenuBox/SoundButton" to="." method="_on_restart_button_pressed"]
 [connection signal="focus_entered" from="Background/OptionsCenter/MenuBox/BackButton" to="." method="_on_resume_button_focus_entered"]
-[connection signal="pressed" from="Background/OptionsCenter/MenuBox/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="Background/OptionsCenter/MenuBox/BackButton" to="." method="_on_resume_button_pressed"]

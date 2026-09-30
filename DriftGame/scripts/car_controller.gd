@@ -1,7 +1,7 @@
 extends CharacterBody3D
 const CarSettings = preload("res://DriftGame/scripts/car_settings.gd")
 
-@export var selected_car: int = 1
+@export var selected_car: int = 2
 var car_config: Dictionary
 
 # ================================================================
@@ -21,6 +21,7 @@ enum DriveState {
 
 @onready var car_visuals: Node = $CarVisuals
 @onready var car_effects: Node = $CarEffects
+@onready var car_audio: Node = $CarAudio
 
 
 # ================================================================
@@ -91,6 +92,8 @@ var wheelspin_steering: float
 var chain_drift_angle: float
 var wheelspin_min_throttle: float
 
+var wheelspin_max_time: float
+
 # ================================================================
 # LAUNCH
 # ================================================================
@@ -130,9 +133,12 @@ var speed_kmh: float = 0.0
 var neutral_timer: float = 0.0
 
 var launch_charging: bool = false
+var launch_shift_timer: float = 0.0
+var launch_rpm_drop_timer: float = 0.0
 
 var wheelspin_from_launch: bool = false
 var wheelspin_timer: float = 0.0
+
 
 func _ready() -> void:
 	car_config = CarSettings.get_car(selected_car)
@@ -196,6 +202,7 @@ func _ready() -> void:
 
 	launch_acceleration_multiplier = car_config["launch_acceleration_multiplier"]
 	launch_wheelspin_time = car_config["launch_wheelspin_time"]
+	wheelspin_max_time = car_config["wheelspin_max_time"]
 	
 	idle_rpm = car_config["idle_rpm"]
 	max_rpm = car_config["max_rpm"]
@@ -208,6 +215,7 @@ func _ready() -> void:
 	# Initialise RPM using this car's configured idle RPM.
 	rpm = idle_rpm
 	display_rpm = idle_rpm
+	car_audio.setup()
 
 # ================================================================
 # PHYSICS PROCESS
@@ -620,10 +628,18 @@ func _physics_process(delta: float) -> void:
 			)
 
 		else:
+			var display_response: float = 3000.0
+
+			if (
+				drive_state == DriveState.WHEELSPIN
+				and wheelspin_from_launch
+			):
+				display_response = 12000.0
+
 			display_rpm = move_toward(
 				display_rpm,
 				rpm,
-				3000.0 * delta
+				display_response * delta
 			)
 
 
@@ -631,6 +647,23 @@ func _physics_process(delta: float) -> void:
 	# ------------------------------------------------
 	# GEARBOX
 	# ------------------------------------------------
+
+	if (
+		drive_state == DriveState.WHEELSPIN
+		and wheelspin_from_launch
+		and current_gear >= 1
+		and current_gear < 5
+	):
+		if rpm >= 7850.0:
+			launch_shift_timer += delta
+
+			if launch_shift_timer >= 0.5:
+				current_gear += 1
+				rpm = 5000.0
+				display_rpm = 5000.0
+				launch_shift_timer = 0.0
+		else:
+			launch_shift_timer = 0.0
 
 	if drive_state == DriveState.NORMAL:
 		if throttle < 0.0:
@@ -877,6 +910,13 @@ func handle_wheelspin(
 	if wheelspin_timer > 0.0:
 		wheelspin_timer -= delta
 
+		if (
+			wheelspin_timer <= 0.0
+			and not wheelspin_from_launch
+		):
+			enter_normal()
+			return horizontal_velocity
+
 	rotate_y(
 		-steering_input
 		* wheelspin_steering
@@ -912,6 +952,8 @@ func handle_wheelspin(
 			return horizontal_velocity
 
 		wheelspin_from_launch = false
+		enter_normal()
+		return horizontal_velocity
 
 	# Exit wheelspin once revs or throttle fall.
 	if (
@@ -1033,10 +1075,19 @@ func update_rpm(
 		)
 
 	elif drive_state == DriveState.WHEELSPIN:
-		target_rpm += (
-			maxf(throttle, 0.0)
-			* wheelspin_rpm_boost
-		)
+		if wheelspin_from_launch:
+			if launch_rpm_drop_timer > 0.0:
+				launch_rpm_drop_timer -= delta
+			else:
+				target_rpm = maxf(
+					target_rpm,
+					launch_target_rpm
+				)
+		else:
+			target_rpm += (
+				maxf(throttle, 0.0)
+				* wheelspin_rpm_boost
+			)
 
 	target_rpm = clampf(
 		target_rpm,
@@ -1054,6 +1105,17 @@ func update_rpm(
 		)
 	)
 
+	if drive_state == DriveState.WHEELSPIN:
+		print(
+			"WHEELSPIN | launch=",
+			wheelspin_from_launch,
+			" | rpm=",
+			rpm,
+			" | display=",
+			display_rpm,
+			" | gear=",
+			current_gear
+		)
 
 # ================================================================
 # STATE CHANGES
@@ -1087,7 +1149,7 @@ func enter_wheelspin() -> void:
 	drive_state = DriveState.WHEELSPIN
 
 	wheelspin_from_launch = false
-	wheelspin_timer = 0.0
+	wheelspin_timer = wheelspin_max_time
 
 
 func enter_launch_wheelspin() -> void:
@@ -1095,6 +1157,7 @@ func enter_launch_wheelspin() -> void:
 
 	wheelspin_from_launch = true
 	wheelspin_timer = launch_wheelspin_time
+	launch_rpm_drop_timer = 0.35
 
 
 func enter_normal() -> void:
