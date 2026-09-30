@@ -1,0 +1,211 @@
+[gd_scene format=3 uid="uid://bcwpfdsjkttkc"]
+
+[ext_resource type="Shader" uid="uid://ijwxqtyupgm0" path="res://DriftGame/asphalt.gdshader" id="1_lrouh"]
+[ext_resource type="Texture2D" uid="uid://bs7x1k00el4hq" path="res://DriftGame/assets/markings/circle.png" id="2_dixj2"]
+[ext_resource type="Texture2D" uid="uid://ebbrfruo7grm" path="res://DriftGame/assets/markings/blackyellowboundary.png" id="3_1g1jn"]
+[ext_resource type="Texture2D" uid="uid://b1rbotu0sv8ki" path="res://DriftGame/assets/markings/donutzone.png" id="4_083ba"]
+[ext_resource type="Texture2D" uid="uid://b3fq2w702rdjl" path="res://DriftGame/assets/markings/tyremark1.png" id="5_o3dyy"]
+[ext_resource type="Texture2D" uid="uid://h5lnrtu0tbe6" path="res://DriftGame/assets/markings/figure8c.png" id="6_cjyx7"]
+[ext_resource type="Texture2D" uid="uid://b16ny1d01pi1l" path="res://DriftGame/assets/markings/outerroundabout.png" id="7_6686y"]
+[ext_resource type="Texture2D" uid="uid://dd5813k1a2qnu" path="res://DriftGame/assets/markings/whitelane2.png" id="8_tpll3"]
+[ext_resource type="Texture2D" uid="uid://ds12r68awwgnf" path="res://DriftGame/assets/markings/whiteline.png" id="9_n162o"]
+[ext_resource type="Texture2D" uid="uid://jm12wx18j21n" path="res://DriftGame/assets/markings/startline.png" id="10_unqdv"]
+[ext_resource type="Texture2D" uid="uid://dfwa6sg1v8cam" path="res://DriftGame/assets/markings/roadcrack1.png" id="11_34x2h"]
+[ext_resource type="Texture2D" uid="uid://bkgbfwsyrfrwa" path="res://DriftGame/assets/markings/roadcrack2.png" id="12_aylno"]
+[ext_resource type="Texture2D" uid="uid://dj6v3a6rmwrp5" path="res://DriftGame/assets/markings/roadcrack3.png" id="13_pcew6"]
+[ext_resource type="Texture2D" uid="uid://bj6lqeg301xsq" path="res://DriftGame/assets/markings/finishline.png" id="14_l144w"]
+[ext_resource type="Shader" uid="uid://vxkaesie835g" path="res://DriftGame/assets/materials/grass.gdshader" id="15_ufdvn"]
+[ext_resource type="PackedScene" uid="uid://7tunk3w4ris6" path="res://DriftGame/assets/models/buildings/building_test.glb" id="16_dixj2"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1avvb"]
+noise_type = 3
+frequency = 0.35
+fractal_octaves = 2
+fractal_gain = 0.45
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dkvj6"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_1avvb")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4kcym"]
+render_priority = 0
+shader = ExtResource("1_lrouh")
+shader_parameter/asphalt_color = Color(0.4, 0.41, 0.42, 1)
+shader_parameter/asphalt_noise = SubResource("NoiseTexture2D_dkvj6")
+shader_parameter/grain_strength = 0.0250000011875
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_1tv2y"]
+material = SubResource("ShaderMaterial_4kcym")
+size = Vector2(150, 100)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xjxrw"]
+render_priority = 0
+shader = ExtResource("15_ufdvn")
+shader_parameter/grass_dark = Color(0.1, 0.22, 0.055, 1)
+shader_parameter/grass_mid = Color(0.18, 0.34, 0.09, 1)
+shader_parameter/grass_light = Color(0.3, 0.46, 0.13, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_isqnn"]
+material = SubResource("ShaderMaterial_xjxrw")
+top_radius = 10.0
+bottom_radius = 10.0
+height = 0.02
+rings = 1
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ipcpc"]
+height = 0.1
+radius = 10.0
+
+[node name="Location01" type="Node3D" unique_id=720615559]
+
+[node name="Ground" type="MeshInstance3D" parent="." unique_id=1460184635]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011666596, 0, 0.021119833)
+layers = 2
+mesh = SubResource("PlaneMesh_1tv2y")
+
+[node name="TrackMarkings" type="Node3D" parent="." unique_id=932204291]
+
+[node name="SkidpadCircle" type="Decal" parent="TrackMarkings" unique_id=463086266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+size = Vector3(24, 1, 24)
+texture_albedo = ExtResource("2_dixj2")
+cull_mask = 1047554
+
+[node name="TopBoundary" type="Decal" parent="TrackMarkings" unique_id=478910316]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, -48)
+size = Vector3(148, 1, 2.5)
+texture_albedo = ExtResource("3_1g1jn")
+cull_mask = 1047554
+
+[node name="LeftBoundary" type="Decal" parent="TrackMarkings" unique_id=1457503734]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -73, 0.25, 0)
+size = Vector3(98, 1, 2.5)
+texture_albedo = ExtResource("3_1g1jn")
+cull_mask = 1047554
+
+[node name="RightBoundary" type="Decal" parent="TrackMarkings" unique_id=1137585513]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 73, 0.25, 0)
+size = Vector3(98, 1, 2.5)
+texture_albedo = ExtResource("3_1g1jn")
+cull_mask = 1047554
+
+[node name="BottomBoundary" type="Decal" parent="TrackMarkings" unique_id=1726671256]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 48)
+size = Vector3(148, 1, 2.5)
+texture_albedo = ExtResource("3_1g1jn")
+cull_mask = 1047554
+
+[node name="DonutZone" type="Decal" parent="TrackMarkings" unique_id=1804995952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 0.25, 28)
+size = Vector3(30, 1, 30)
+texture_albedo = ExtResource("4_083ba")
+cull_mask = 1047554
+
+[node name="TyreMark1" type="Decal" parent="TrackMarkings" unique_id=210352312]
+transform = Transform3D(0.9848077, 0, -0.17364818, 0, 1, 0, 0.17364818, 0, 0.9848077, 47.036625, 0.25, 2.5823917)
+size = Vector3(15, 1, 0.4)
+texture_albedo = ExtResource("5_o3dyy")
+cull_mask = 1047554
+
+[node name="TyreMark2" type="Decal" parent="TrackMarkings" unique_id=1032477276]
+transform = Transform3D(0.9848077, 0, -0.17364818, 0, 1, 0, 0.17364818, 0, 0.9848077, 47.036625, 0.25, 4.0180416)
+size = Vector3(15, 1, 0.4)
+texture_albedo = ExtResource("5_o3dyy")
+cull_mask = 1047554
+
+[node name="Figure8" type="Decal" parent="TrackMarkings" unique_id=55397644]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 0.25, 30.878418)
+size = Vector3(55, 1, 30)
+texture_albedo = ExtResource("6_cjyx7")
+cull_mask = 1047554
+
+[node name="OuterRoundabout" type="Decal" parent="TrackMarkings" unique_id=958169855]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+size = Vector3(45, 1, 45)
+texture_albedo = ExtResource("7_6686y")
+cull_mask = 1047554
+
+[node name="RoundaboutBottomLane" type="Decal" parent="TrackMarkings" unique_id=41203600]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 21.868572)
+size = Vector3(27, 1, 8)
+texture_albedo = ExtResource("8_tpll3")
+cull_mask = 1047554
+
+[node name="RoundaboutRightLane" type="Decal" parent="TrackMarkings" unique_id=2146402117]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 21.923212, 0.25, -0.46251774)
+size = Vector3(24, 1, 8)
+texture_albedo = ExtResource("8_tpll3")
+cull_mask = 1047554
+
+[node name="RoundaboutLeftLane" type="Decal" parent="TrackMarkings" unique_id=663093772]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -21.794676, 0.25, -0.46251774)
+size = Vector3(24, 1, 8)
+texture_albedo = ExtResource("8_tpll3")
+cull_mask = 1047554
+
+[node name="RoundaboutTopLane" type="Decal" parent="TrackMarkings" unique_id=1438807478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, -21.770702)
+size = Vector3(27, 1, 8)
+texture_albedo = ExtResource("8_tpll3")
+cull_mask = 1047554
+
+[node name="SpeedLaneLeftLine" type="Decal" parent="TrackMarkings" unique_id=1614208686]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0.25, -43.25278)
+size = Vector3(42, 1, 0.35)
+texture_albedo = ExtResource("9_n162o")
+cull_mask = 1047554
+
+[node name="SpeedLaneRightLine" type="Decal" parent="TrackMarkings" unique_id=1844583696]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0.25, -35.111725)
+size = Vector3(42, 1, 0.35)
+texture_albedo = ExtResource("9_n162o")
+cull_mask = 1047554
+
+[node name="SpeedLaneStart" type="Decal" parent="TrackMarkings" unique_id=820465854]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 10, 0.25, -39.43953)
+size = Vector3(8, 1, 3)
+texture_albedo = ExtResource("10_unqdv")
+cull_mask = 1047554
+
+[node name="RoadCrack1" type="Decal" parent="TrackMarkings" unique_id=1622859285]
+transform = Transform3D(0.8660254, 0, 0.5, 0, 1, 0, -0.5, 0, 0.8660254, 39.98548, 0.25, -5.1902084)
+size = Vector3(20, 1, 3)
+texture_albedo = ExtResource("11_34x2h")
+cull_mask = 1047554
+
+[node name="RoadCrack2" type="Decal" parent="TrackMarkings" unique_id=1764605998]
+transform = Transform3D(-0.64278764, 0, 0.76604444, 0, 1, 0, -0.76604444, 0, -0.64278764, -19.961098, 0.25, 25.201473)
+size = Vector3(10, 1, 3)
+texture_albedo = ExtResource("12_aylno")
+cull_mask = 1047554
+
+[node name="RoadCrack3" type="Decal" parent="TrackMarkings" unique_id=1279124078]
+transform = Transform3D(0.9396926, 0, -0.34202012, 0, 1, 0, 0.34202012, 0, 0.9396926, -25.688025, 0.25, -26.86845)
+size = Vector3(15, 1, 3)
+texture_albedo = ExtResource("13_pcew6")
+cull_mask = 1047554
+
+[node name="SpeedLaneFinish" type="Decal" parent="TrackMarkings" unique_id=730721405]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 50, 0.25, -39.014286)
+size = Vector3(8, 1, 3)
+texture_albedo = ExtResource("14_l144w")
+cull_mask = 1047554
+
+[node name="GrassIsland01" type="MeshInstance3D" parent="." unique_id=385881884]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
+mesh = SubResource("CylinderMesh_isqnn")
+
+[node name="GrassDetection01" type="Area3D" parent="." unique_id=776017479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+metadata/surface_type = "grass"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GrassDetection01" unique_id=101236605]
+shape = SubResource("CylinderShape3D_ipcpc")
+
+[node name="Building01" parent="." unique_id=1250366176 instance=ExtResource("16_dixj2")]
+transform = Transform3D(0.99999774, 0, -0.0021331485, 0, 1, 0, 0.0021331485, 0, 0.99999774, -63.67046, -0.08479762, -31.951092)
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1588046219]
+transform = Transform3D(0.8660254, 0.43301272, -0.24999999, 0, 0.49999997, 0.86602545, 0.5, -0.75, 0.43301266, 0, 0, 0)
+shadow_enabled = true

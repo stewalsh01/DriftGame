@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://b4inxilp3pijq"]
+
+[ext_resource type="Script" uid="uid://cffaapancdx1l" path="res://DriftGame/car_controller.gd" id="1_640n6"]
+[ext_resource type="PackedScene" uid="uid://d18pxbfg2nw7p" path="res://DriftGame/assets/models/SportsCar2.glb" id="2_atbgf"]
+[ext_resource type="Script" uid="uid://bmt6oqf6bv2rl" path="res://DriftGame/car_visuals.gd" id="3_i0cy3"]
+[ext_resource type="Script" uid="uid://mxkrgwkaodi4" path="res://DriftGame/car_effects.gd" id="4_mktpu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_edvm6"]
+
+[node name="Car" type="CharacterBody3D" unique_id=431588838]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+script = ExtResource("1_640n6")
+
+[node name="SportsCar2" parent="." unique_id=859367144 instance=ExtResource("2_atbgf")]
+
+[node name="BrakeLightRight" type="OmniLight3D" parent="SportsCar2" unique_id=493729077]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4349551, 0.66190386, -1.8096156)
+light_color = Color(1, 0, 0, 1)
+omni_range = 1.0
+omni_attenuation = 2.0
+
+[node name="BrakeLightLeft" type="OmniLight3D" parent="SportsCar2" unique_id=731730222]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.46623167, 0.662, -1.7984363)
+light_color = Color(1, 0, 0, 1)
+omni_range = 1.0
+omni_attenuation = 2.0
+
+[node name="CarVisuals" type="Node3D" parent="." unique_id=1630913572]
+script = ExtResource("3_i0cy3")
+
+[node name="CarEffects" type="Node3D" parent="." unique_id=1538640517]
+script = ExtResource("4_mktpu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1620015579]
+shape = SubResource("BoxShape3D_edvm6")
+
+[node name="RearLeftTyre" type="Marker3D" parent="." unique_id=259722122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.66645604, 0, -1.2112548)
+
+[node name="RearRightTyre" type="Marker3D" parent="." unique_id=1523943464]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6717156, 0, -1.2707145)
+
+[editable path="SportsCar2"]

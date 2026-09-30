@@ -38,7 +38,7 @@ theme_override_font_sizes/font_size = 48
 text = "Drift Game"
 horizontal_alignment = 1
 
-[node name="Track1Button" type="Button" parent="MenuCenter/MenuBox" unique_id=1749924754]
+[node name="Location1Button" type="Button" parent="MenuCenter/MenuBox" unique_id=1749924754]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "DRIFT YARD"
@@ -48,5 +48,5 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Quit"
 
-[connection signal="pressed" from="MenuCenter/MenuBox/Track1Button" to="." method="_on_track_1_button_pressed"]
+[connection signal="pressed" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_pressed"]
 [connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -13,9 +13,11 @@ extends Node3D
 	$"../RearRightTyre"
 )
 
-@onready var skid_marks: Node3D = (
-	$"../../SkidMarks"
-)
+@export var skid_marks_path: NodePath
+
+@onready var skid_marks: Node3D = get_node_or_null(
+	skid_marks_path
+) as Node3D
 
 
 # ================================================================

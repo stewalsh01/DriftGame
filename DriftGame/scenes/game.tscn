@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://dalfyn6utiihi"]
+
+[ext_resource type="Script" uid="uid://b12l2aa74h17b" path="res://DriftGame/scenes/game.gd" id="1_qd5k7"]
+[ext_resource type="PackedScene" uid="uid://b4inxilp3pijq" path="res://DriftGame/scenes/car.tscn" id="1_u5ws8"]
+[ext_resource type="Script" uid="uid://opb0touvh2d1" path="res://DriftGame/camera.gd" id="2_148kw"]
+[ext_resource type="Script" uid="uid://dqrk0ot6ueouw" path="res://DriftGame/skid_marks.gd" id="3_y2k86"]
+[ext_resource type="Script" uid="uid://cq64lxjr7lopc" path="res://DriftGame/rpm_gauge.gd" id="4_ykfaq"]
+[ext_resource type="PackedScene" uid="uid://b5e8jaymh1tvp" path="res://DriftGame/scenes/pause_menu.tscn" id="5_qd5k7"]
+
+[node name="Game" type="Node3D" unique_id=307019888]
+script = ExtResource("1_qd5k7")
+
+[node name="Car" parent="." unique_id=431588838 instance=ExtResource("1_u5ws8")]
+
+[node name="CarEffects" parent="Car" index="2" unique_id=1538640517]
+skid_marks_path = NodePath("../../SkidMarks")
+
+[node name="CameraPivot" type="Node3D" parent="." unique_id=260947002]
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot" unique_id=1056713236]
+transform = Transform3D(1, -1.5846389e-07, 7.389292e-08, 0, 0.42261824, 0.9063078, -1.7484555e-07, -0.9063078, 0.42261824, 5.2453663e-07, 12, 6)
+projection = 1
+current = true
+size = 30.0
+script = ExtResource("2_148kw")
+
+[node name="SkidMarks" type="Node3D" parent="." unique_id=1043127992]
+script = ExtResource("3_y2k86")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=374829331]
+
+[node name="RPMGauge" type="Control" parent="HUD" unique_id=361981617]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1640.0
+offset_top = 750.0
+offset_right = 1990.0
+offset_bottom = 1100.0
+scale = Vector2(0.8, 0.8)
+script = ExtResource("4_ykfaq")
+redline_glow_strength = 0.2
+glow_width = 9.0
+
+[node name="PauseMenu" parent="." unique_id=1919010377 instance=ExtResource("5_qd5k7")]
+
+[editable path="Car"]
+[editable path="Car/SportsCar2"]

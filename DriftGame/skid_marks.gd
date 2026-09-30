@@ -25,7 +25,9 @@ var darkness_steps: int = 8
 var mark_materials: Array[StandardMaterial3D] = []
 var marks: Array[MeshInstance3D] = []
 var grass_mark_material: StandardMaterial3D
-@onready var grass_area: Area3D = $"../GrassRoundaboutArea"
+@export var grass_area_path: NodePath
+
+var grass_area: Area3D
 
 # ================================================================
 # READY
@@ -39,6 +41,10 @@ func _ready() -> void:
 # ================================================================
 
 func is_on_grass(position: Vector3) -> bool:
+	if grass_area == null:
+		return false
+
+	# Keep the rest of your existing function below.
 	var shape: CollisionShape3D = grass_area.get_node("CollisionShape3D")
 	var cylinder: CylinderShape3D = shape.shape as CylinderShape3D
 
