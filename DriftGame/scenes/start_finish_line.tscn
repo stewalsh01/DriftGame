@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cc78e5ufabr4g"]
 
-[ext_resource type="Script" uid="uid://itwec3fjs00g" path="res://DriftGame/scripts/start_finish_line.gd" id="1_sk5ko"]
+[ext_resource type="Script" uid="uid://itwec3fjs00g" path="res://DriftGame/scripts/gameplay/start_finish_line.gd" id="1_sk5ko"]
 [ext_resource type="Texture2D" uid="uid://da2w0ibyeorx5" path="res://DriftGame/assets/markings/sfline.png" id="2_yp5p6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_34iia"]

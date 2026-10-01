@@ -1,7 +1,7 @@
 extends Node
 
 const CarVisualSettings = preload(
-	"res://DriftGame/scripts/car_visual_settings.gd"
+    "res://DriftGame/scripts/car/car_visual_settings.gd"
 )
 
 # ================================================================

@@ -2,7 +2,7 @@
 
 [ext_resource type="Material" uid="uid://cthgb51ay72ib" path="res://DriftGame/assets/materials/grass_material.tres" id="1_2b4ik"]
 [ext_resource type="Material" uid="uid://crnb0d7wq56st" path="res://DriftGame/assets/materials/asphalt_material.tres" id="2_34iia"]
-[ext_resource type="Script" uid="uid://ckmk6evt8amgb" path="res://DriftGame/scripts/road_mesh.gd" id="2_gqvnh"]
+[ext_resource type="Script" uid="uid://ckmk6evt8amgb" path="res://DriftGame/scripts/world/road_mesh.gd" id="2_gqvnh"]
 [ext_resource type="PackedScene" uid="uid://cc78e5ufabr4g" path="res://DriftGame/scenes/start_finish_line.tscn" id="4_c6eqt"]
 [ext_resource type="PackedScene" uid="uid://t5ptb1snkvb3" path="res://DriftGame/assets/models/track/StartFinishArch.glb" id="5_vfy3x"]
 [ext_resource type="PackedScene" uid="uid://c0i64mw3mxema" path="res://DriftGame/assets/models/track/RedWhiteApex.glb" id="6_75f5r"]

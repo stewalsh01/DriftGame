@@ -2,7 +2,7 @@ extends Node
 
 
 const EngineSoundSettings = preload(
-	"res://DriftGame/scripts/engine_sound_settings.gd"
+	"res://DriftGame/scripts/car/engine_sound_settings.gd"
 )
 
 

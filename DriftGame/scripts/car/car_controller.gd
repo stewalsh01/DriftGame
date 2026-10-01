@@ -1,5 +1,5 @@
 extends CharacterBody3D
-const CarSettings = preload("res://DriftGame/scripts/car_settings.gd")
+const CarSettings = preload("res://DriftGame/scripts/car/car_settings.gd")
 
 @export var selected_car: int = 2
 var car_config: Dictionary

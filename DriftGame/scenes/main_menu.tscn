@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dl6af43p8q05u"]
 
-[ext_resource type="Script" uid="uid://c1esrgj2kohb8" path="res://DriftGame/scripts/main_menu.gd" id="1_e2x04"]
+[ext_resource type="Script" uid="uid://c1esrgj2kohb8" path="res://DriftGame/scripts/ui/main_menu.gd" id="1_e2x04"]
 [ext_resource type="AudioStream" uid="uid://c15ra4lvfptj5" path="res://DriftGame/assets/audio/menu/MenuMoveSound.wav" id="2_kgjj3"]
 [ext_resource type="AudioStream" uid="uid://b610yg7jp6a33" path="res://DriftGame/assets/audio/menu/SelectSound.wav" id="3_pcvyj"]
 
