@@ -26,7 +26,7 @@ extends Camera3D
 
 var CAMERA_PRESETS: Array[Dictionary] = [
 
-	# C1 - Original world-fixed camera
+	# C1 - World-fixed camera
 	{
 		"name": "WORLD_FIXED",
 		"locked_to_car": false,
@@ -37,7 +37,7 @@ var CAMERA_PRESETS: Array[Dictionary] = [
 		"high_speed_size": 30.0
 	},
 
-	# C2 - Original car-locked camera
+	# C2 - Car-locked camera
 	{
 		"name": "CAR_LOCKED",
 		"locked_to_car": true,
@@ -48,30 +48,7 @@ var CAMERA_PRESETS: Array[Dictionary] = [
 		"high_speed_size": 30.0
 	},
 
-	# C3 - Close top-down camera
-	{
-		"name": "CLOSE_TOP_DOWN",
-		"locked_to_car": true,
-		"position": Vector3(0.0, 12.0, 6.0),
-		"angle": -65.0,
-		"size": 10.0,
-		"speed_zoom": false,
-		"high_speed_size": 10.0
-	},
-
-	# C4 - Close chase camera
-	{
-		"name": "CHASE",
-		"locked_to_car": true,
-		"position": Vector3(0.0, 3.0, 5.0),
-		"angle": -8.0,
-		"size": 4.8,
-		"speed_zoom": false,
-		"high_speed_size": 4.8,
-		"look_ahead": 6.0
-	},
-	
-	# C5 - Full world overview
+	# C4 - Full world overview
 	{
 		"name": "WORLD_OVERVIEW",
 		"locked_to_car": false,
@@ -108,9 +85,12 @@ var CAMERA_PRESETS: Array[Dictionary] = [
 # ================================================================
 
 var camera_index: int = 0
+var camera_mode: int = 0
 
 var car: CharacterBody3D
 var camera_pivot: Node3D
+var chase_camera_pivot: Node3D
+var chase_camera: Camera3D
 var location_2_overview_size: float = 170.0
 
 
@@ -122,7 +102,14 @@ func _ready() -> void:
 	car = get_node("../../Car")
 	camera_pivot = get_parent()
 
+	chase_camera_pivot = get_node(
+		"../../ChaseCameraPivot"
+	)
+
+	chase_camera = chase_camera_pivot.get_child(0) as Camera3D
+
 	apply_camera_immediately()
+	make_current()
 
 
 # ================================================================
@@ -142,6 +129,9 @@ func _physics_process(delta: float) -> void:
 # ================================================================
 
 func update_follow(delta: float) -> void:
+	if camera_mode == 2:
+		return
+
 	var preset: Dictionary = CAMERA_PRESETS[camera_index]
 
 	# A camera can opt out of following the car completely.
@@ -158,16 +148,6 @@ func update_follow(delta: float) -> void:
 
 	var target_position: Vector3 = car.global_position
 
-	# Optional forward look-ahead for chase cameras.
-	if preset.has("look_ahead"):
-		var car_forward: Vector3 = -car.global_transform.basis.z
-		car_forward.y = 0.0
-		car_forward = car_forward.normalized()
-
-		target_position += (
-			car_forward * float(preset["look_ahead"])
-		)
-
 	camera_pivot.global_position = camera_pivot.global_position.lerp(
 		target_position,
 		clampf(
@@ -182,6 +162,9 @@ func update_follow(delta: float) -> void:
 # ================================================================
 
 func update_camera(delta: float) -> void:
+	if camera_mode == 2:
+		return
+
 	var preset: Dictionary = CAMERA_PRESETS[camera_index]
 
 	update_camera_rotation(
@@ -307,10 +290,24 @@ func update_camera_zoom(
 # ================================================================
 
 func next_camera() -> void:
-	camera_index += 1
+	camera_mode += 1
 
-	if camera_index >= CAMERA_PRESETS.size():
-		camera_index = 0
+	if camera_mode > 3:
+		camera_mode = 0
+
+	# C3 - Perspective chase camera
+	if camera_mode == 2:
+		chase_camera_pivot.start_transition(self)
+		print("Camera: CHASE")
+		return
+
+	# Existing camera
+	make_current()
+
+	if camera_mode < 2:
+		camera_index = camera_mode
+	else:
+		camera_index = 2
 
 	print(
 		"Camera: ",

@@ -2,13 +2,14 @@
 
 [ext_resource type="Script" uid="uid://b12l2aa74h17b" path="res://DriftGame/scripts/game.gd" id="1_qd5k7"]
 [ext_resource type="PackedScene" uid="uid://b4inxilp3pijq" path="res://DriftGame/scenes/car.tscn" id="1_u5ws8"]
-[ext_resource type="Script" uid="uid://opb0touvh2d1" path="res://DriftGame/scripts/camera.gd" id="2_148kw"]
+[ext_resource type="Script" uid="uid://opb0touvh2d1" path="res://DriftGame/scripts/camera/camera.gd" id="2_148kw"]
 [ext_resource type="Script" uid="uid://m0lqr85fqii6" path="res://DriftGame/scripts/car/car_audio.gd" id="3_unl6j"]
 [ext_resource type="PackedScene" uid="uid://bew0qer8ue0hx" path="res://DriftGame/assets/models/cars/Car2.glb" id="3_x372x"]
 [ext_resource type="Script" uid="uid://dqrk0ot6ueouw" path="res://DriftGame/scripts/car/skid_marks.gd" id="3_y2k86"]
 [ext_resource type="Script" uid="uid://cq64lxjr7lopc" path="res://DriftGame/scripts/ui/rpm_gauge.gd" id="4_ykfaq"]
 [ext_resource type="PackedScene" uid="uid://b5e8jaymh1tvp" path="res://DriftGame/scenes/pause_menu.tscn" id="5_qd5k7"]
 [ext_resource type="Script" uid="uid://t1e20q5aslpg" path="res://DriftGame/scripts/ui/speedometer_label.gd" id="6_ffbl6"]
+[ext_resource type="Script" uid="uid://dihv5vn1u2v5" path="res://DriftGame/scripts/camera/chase_camera_pivot.gd" id="6_jfo65"]
 [ext_resource type="Script" uid="uid://cvod3s04xw3c" path="res://DriftGame/scripts/gameplay/drift_scoring.gd" id="7_qd5k7"]
 [ext_resource type="Script" uid="uid://3m443ftg0w3n" path="res://DriftGame/scripts/gameplay/lap_manager.gd" id="8_w2q3i"]
 
@@ -59,6 +60,13 @@ projection = 1
 current = true
 size = 30.0
 script = ExtResource("2_148kw")
+
+[node name="ChaseCameraPivot" type="Node3D" parent="." unique_id=742381882 node_paths=PackedStringArray("target")]
+script = ExtResource("6_jfo65")
+target = NodePath("../Car")
+
+[node name="Camera3D" type="Camera3D" parent="ChaseCameraPivot" unique_id=1954101421]
+transform = Transform3D(1, 0, 0, 0, 0.95996916, 0.28010568, 0, -0.28010568, 0.95996916, 0, 2.0231476, 3.8347096)
 
 [node name="SkidMarks" type="Node3D" parent="." unique_id=1043127992]
 script = ExtResource("3_y2k86")
