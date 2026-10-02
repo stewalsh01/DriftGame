@@ -27,17 +27,14 @@ func _ready() -> void:
 
 
 func update_road() -> void:
-	print("UPDATE ROAD CALLED")
 	if not is_inside_tree():
 		return
 
 	var road_path: Path3D = get_node_or_null("../RoadPath") as Path3D
-	print("Road path found: ", road_path != null)
 	if road_path == null or road_path.curve == null:
 		return
 
 	var curve: Curve3D = road_path.curve
-	print("ROAD POINT COUNT: ", curve.point_count)
 	if curve.point_count < 2:
 		return
 

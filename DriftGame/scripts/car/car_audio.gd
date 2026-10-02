@@ -23,6 +23,23 @@ const IDLE_FADE_START: float = 1000.0
 const IDLE_FADE_END: float = 1200.0
 
 
+@export_category("Camera Distance Volume")
+
+@export_category("Camera Volume")
+
+# C1 - World Fixed / default
+@export var world_fixed_volume: float = 0.8
+
+# C2 - Car Locked
+@export var car_locked_volume: float = 1.0
+
+# C3 - Chase
+@export var chase_volume: float = 1.8
+
+# C4 - World Overview
+@export var world_overview_volume: float = 0.35
+
+
 func setup() -> void:
 	var engine_number: int = car.car_config["engine_sound"]
 
@@ -51,9 +68,30 @@ func _process(_delta: float) -> void:
 	if car.current_gear != active_gear:
 		update_gear_sound()
 
-	update_pitch(current_rpm)
-	update_idle_transition(current_rpm)
+	var camera_volume: float = get_camera_volume()
 
+	update_pitch(current_rpm)
+	update_idle_transition(
+		current_rpm,
+		camera_volume
+	)
+
+func get_camera_volume() -> float:
+	var camera_controller: Camera3D = get_node(
+		"../../CameraPivot/Camera3D"
+	) as Camera3D
+
+	match camera_controller.camera_mode:
+		0:
+			return world_fixed_volume
+		1:
+			return car_locked_volume
+		2:
+			return chase_volume
+		3:
+			return world_overview_volume
+		_:
+			return 1.0
 
 func update_gear_sound() -> void:
 	active_gear = car.current_gear
@@ -85,7 +123,10 @@ func update_pitch(current_rpm: float) -> void:
 	engine_player.pitch_scale = current_rpm / sample_rpm
 
 
-func update_idle_transition(current_rpm: float) -> void:
+func update_idle_transition(
+	current_rpm: float,
+	camera_volume: float
+) -> void:
 	var blend: float = inverse_lerp(
 		IDLE_FADE_START,
 		IDLE_FADE_END,
@@ -95,9 +136,15 @@ func update_idle_transition(current_rpm: float) -> void:
 	blend = clampf(blend, 0.0, 1.0)
 
 	idle_player.volume_db = linear_to_db(
-		maxf(1.0 - blend, 0.001)
+		maxf(
+			(1.0 - blend) * camera_volume,
+			0.001
+		)
 	)
 
 	engine_player.volume_db = linear_to_db(
-		maxf(blend * 0.5, 0.001)
+		maxf(
+			blend * 0.5 * camera_volume,
+			0.001
+		)
 	)

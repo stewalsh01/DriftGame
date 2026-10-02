@@ -19,7 +19,6 @@ func _on_car_crossed() -> void:
 		current_lap = 1
 		lap_time = 0.0
 		lap_running = true
-		print("Lap 1 started")
 	else:
 		drift_scoring.bank_current_drift()
 
@@ -29,12 +28,10 @@ func _on_car_crossed() -> void:
 			best_lap_score = lap_drift_score
 			best_lap_score_label.text = "BEST LAP SCORE: %d" % best_lap_score
 
-		print("Lap %d completed in %.2f seconds" % [current_lap, lap_time])
 		current_lap += 1
 		lap_drift_score = 0
 		lap_drift_score_label.text = "LAP SCORE: 0"
 		lap_time = 0.0
-		print("Lap %d started" % current_lap)
 	
 	lap_label.text = "%d" % current_lap
 

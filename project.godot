@@ -71,3 +71,4 @@ normal_brake={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+environment/defaults/default_clear_color=Color(0.3529412, 0.56078434, 0.72156864, 1)

@@ -298,7 +298,6 @@ func next_camera() -> void:
 	# C3 - Perspective chase camera
 	if camera_mode == 2:
 		chase_camera_pivot.start_transition(self)
-		print("Camera: CHASE")
 		return
 
 	# Existing camera
@@ -308,11 +307,6 @@ func next_camera() -> void:
 		camera_index = camera_mode
 	else:
 		camera_index = 2
-
-	print(
-		"Camera: ",
-		CAMERA_PRESETS[camera_index]["name"]
-	)
 
 
 # ================================================================

@@ -25,4 +25,3 @@ func _on_crossing_detector_body_entered(body: Node3D) -> void:
 		return
 
 	car_crossed.emit()
-	print("Car crossed start/finish line")
