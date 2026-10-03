@@ -1,11 +1,14 @@
 extends CharacterBody3D
 const CarSettings = preload("res://DriftGame/scripts/car/car_settings.gd")
 
-@export var selected_car: int = 1
+@export var selected_car: int = 2
 var car_config: Dictionary
 @onready var car_1_model: Node3D = $SportsCar2
 @onready var car_2_model: Node3D = $Car2
 
+@export_category("Ground Physics")
+
+@export var gravity: float = 20.0
 # ================================================================
 # DRIVE STATES
 # ================================================================

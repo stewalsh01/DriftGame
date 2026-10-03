@@ -2,8 +2,10 @@
 
 [ext_resource type="Material" uid="uid://crnb0d7wq56st" path="res://DriftGame/assets/materials/asphalt_material.tres" id="1_dixj2"]
 [ext_resource type="Texture2D" uid="uid://bs7x1k00el4hq" path="res://DriftGame/assets/markings/circle.png" id="2_dixj2"]
+[ext_resource type="PackedScene" uid="uid://mtvkwowcevic" path="res://DriftGame/assets/models/buildings/lamp-post.glb" id="2_o3dyy"]
 [ext_resource type="Texture2D" uid="uid://ebbrfruo7grm" path="res://DriftGame/assets/markings/blackyellowboundary.png" id="3_1g1jn"]
 [ext_resource type="Texture2D" uid="uid://b1rbotu0sv8ki" path="res://DriftGame/assets/markings/donutzone.png" id="4_083ba"]
+[ext_resource type="PackedScene" uid="uid://c7mkpqv7wng0a" path="res://DriftGame/assets/models/track/cone2.glb" id="4_cjyx7"]
 [ext_resource type="Texture2D" uid="uid://b3fq2w702rdjl" path="res://DriftGame/assets/markings/tyremark1.png" id="5_o3dyy"]
 [ext_resource type="Texture2D" uid="uid://h5lnrtu0tbe6" path="res://DriftGame/assets/markings/figure8c.png" id="6_cjyx7"]
 [ext_resource type="Texture2D" uid="uid://b16ny1d01pi1l" path="res://DriftGame/assets/markings/outerroundabout.png" id="7_6686y"]
@@ -22,6 +24,9 @@
 material = ExtResource("1_dixj2")
 size = Vector2(150, 100)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_edvm6"]
+size = Vector3(100, 0.2, 100)
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_isqnn"]
 material = ExtResource("15_1g1jn")
 top_radius = 10.0
@@ -39,6 +44,38 @@ radius = 10.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011666596, 0, 0.021119833)
 layers = 2
 mesh = SubResource("PlaneMesh_1tv2y")
+
+[node name="ElevationTestArea" type="Node3D" parent="." unique_id=1573302320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 125, 0, 0)
+
+[node name="GroundCollision" type="StaticBody3D" parent="ElevationTestArea" unique_id=1090103138]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ElevationTestArea/GroundCollision" unique_id=284720312]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+shape = SubResource("BoxShape3D_edvm6")
+
+[node name="Ground" type="CSGBox3D" parent="ElevationTestArea" unique_id=182717051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -0.1, 0)
+use_collision = true
+size = Vector3(102, 0.1, 100)
+
+[node name="lamp-post" parent="ElevationTestArea" unique_id=534716231 instance=ExtResource("2_o3dyy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96.74631, 0, 31.230007)
+
+[node name="lamp-post2" parent="ElevationTestArea" unique_id=1692008439 instance=ExtResource("2_o3dyy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -69.19046, 0, 31.248535)
+
+[node name="cone2" parent="ElevationTestArea" unique_id=2099154918 instance=ExtResource("4_cjyx7")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -170.00914, 0, 27.00505)
+
+[node name="cone3" parent="ElevationTestArea" unique_id=745478219 instance=ExtResource("4_cjyx7")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -194.37517, 0, 39.81714)
+
+[node name="cone4" parent="ElevationTestArea" unique_id=1939645013 instance=ExtResource("4_cjyx7")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -194.31323, 0, 36.111187)
+
+[node name="cone5" parent="ElevationTestArea" unique_id=1260363531 instance=ExtResource("4_cjyx7")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -194.29025, 0, 32.394043)
 
 [node name="TrackMarkings" type="Node3D" parent="." unique_id=932204291]
 
