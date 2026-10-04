@@ -1,5 +1,6 @@
 extends CharacterBody3D
 const CarSettings = preload("res://DriftGame/scripts/car/car_settings.gd")
+var gravity: float = 20.0
 
 @export var selected_car: int = 2
 var car_config: Dictionary
@@ -8,7 +9,6 @@ var car_config: Dictionary
 
 @export_category("Ground Physics")
 
-@export var gravity: float = 20.0
 # ================================================================
 # DRIVE STATES
 # ================================================================
@@ -150,6 +150,8 @@ var wheelspin_timer: float = 0.0
 
 
 func _ready() -> void:
+	floor_snap_length = 0.5
+	floor_max_angle = deg_to_rad(60.0)
 	car_config = CarSettings.get_car(selected_car)
 	car_1_model.visible = selected_car == 1
 	car_2_model.visible = selected_car == 2
@@ -239,7 +241,7 @@ func _ready() -> void:
 # ================================================================
 
 func _physics_process(delta: float) -> void:
-	var forward: Vector3 = get_forward()
+	var forward: Vector3 = get_ground_forward()
 
 	var accelerate_input: float = Input.get_action_strength(
 		"accelerate"
@@ -771,9 +773,15 @@ func _physics_process(delta: float) -> void:
 
 	velocity.x = horizontal_velocity.x
 	velocity.z = horizontal_velocity.z
-	velocity.y = 0.0
+
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+	else:
+		velocity.y = 0.0
 
 	move_and_slide()
+
+	align_to_ground(delta)
 
 	speed_kmh = get_horizontal_velocity().length() * 3.6
 
@@ -1219,6 +1227,32 @@ func enter_normal() -> void:
 # HELPERS
 # ================================================================
 
+func align_to_ground(delta: float) -> void:
+	if not is_on_floor():
+		return
+
+	var floor_normal: Vector3 = get_floor_normal()
+
+	var forward: Vector3 = global_transform.basis.z
+	forward = forward.slide(floor_normal).normalized()
+
+	if forward.length_squared() < 0.001:
+		return
+
+	var right: Vector3 = floor_normal.cross(forward).normalized()
+	forward = right.cross(floor_normal).normalized()
+
+	var target_basis := Basis(
+		right,
+		floor_normal,
+		forward
+	)
+
+	global_transform.basis = global_transform.basis.slerp(
+		target_basis,
+		clampf(6.0 * delta, 0.0, 1.0)
+	).orthonormalized()
+
 func get_forward() -> Vector3:
 	var forward: Vector3 = global_transform.basis.z
 
@@ -1226,6 +1260,13 @@ func get_forward() -> Vector3:
 
 	return forward.normalized()
 
+func get_ground_forward() -> Vector3:
+	var forward := get_forward()
+
+	if is_on_floor():
+		forward = forward.slide(get_floor_normal())
+
+	return forward.normalized()
 
 func get_horizontal_velocity() -> Vector3:
 	return Vector3(

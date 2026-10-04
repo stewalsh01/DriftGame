@@ -34,9 +34,6 @@ visible = false
 [node name="CarEffects" parent="Car" index="2" unique_id=1538640517]
 skid_marks_path = NodePath("../../SkidMarks")
 
-[node name="CollisionShape3D" parent="Car" index="3" unique_id=1620015579]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0)
-
 [node name="Car2" parent="Car" unique_id=671212632 instance=ExtResource("3_x372x")]
 transform = Transform3D(0.89, 0, 0, 0, 0.89, 0, 0, 0, 0.89, 0, 0, 0)
 
