@@ -8,7 +8,7 @@ extends Node3D
 @export_category("Skid Marks")
 
 @export var mark_width: float = 0.16
-@export var mark_height: float = 0.008
+@export var mark_height: float = 0.002
 
 @export_range(2, 16, 1)
 var darkness_steps: int = 8
@@ -17,6 +17,16 @@ var darkness_steps: int = 8
 
 @export var max_marks: int = 5000
 
+
+# ================================================================
+# REFERENCES
+# ================================================================
+
+@export var car_path: NodePath
+
+@onready var car: CollisionObject3D = (
+	get_node(car_path) as CollisionObject3D
+)
 
 # ================================================================
 # MATERIALS
@@ -135,6 +145,23 @@ func create_mark_materials() -> void:
 
 	grass_mark_material.roughness = 1.0
 
+# ================================================================
+# GROUND DETECTION
+# ================================================================
+
+func get_ground_point(position: Vector3) -> Dictionary:
+	var space_state := get_world_3d().direct_space_state
+
+	var query := PhysicsRayQueryParameters3D.create(
+		position + Vector3.UP * 0.1,
+		position + Vector3.DOWN * 0.25
+	)
+
+	query.exclude = [
+		car.get_rid()
+	]
+
+	return space_state.intersect_ray(query)
 
 # ================================================================
 # CREATE MARK
@@ -145,12 +172,41 @@ func create_mark(
 	to_position: Vector3,
 	skid_intensity: float
 ) -> void:
+
+	# ------------------------------------------------
+	# FIND GROUND
+	# ------------------------------------------------
+
+	var from_hit := get_ground_point(
+		from_position
+	)
+
+	var to_hit := get_ground_point(
+		to_position
+	)
+
+	if from_hit.is_empty() or to_hit.is_empty():
+		return
+
+	from_position = from_hit.position
+	to_position = to_hit.position
+
+
+	# ------------------------------------------------
+	# DISTANCE
+	# ------------------------------------------------
+
 	var distance: float = from_position.distance_to(
 		to_position
 	)
 
 	if distance < 0.01:
 		return
+
+
+	# ------------------------------------------------
+	# CREATE MESH
+	# ------------------------------------------------
 
 	var mark: MeshInstance3D = MeshInstance3D.new()
 	var mesh: BoxMesh = BoxMesh.new()
@@ -160,7 +216,6 @@ func create_mark(
 		mark_height,
 		distance
 	)
-
 
 	# ------------------------------------------------
 	# CHOOSE DARKNESS FROM RPM
@@ -201,36 +256,41 @@ func create_mark(
 
 	remove_old_marks()
 
-
 	# ------------------------------------------------
-	# POSITION
+	# POSITION + ROTATION
 	# ------------------------------------------------
 
 	var midpoint: Vector3 = (
 		from_position + to_position
 	) * 0.5
 
-	mark.global_position = Vector3(
-		midpoint.x,
-		0.035,
-		midpoint.z
-	)
-
-
-	# ------------------------------------------------
-	# ROTATION
-	# ------------------------------------------------
+	var surface_normal: Vector3 = (
+		from_hit.normal + to_hit.normal
+	).normalized()
 
 	var direction: Vector3 = (
 		to_position - from_position
-	)
+	).normalized()
 
-	var angle: float = atan2(
-		direction.x,
-		direction.z
-	)
+	# Build a stable orientation.
+	var right: Vector3 = (
+		surface_normal.cross(direction)
+	).normalized()
 
-	mark.rotation.y = angle
+	var forward: Vector3 = (
+		right.cross(surface_normal)
+	).normalized()
+
+	var basis := Basis(
+		right,
+		surface_normal,
+		forward
+	).orthonormalized()
+
+	mark.global_transform = Transform3D(
+		basis,
+		midpoint + surface_normal * 0.002
+	)
 	
 # ================================================================
 # CLEANUP
