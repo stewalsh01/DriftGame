@@ -774,10 +774,25 @@ func _physics_process(delta: float) -> void:
 	velocity.x = horizontal_velocity.x
 	velocity.z = horizontal_velocity.z
 
-	if not is_on_floor():
-		velocity.y -= gravity * delta
+	if is_on_floor():
+		if not normal_brake:
+			var slope_gravity: Vector3 = (
+				Vector3.DOWN * gravity
+			).slide(get_floor_normal())
+
+			var car_forward: Vector3 = get_ground_forward()
+
+			# Only allow slope gravity along the car's forward/back direction.
+			var forward_slope_force: Vector3 = (
+				car_forward
+				* slope_gravity.dot(car_forward)
+			)
+
+			velocity += forward_slope_force * delta
+		else:
+			velocity.y = 0.0
 	else:
-		velocity.y = 0.0
+		velocity.y -= gravity * delta
 
 	move_and_slide()
 

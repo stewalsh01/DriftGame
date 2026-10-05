@@ -37,6 +37,10 @@ _surfaces = [{
 [sub_resource type="BoxShape3D" id="BoxShape3D_edvm6"]
 size = Vector3(250, 0.2, 220)
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_u4qxq"]
+height = 15.0
+radius = 0.3
+
 [node name="Location02" type="Node3D" unique_id=107844007]
 
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=1495151687]
@@ -90,15 +94,6 @@ transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 46.531128, 0, -45.46690
 [node name="RedWhiteApex" parent="." unique_id=352467146 instance=ExtResource("6_75f5r")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 40.45321, 0, -54.99815)
 
-[node name="lamp-post" parent="." unique_id=534716231 instance=ExtResource("8_q7q2i")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80.726746, 0, 56.235615)
-
-[node name="lamp-post2" parent="." unique_id=142958364 instance=ExtResource("8_q7q2i")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 73.69885, 0, 49.98209)
-
-[node name="lamp-post3" parent="." unique_id=1665720090 instance=ExtResource("8_q7q2i")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.159893, 0, -66.482956)
-
 [node name="small-building" parent="." unique_id=128383140 instance=ExtResource("9_u4qxq")]
 transform = Transform3D(1.1672591, 0, -0.9420755, 0, 1.5, 0, 0.9420755, 0, 1.1672591, -52.96901, 0, 55.336517)
 
@@ -107,3 +102,27 @@ transform = Transform3D(1.1672591, 0, -0.9420755, 0, 1.5, 0, 0.9420755, 0, 1.167
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=785467659]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 shape = SubResource("BoxShape3D_edvm6")
+
+[node name="lamp-post" parent="." unique_id=534716231 instance=ExtResource("8_q7q2i")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -69.650734, 0, 68.1134)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="lamp-post" unique_id=533316238]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="lamp-post/StaticBody3D" unique_id=1325713050]
+shape = SubResource("CylinderShape3D_u4qxq")
+
+[node name="lamp-post3" parent="." unique_id=1584240784 instance=ExtResource("8_q7q2i")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.223885, 0, -70.82451)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="lamp-post3" unique_id=1041091286]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="lamp-post3/StaticBody3D" unique_id=899576517]
+shape = SubResource("CylinderShape3D_u4qxq")
+
+[node name="lamp-post2" parent="." unique_id=407276902 instance=ExtResource("8_q7q2i")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63.24343, 0, 49.97631)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="lamp-post2" unique_id=901958728]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="lamp-post2/StaticBody3D" unique_id=965138564]
+shape = SubResource("CylinderShape3D_u4qxq")
