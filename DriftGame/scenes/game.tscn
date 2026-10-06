@@ -41,6 +41,18 @@ skid_marks_path = NodePath("../../SkidMarks")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0)
 shape = SubResource("BoxShape3D_jfo65")
 
+[node name="FrontLeftTyre" type="Marker3D" parent="Car" unique_id=514919927]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6706493, 0, 1.1621025)
+
+[node name="FrontRightTyre" type="Marker3D" parent="Car" unique_id=1015105856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.67986643, 0, 1.2091062)
+
+[node name="RearLeftTyre" parent="Car" index="6" unique_id=259722122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.68641186, 0, -1.1111118)
+
+[node name="RearRightTyre" parent="Car" index="7" unique_id=1523943464]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6601347, 0, -1.1334167)
+
 [node name="Car2" parent="Car" unique_id=671212632 instance=ExtResource("3_x372x")]
 transform = Transform3D(0.89, 0, 0, 0, 0.89, 0, 0, 0, 0.89, 0, 0, 0)
 

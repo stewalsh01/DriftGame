@@ -2,7 +2,7 @@ extends CharacterBody3D
 const CarSettings = preload("res://DriftGame/scripts/car/car_settings.gd")
 var gravity: float = 20.0
 
-@export var selected_car: int = 2
+@export var selected_car: int = 1
 var car_config: Dictionary
 @onready var car_1_model: Node3D = $SportsCar2
 @onready var car_2_model: Node3D = $Car2
@@ -27,6 +27,10 @@ enum DriveState {
 @onready var car_effects: Node = $CarEffects
 @onready var car_audio: Node = $CarAudio
 
+@onready var front_left: Marker3D = $FrontLeftTyre
+@onready var front_right: Marker3D = $FrontRightTyre
+@onready var rear_left: Marker3D = $RearLeftTyre
+@onready var rear_right: Marker3D = $RearRightTyre
 
 # ================================================================
 # CAR CONFIG
@@ -797,6 +801,8 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	align_to_ground(delta)
+	
+	apply_edge_tipping(delta)
 
 	speed_kmh = get_horizontal_velocity().length() * 3.6
 
@@ -1241,6 +1247,51 @@ func enter_normal() -> void:
 # ================================================================
 # HELPERS
 # ================================================================
+
+func tyre_has_ground(tyre: Marker3D) -> bool:
+	var space_state := get_world_3d().direct_space_state
+
+	var query := PhysicsRayQueryParameters3D.create(
+		tyre.global_position + Vector3.UP * 0.1,
+		tyre.global_position + Vector3.DOWN * 0.15
+	)
+
+	query.exclude = [
+		get_rid()
+	]
+
+	var result := space_state.intersect_ray(query)
+
+	return not result.is_empty()
+
+func apply_edge_tipping(delta: float) -> void:
+	var fl := tyre_has_ground(front_left)
+	var fr := tyre_has_ground(front_right)
+	var rl := tyre_has_ground(rear_left)
+	var rr := tyre_has_ground(rear_right)
+
+	var front_supported := fl or fr
+	var rear_supported := rl or rr
+	var left_supported := fl or rl
+	var right_supported := fr or rr
+
+	var tip_speed := deg_to_rad(30.0) * delta
+
+	# Front hanging off.
+	if not front_supported and rear_supported:
+		rotate_object_local(Vector3.RIGHT, tip_speed)
+
+	# Rear hanging off.
+	elif front_supported and not rear_supported:
+		rotate_object_local(Vector3.RIGHT, -tip_speed)
+
+	# Left side hanging off.
+	elif not left_supported and right_supported:
+		rotate_object_local(Vector3.FORWARD, tip_speed)
+
+	# Right side hanging off.
+	elif left_supported and not right_supported:
+		rotate_object_local(Vector3.FORWARD, -tip_speed)
 
 func align_to_ground(delta: float) -> void:
 	if not is_on_floor():
