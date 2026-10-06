@@ -1,6 +1,6 @@
 extends CharacterBody3D
 const CarSettings = preload("res://DriftGame/scripts/car/car_settings.gd")
-var gravity: float = 20.0
+var gravity: float = 16.0
 
 @export var selected_car: int = 1
 var car_config: Dictionary
@@ -152,9 +152,8 @@ var brake_revving: bool = false
 var wheelspin_from_launch: bool = false
 var wheelspin_timer: float = 0.0
 
-
 func _ready() -> void:
-	floor_snap_length = 0.5
+	floor_snap_length = 0.1
 	floor_max_angle = deg_to_rad(60.0)
 	car_config = CarSettings.get_car(selected_car)
 	car_1_model.visible = selected_car == 1
@@ -786,7 +785,6 @@ func _physics_process(delta: float) -> void:
 
 			var car_forward: Vector3 = get_ground_forward()
 
-			# Only allow slope gravity along the car's forward/back direction.
 			var forward_slope_force: Vector3 = (
 				car_forward
 				* slope_gravity.dot(car_forward)
@@ -801,7 +799,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	align_to_ground(delta)
-	
+
 	apply_edge_tipping(delta)
 
 	speed_kmh = get_horizontal_velocity().length() * 3.6

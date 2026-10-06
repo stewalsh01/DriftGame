@@ -8,7 +8,7 @@ extends Node3D
 @export_category("Skid Marks")
 
 @export var mark_width: float = 0.16
-@export var mark_height: float = 0.002
+@export var mark_height: float = 0.008
 
 @export_range(2, 16, 1)
 var darkness_steps: int = 8
@@ -248,6 +248,10 @@ func create_mark(
 			material_index
 		]
 
+	var test_position := (
+		from_position + to_position
+	) * 0.5
+
 	mark.mesh = mesh
 
 	add_child(mark)
@@ -289,7 +293,7 @@ func create_mark(
 
 	mark.global_transform = Transform3D(
 		basis,
-		midpoint + surface_normal * 0.002
+		midpoint + surface_normal * 0.035
 	)
 	
 # ================================================================
