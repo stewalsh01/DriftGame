@@ -91,6 +91,13 @@ var drift_exit_speed: float
 
 var handbrake_drift_grip: float
 
+var donut_angular_velocity: float = 0.0
+
+var donut_rotation_acceleration: float = 3.0
+var donut_rotation_max: float = 2.8
+var donut_rotation_decay: float = 1.5
+var donut_active: bool = false
+
 # ================================================================
 # WHEELSPIN
 # ================================================================
@@ -696,6 +703,7 @@ func _physics_process(delta: float) -> void:
 	if (
 		drive_state == DriveState.WHEELSPIN
 		and wheelspin_from_launch
+		and not donut_active
 		and current_gear >= 1
 		and current_gear < 5
 	):
@@ -1011,11 +1019,46 @@ func handle_wheelspin(
 			enter_normal()
 			return horizontal_velocity
 
-	rotate_y(
-		-steering_input
-		* wheelspin_steering
-		* delta
-	)
+	# Initiate a donut during first-gear launch wheelspin.
+	if (
+		not donut_active
+		and wheelspin_from_launch
+		and current_gear == 1
+		and absf(steering_input) > 0.5
+		and throttle > wheelspin_min_throttle
+	):
+		donut_active = true
+
+	# Continue rotating while the donut is active.
+	if donut_active:
+		var target_rotation: float = (
+			steering_input * donut_rotation_max
+		)
+
+		if absf(steering_input) > 0.01:
+			donut_angular_velocity = move_toward(
+				donut_angular_velocity,
+				target_rotation,
+				donut_rotation_acceleration * delta
+			)
+		else:
+			# Maintain rotation while accelerating during an active donut.
+			if throttle < wheelspin_min_throttle:
+				donut_angular_velocity = move_toward(
+					donut_angular_velocity,
+					0.0,
+					donut_rotation_decay * delta
+				)
+
+		rotate_y(-donut_angular_velocity * delta)
+	else:
+		donut_angular_velocity = 0.0
+
+		rotate_y(
+			-steering_input
+			* wheelspin_steering
+			* delta
+		)
 
 	horizontal_velocity = apply_grip(
 		horizontal_velocity,
@@ -1031,12 +1074,19 @@ func handle_wheelspin(
 
 	# Wheelspin can naturally transition into a drift.
 	if (
-		speed > drift_entry_speed
+		not donut_active
+		and speed > drift_entry_speed
 		and abs(drift_angle) > chain_drift_angle
 	):
 		enter_drift_from_angle(
 			drift_angle
 		)
+
+		return horizontal_velocity
+
+	if donut_active:
+		if throttle < wheelspin_min_throttle or current_gear != 1:
+			enter_normal()
 
 		return horizontal_velocity
 
@@ -1245,6 +1295,9 @@ func enter_launch_wheelspin() -> void:
 	wheelspin_timer = launch_wheelspin_time
 	launch_rpm_drop_timer = 0.35
 
+	donut_active = false
+	donut_angular_velocity = 0.0
+
 
 func enter_normal() -> void:
 	drive_state = DriveState.NORMAL
@@ -1252,6 +1305,9 @@ func enter_normal() -> void:
 
 	wheelspin_from_launch = false
 	wheelspin_timer = 0.0
+
+	donut_active = false
+	donut_angular_velocity = 0.0
 
 
 # ================================================================
