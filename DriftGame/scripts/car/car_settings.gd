@@ -11,7 +11,7 @@ const SHARED := {
 	"coast_deceleration": 2.0,
 
 	# Steering
-	"low_speed_steering": 2.4,
+	"low_speed_steering": 2.2,
 	"high_speed_steering": 1.15,
 	"min_steering_speed": 0.5,
 	"normal_grip": 8.0,

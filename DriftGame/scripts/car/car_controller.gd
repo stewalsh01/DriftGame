@@ -2,7 +2,7 @@ extends CharacterBody3D
 const CarSettings = preload("res://DriftGame/scripts/car/car_settings.gd")
 var gravity: float = 16.0
 
-@export var selected_car: int = 1
+@export var selected_car: int = 2
 var car_config: Dictionary
 @onready var car_1_model: Node3D = $SportsCar2
 @onready var car_2_model: Node3D = $Car2
@@ -878,12 +878,24 @@ func handle_normal_driving(
 		if forward_speed < 0.0:
 			movement_direction = -1.0
 
+		# Steering pivot slightly ahead of the car's centre.
+		var steering_pivot := Vector3(0.0, 0.0, -0.5)
+
+		# Record the pivot's world position before rotation.
+		var pivot_before: Vector3 = global_transform * steering_pivot
+
+		# Keep the original steering behaviour.
 		rotate_y(
 			-steering_input
 			* steering
 			* movement_direction
 			* delta
 		)
+
+		# Adjust position to rotate around the new pivot.
+		var pivot_after: Vector3 = global_transform * steering_pivot
+
+		global_position += pivot_before - pivot_after
 
 	return apply_grip(
 		horizontal_velocity,
