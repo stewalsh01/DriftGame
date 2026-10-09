@@ -131,20 +131,76 @@ const CAR_2 := {
 }
 
 
+
+# ================================================================
+# TUNING PRESETS
+# ================================================================
+
+enum TuningPreset {
+	ORIGINAL,
+	DRIFT,
+	RACE
+}
+
+const TUNING_PRESETS := {
+	TuningPreset.ORIGINAL: {},
+
+	TuningPreset.DRIFT: {
+		"gear_acceleration_multiplier": 1.10,
+		"gear_speed_multiplier": 1.0,
+		"normal_grip_multiplier": 0.90,
+		"drift_grip_multiplier": 0.80,
+		"drift_rotation_multiplier": 1.20
+	},
+
+	TuningPreset.RACE: {
+		"gear_acceleration_multiplier": 1.40,
+		"gear_speed_multiplier": 1.30,
+		"normal_grip_multiplier": 1.25,
+		"drift_grip_multiplier": 1.40,
+		"drift_rotation_multiplier": 0.90
+	}
+}
+
+
 # ================================================================
 # GET CAR SETTINGS
 # ================================================================
 
-static func get_car(car_number: int) -> Dictionary:
+
+
+static func get_car(
+	car_number: int,
+	tuning_preset: int = TuningPreset.ORIGINAL
+) -> Dictionary:
 	var car: Dictionary
 
 	match car_number:
 		2:
 			car = CAR_2.duplicate(true)
-
 		_:
 			car = CAR_1.duplicate(true)
 
 	car.merge(SHARED)
+
+	if tuning_preset == TuningPreset.ORIGINAL:
+		return car
+
+	if not TUNING_PRESETS.has(tuning_preset):
+		push_warning("Unknown tuning preset: %d" % tuning_preset)
+		return car
+
+	var tuning: Dictionary = TUNING_PRESETS[tuning_preset]
+
+	for i in range(car["gear_acceleration"].size()):
+		car["gear_acceleration"][i] *= tuning["gear_acceleration_multiplier"]
+
+	for i in range(car["gear_max_speed"].size()):
+		car["gear_max_speed"][i] *= tuning["gear_speed_multiplier"]
+
+	car["max_speed"] *= tuning["gear_speed_multiplier"]
+	car["normal_grip"] *= tuning["normal_grip_multiplier"]
+	car["drift_grip"] *= tuning["drift_grip_multiplier"]
+	car["drift_throttle_rotation"] *= tuning["drift_rotation_multiplier"]
 
 	return car
