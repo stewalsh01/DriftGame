@@ -1,11 +1,54 @@
 extends CharacterBody3D
 const CarSettings = preload("res://DriftGame/scripts/car/car_settings.gd")
-var gravity: float = 16.0
+
+# ================================================================
+# PHYSICS CONSTANTS
+# ================================================================
+
+const GRAVITY: float = 16.0
+const FLOOR_SNAP_LENGTH: float = 0.1
+const FLOOR_MAX_ANGLE_DEG: float = 60.0
+
+const STEERING_PIVOT_OFFSET: Vector3 = Vector3(0.0, 0.0, -0.5)
+
+const TYRE_RAYCAST_UP: float = 0.1
+const TYRE_RAYCAST_DOWN: float = 0.15
+
+const NEUTRAL_SPEED_THRESHOLD: float = 0.2
+const NEUTRAL_TIMER_DURATION: float = 2.0
+
+const EDGE_TIPPING_SPEED_DEG: float = 30.0
+const GROUND_ALIGNMENT_SPEED: float = 6.0
+const GROUND_ALIGNMENT_SPEED_FAST: float = 8.0   # Faster alignment at high speed (reduced from 12)
+const GROUND_ALIGNMENT_SPEED_SLOW: float = 4.0   # Slower for smooth hills (increased from 3)
+
+# Airborne & Landing
+const AIR_PITCH_CONTROL: float = 0.4      # How much control in air (reduced)
+const AIR_ROLL_CONTROL: float = 0.3       # Roll control in air (reduced)
+const LANDING_DAMPENING: float = 0.7      # Softens landings (less aggressive)
+const SUSPENSION_RESPONSE: float = 12.0   # How fast suspension reacts (faster)
+const MAX_LANDING_ROTATION: float = 0.25  # Max rotation adjust on landing (increased)
+
+const DONUT_ROTATION_ACCEL: float = 3.0
+const DONUT_ROTATION_MAX: float = 2.8
+const DONUT_ROTATION_DECAY: float = 1.5
+const DONUT_STEERING_THRESHOLD: float = 0.5
 
 @export var selected_car: int = 2
 var car_config: Dictionary
 @onready var car_1_model: Node3D = $SportsCar2
 @onready var car_2_model: Node3D = $Car2
+
+# ================================================================
+# DRIFT PHYSICS MODE
+# ================================================================
+
+enum DriftPhysicsMode {
+	CLASSIC,
+	MODERN
+}
+
+@export var drift_physics_mode: DriftPhysicsMode = DriftPhysicsMode.MODERN
 
 @export_category("Ground Physics")
 
@@ -92,10 +135,6 @@ var drift_exit_speed: float
 var handbrake_drift_grip: float
 
 var donut_angular_velocity: float = 0.0
-
-var donut_rotation_acceleration: float = 3.0
-var donut_rotation_max: float = 2.8
-var donut_rotation_decay: float = 1.5
 var donut_active: bool = false
 
 # ================================================================
@@ -159,9 +198,91 @@ var brake_revving: bool = false
 var wheelspin_from_launch: bool = false
 var wheelspin_timer: float = 0.0
 
+# Drift exit grace period
+var drift_exit_grace_timer: float = 0.0
+const DRIFT_EXIT_GRACE_PERIOD: float = 0.15
+
+# Airborne tracking (simplified)
+var was_airborne: bool = false
+var airborne_time: float = 0.0
+var last_ground_normal: Vector3 = Vector3.UP
+
+# ================================================================
+# SIGNALS
+# ================================================================
+# (Signals removed - were causing issues)
+
+# ================================================================
+# DISPLAY RPM CONFIGURATION
+# ================================================================
+
+const DISPLAY_RPM_SHIFT_POINT: float = 6300.0
+const DISPLAY_RPM_AFTER_SHIFT: float = 5000.0
+const DISPLAY_RPM_RESPONSE: float = 10000.0
+
+var gear_rpm_map: Array[Dictionary] = []
+
+func setup_gear_rpm_map() -> void:
+	gear_rpm_map = [
+		{"min_speed": 0.0, "max_speed": gear_1_max_speed, "min_rpm": idle_rpm, "max_rpm": DISPLAY_RPM_SHIFT_POINT},
+		{"min_speed": gear_1_max_speed, "max_speed": gear_2_max_speed, "min_rpm": DISPLAY_RPM_AFTER_SHIFT, "max_rpm": DISPLAY_RPM_SHIFT_POINT},
+		{"min_speed": gear_2_max_speed, "max_speed": gear_3_max_speed, "min_rpm": DISPLAY_RPM_AFTER_SHIFT, "max_rpm": DISPLAY_RPM_SHIFT_POINT},
+		{"min_speed": gear_3_max_speed, "max_speed": gear_4_max_speed, "min_rpm": DISPLAY_RPM_AFTER_SHIFT, "max_rpm": DISPLAY_RPM_SHIFT_POINT},
+		{"min_speed": gear_4_max_speed, "max_speed": gear_5_max_speed, "min_rpm": DISPLAY_RPM_AFTER_SHIFT, "max_rpm": DISPLAY_RPM_SHIFT_POINT}
+	]
+
+func calculate_display_rpm_for_gear(gear: int, speed: float, delta: float) -> float:
+	if gear < 1 or gear > 5:
+		return display_rpm
+
+	var range_data = gear_rpm_map[gear - 1]
+	var speed_range = maxf((range_data["max_speed"] - 0.05) - range_data["min_speed"], 0.01)
+	var speed_ratio = clampf(
+		(speed - range_data["min_speed"]) / speed_range,
+		0.0,
+		1.0
+	)
+
+	var target_rpm = lerpf(range_data["min_rpm"], range_data["max_rpm"], speed_ratio)
+	return move_toward(display_rpm, target_rpm, DISPLAY_RPM_RESPONSE * delta)
+
+# ================================================================
+# GEAR HELPERS
+# ================================================================
+
+func get_gear_acceleration(gear: int) -> float:
+	match gear:
+		1:
+			return gear_1_acceleration
+		2:
+			return gear_2_acceleration
+		3:
+			return gear_3_acceleration
+		4:
+			return gear_4_acceleration
+		5:
+			return gear_5_acceleration
+		_:
+			return acceleration
+
+func get_gear_max_speed(gear: int) -> float:
+	match gear:
+		1:
+			return gear_1_max_speed
+		2:
+			return gear_2_max_speed
+		3:
+			return gear_3_max_speed
+		4:
+			return gear_4_max_speed
+		5:
+			return gear_5_max_speed
+		_:
+			return max_speed
+
 func _ready() -> void:
-	floor_snap_length = 0.1
-	floor_max_angle = deg_to_rad(60.0)
+	floor_snap_length = FLOOR_SNAP_LENGTH
+	floor_max_angle = deg_to_rad(FLOOR_MAX_ANGLE_DEG)
 	car_config = CarSettings.get_car(selected_car)
 	car_1_model.visible = selected_car == 1
 	car_2_model.visible = selected_car == 2
@@ -188,9 +309,6 @@ func _ready() -> void:
 	friction = car_config["friction"]
 	coast_deceleration = car_config["coast_deceleration"]
 
-	brake_force = car_config["brake_force"]
-	high_speed_brake_force = car_config["high_speed_brake_force"]
-
 	low_speed_steering = car_config["low_speed_steering"]
 	high_speed_steering = car_config["high_speed_steering"]
 	min_steering_speed = car_config["min_steering_speed"]
@@ -208,7 +326,6 @@ func _ready() -> void:
 	drift_exit_angle = car_config["drift_exit_angle"]
 	drift_exit_speed = car_config["drift_exit_speed"]
 
-	handbrake_drift_grip = car_config["handbrake_drift_grip"]
 	brake_force = car_config["brake_force"]
 	high_speed_brake_force = car_config["high_speed_brake_force"]
 
@@ -246,65 +363,73 @@ func _ready() -> void:
 	display_rpm = idle_rpm
 	car_audio.setup()
 
+	# Setup gear-based display RPM mapping
+	setup_gear_rpm_map()
+
 # ================================================================
 # PHYSICS PROCESS
 # ================================================================
 
 func _physics_process(delta: float) -> void:
-	var forward: Vector3 = get_ground_forward()
+	var input_state = gather_input()
+	var velocity_state = calculate_velocity_state(input_state)
 
-	var accelerate_input: float = Input.get_action_strength(
-		"accelerate"
-	)
+	var horizontal_velocity = velocity_state.horizontal_velocity
+	horizontal_velocity = update_throttle_and_brake(delta, input_state, velocity_state, horizontal_velocity)
+	horizontal_velocity = update_drive_state(delta, input_state, velocity_state, horizontal_velocity)
 
-	var reverse_input: float = Input.get_action_strength(
-		"brake"
-	)
+	update_rpm_and_display(delta, input_state, velocity_state)
+	update_gearbox(delta, input_state, velocity_state)
 
-	var steering_input: float = Input.get_axis(
-		"steer_left",
-		"steer_right"
-	)
+	apply_physics_and_movement(delta, input_state, horizontal_velocity)
+	update_visuals_and_effects(delta, input_state)
 
-	var handbrake: bool = Input.is_action_pressed(
-		"handbrake"
-	)
+# ================================================================
+# INPUT GATHERING
+# ================================================================
 
-	var handbrake_released: bool = Input.is_action_just_released(
-		"handbrake"
-	)
+func gather_input() -> Dictionary:
+	return {
+		"accelerate": Input.get_action_strength("accelerate"),
+		"reverse": Input.get_action_strength("brake"),
+		"steering": Input.get_axis("steer_left", "steer_right"),
+		"handbrake": Input.is_action_pressed("handbrake"),
+		"handbrake_released": Input.is_action_just_released("handbrake"),
+		"normal_brake": Input.is_action_pressed("normal_brake")
+	}
 
-	var normal_brake: bool = Input.is_action_pressed(
-		"normal_brake"
-	)
+# ================================================================
+# VELOCITY STATE CALCULATION
+# ================================================================
 
-	var horizontal_velocity: Vector3 = get_horizontal_velocity()
+func calculate_velocity_state(input: Dictionary) -> Dictionary:
+	var forward = get_ground_forward()
+	var h_vel = get_horizontal_velocity()
+	var forward_speed = h_vel.dot(forward)
 
-	var speed: float = horizontal_velocity.length()
+	return {
+		"forward": forward,
+		"horizontal_velocity": h_vel,
+		"speed": h_vel.length(),
+		"forward_speed": forward_speed,
+		"down_braking": input.reverse > 0.0 and forward_speed > 0.5,
+		"reversing": input.reverse > 0.0 and forward_speed <= 0.5
+	}
 
-	var forward_speed: float = horizontal_velocity.dot(
-		forward
-	)
+# ================================================================
+# THROTTLE & BRAKE UPDATE
+# ================================================================
 
-	# ------------------------------------------------
-	# THROTTLE / BRAKE / REVERSE
-	# ------------------------------------------------
+func update_throttle_and_brake(delta: float, input: Dictionary, velocity_state: Dictionary, horizontal_velocity: Vector3) -> Vector3:
+	var forward = velocity_state.forward
+	var speed = velocity_state.speed
+	var forward_speed = velocity_state.forward_speed
+	var down_braking = velocity_state.down_braking
+	var reversing = velocity_state.reversing
 
-	var down_braking: bool = (
-		reverse_input > 0.0
-		and forward_speed > 0.5
-	)
-
-	var reversing: bool = (
-		reverse_input > 0.0
-		and forward_speed <= 0.5
-	)
-
-	var throttle: float = accelerate_input
-
+	var throttle: float = input.accelerate
 	if reversing:
-		throttle = -reverse_input
-
+		throttle = -input.reverse
 
 	# ------------------------------------------------
 	# STATIONARY HANDBRAKE / LAUNCH CHARGING
@@ -312,14 +437,14 @@ func _physics_process(delta: float) -> void:
 
 	launch_charging = (
 		drive_state == DriveState.NORMAL
-		and handbrake
+		and input.handbrake
 		and speed < launch_hold_max_speed
 		and throttle > 0.0
 	)
-	
+
 	brake_revving = (
 		drive_state == DriveState.NORMAL
-		and normal_brake
+		and input.normal_brake
 		and speed < launch_hold_max_speed
 		and throttle > 0.0
 	)
@@ -330,28 +455,14 @@ func _physics_process(delta: float) -> void:
 			friction * delta
 		)
 
-
 	elif throttle > 0.0:
 		var acceleration_amount: float = acceleration
 
 		# Use separate acceleration values for normal forward driving.
 		if drive_state == DriveState.NORMAL:
-			match current_gear:
-				1:
-					acceleration_amount = gear_1_acceleration
-				2:
-					acceleration_amount = gear_2_acceleration
-				3:
-					acceleration_amount = gear_3_acceleration
-				4:
-					acceleration_amount = gear_4_acceleration
-				5:
-					acceleration_amount = gear_5_acceleration
+			acceleration_amount = get_gear_acceleration(current_gear)
 
-		if (
-			drive_state == DriveState.WHEELSPIN
-			and wheelspin_from_launch
-		):
+		if drive_state == DriveState.WHEELSPIN and wheelspin_from_launch:
 			acceleration_amount *= launch_acceleration_multiplier
 
 		horizontal_velocity += (
@@ -376,24 +487,11 @@ func _physics_process(delta: float) -> void:
 			coast_deceleration * delta
 		)
 
-
 	# ------------------------------------------------
 	# SPEED LIMIT
 	# ------------------------------------------------
 
-	var gear_speed_limit: float = max_speed
-
-	match current_gear:
-		1:
-			gear_speed_limit = gear_1_max_speed
-		2:
-			gear_speed_limit = gear_2_max_speed
-		3:
-			gear_speed_limit = gear_3_max_speed
-		4:
-			gear_speed_limit = gear_4_max_speed
-		5:
-			gear_speed_limit = gear_5_max_speed
+	var gear_speed_limit: float = get_gear_max_speed(current_gear)
 
 	# Limit acceleration in the current gear without removing
 	# momentum the car already had before a downshift.
@@ -408,25 +506,17 @@ func _physics_process(delta: float) -> void:
 			)
 
 	speed = horizontal_velocity.length()
-
 	forward = get_forward()
-
-	forward_speed = horizontal_velocity.dot(
-		forward
-	)
+	forward_speed = horizontal_velocity.dot(forward)
 
 	if forward_speed < -max_reverse_speed:
-		horizontal_velocity = (
-			-forward
-			* max_reverse_speed
-		)
-
+		horizontal_velocity = -forward * max_reverse_speed
 
 	# ------------------------------------------------
 	# NORMAL BRAKE
 	# ------------------------------------------------
 
-	if normal_brake or down_braking:
+	if input.normal_brake or down_braking:
 		var brake_speed_ratio: float = clampf(
 			speed / max_speed,
 			0.0,
@@ -444,21 +534,31 @@ func _physics_process(delta: float) -> void:
 			current_brake_force * delta
 		)
 
-
 	# ------------------------------------------------
 	# BRAKE LIGHTS
 	# ------------------------------------------------
 
 	var brake_lights_on: bool = (
-		normal_brake
+		input.normal_brake
 		or down_braking
-		or handbrake
+		or input.handbrake
 	)
 
-	car_visuals.set_brake_lights(
-		brake_lights_on
-	)
+	car_visuals.set_brake_lights(brake_lights_on)
 
+	return horizontal_velocity
+
+# ================================================================
+# DRIVE STATE UPDATE
+# ================================================================
+
+func update_drive_state(delta: float, input: Dictionary, velocity_state: Dictionary, horizontal_velocity: Vector3) -> Vector3:
+	var speed = velocity_state.speed
+	var forward_speed = velocity_state.forward_speed
+
+	var throttle: float = input.accelerate
+	if velocity_state.reversing:
+		throttle = -input.reverse
 
 	# ------------------------------------------------
 	# HANDBRAKE LAUNCH
@@ -466,13 +566,12 @@ func _physics_process(delta: float) -> void:
 
 	if (
 		drive_state == DriveState.NORMAL
-		and handbrake_released
+		and input.handbrake_released
 		and throttle > wheelspin_min_throttle
 		and rpm >= launch_min_rpm
 		and speed < launch_hold_max_speed
 	):
 		enter_launch_wheelspin()
-
 
 	# ------------------------------------------------
 	# ENTER DRIFT
@@ -480,14 +579,11 @@ func _physics_process(delta: float) -> void:
 
 	if drive_state == DriveState.NORMAL:
 		if (
-			handbrake
+			input.handbrake
 			and speed > drift_entry_speed
-			and abs(steering_input) > drift_entry_steering
+			and abs(input.steering) > drift_entry_steering
 		):
-			enter_drift(
-				steering_input
-			)
-
+			enter_drift(input.steering)
 
 	# ------------------------------------------------
 	# CURRENT DRIVING STATE
@@ -496,7 +592,7 @@ func _physics_process(delta: float) -> void:
 	if drive_state == DriveState.NORMAL:
 		horizontal_velocity = handle_normal_driving(
 			delta,
-			steering_input,
+			input.steering,
 			forward_speed,
 			horizontal_velocity
 		)
@@ -505,8 +601,8 @@ func _physics_process(delta: float) -> void:
 		horizontal_velocity = handle_drift(
 			delta,
 			throttle,
-			steering_input,
-			handbrake,
+			input.steering,
+			input.handbrake,
 			horizontal_velocity
 		)
 
@@ -514,29 +610,36 @@ func _physics_process(delta: float) -> void:
 		horizontal_velocity = handle_wheelspin(
 			delta,
 			throttle,
-			steering_input,
+			input.steering,
 			horizontal_velocity
 		)
 
+	return horizontal_velocity
+
+# ================================================================
+# RPM & DISPLAY UPDATE
+# ================================================================
+
+func update_rpm_and_display(delta: float, input: Dictionary, velocity_state: Dictionary) -> void:
+	var throttle: float = input.accelerate
+	if velocity_state.reversing:
+		throttle = -input.reverse
 
 	# ------------------------------------------------
 	# RPM
 	# ------------------------------------------------
 
-	update_rpm(
-		delta,
-		throttle,
-		handbrake
-	)
-	
-
+	update_rpm(delta, throttle, input.handbrake)
 
 	# ------------------------------------------------
 	# DISPLAY RPM
 	# ------------------------------------------------
 
+	var horizontal_velocity = velocity_state.horizontal_velocity
+	var down_braking = velocity_state.down_braking
+
 	if (
-		(handbrake or normal_brake)
+		(input.handbrake or input.normal_brake)
 		and throttle > 0.0
 		and horizontal_velocity.length() < 0.5
 	):
@@ -544,133 +647,22 @@ func _physics_process(delta: float) -> void:
 		display_rpm = move_toward(
 			display_rpm,
 			rpm,
-			10000.0 * delta
+			DISPLAY_RPM_RESPONSE * delta
 		)
 
-	elif drive_state == DriveState.NORMAL and current_gear == 1:
-		# 1st gear: idle RPM at 0 speed, 6300 RPM at its speed limit.
-		var speed_ratio: float = clampf(
-			horizontal_velocity.length() / maxf(gear_1_max_speed - 0.05, 0.01),
-			0.0,
-			1.0
+	elif drive_state == DriveState.NORMAL and current_gear >= 1 and current_gear <= 5:
+		# Use gear-based RPM calculation for all forward gears
+		display_rpm = calculate_display_rpm_for_gear(
+			current_gear,
+			horizontal_velocity.length(),
+			delta
 		)
-
-		var target_display_rpm: float = lerpf(
-			idle_rpm,
-			6300.0,
-			speed_ratio
-		)
-
-		display_rpm = move_toward(
-			display_rpm,
-			target_display_rpm,
-			10000.0 * delta
-		)
-
-	elif drive_state == DriveState.NORMAL and current_gear == 2:
-		# 2nd gear: 5000 RPM at 1st gear's speed limit,
-		# rising to 6300 RPM at 2nd gear's speed limit.
-		var second_gear_speed: float = horizontal_velocity.length()
-
-		var speed_ratio: float = clampf(
-			(second_gear_speed - gear_1_max_speed)
-			/ maxf((gear_2_max_speed - 0.05) - gear_1_max_speed, 0.01),
-			0.0,
-			1.0
-		)
-
-		var target_display_rpm: float = lerpf(
-			5000.0,
-			6300.0,
-			speed_ratio
-		)
-
-		display_rpm = move_toward(
-			display_rpm,
-			target_display_rpm,
-			10000.0 * delta
-		)
-	
-	elif drive_state == DriveState.NORMAL and current_gear == 3:
-		# 3rd gear: 5000 RPM at 2nd gear's speed limit,
-		# rising to 6300 RPM at 3rd gear's speed limit.
-		var third_gear_speed: float = horizontal_velocity.length()
-
-		var speed_ratio: float = clampf(
-			(third_gear_speed - gear_2_max_speed)
-			/ maxf((gear_3_max_speed - 0.05) - gear_2_max_speed, 0.01),
-			0.0,
-			1.0
-		)
-
-		var target_display_rpm: float = lerpf(
-			5000.0,
-			6300.0,
-			speed_ratio
-		)
-
-		display_rpm = move_toward(
-			display_rpm,
-			target_display_rpm,
-			10000.0 * delta
-		)
-		
-	
-	elif drive_state == DriveState.NORMAL and current_gear == 4:
-		# 4th gear: 5000 RPM at 3rd gear's speed limit,
-		# rising to 6300 RPM at 4th gear's speed limit.
-		var fourth_gear_speed: float = horizontal_velocity.length()
-
-		var speed_ratio: float = clampf(
-			(fourth_gear_speed - gear_3_max_speed)
-			/ maxf((gear_4_max_speed - 0.05) - gear_3_max_speed, 0.01),
-			0.0,
-			1.0
-		)
-
-		var target_display_rpm: float = lerpf(
-			5000.0,
-			6300.0,
-			speed_ratio
-		)
-
-		display_rpm = move_toward(
-			display_rpm,
-			target_display_rpm,
-			10000.0 * delta
-		)
-	
-	
-	elif drive_state == DriveState.NORMAL and current_gear == 5:
-		# 5th gear: 5000 RPM at 4th gear's speed limit,
-		# rising to 6300 RPM at 5th gear's speed limit.
-		var fifth_gear_speed: float = horizontal_velocity.length()
-
-		var speed_ratio: float = clampf(
-			(fifth_gear_speed - gear_4_max_speed)
-			/ maxf((gear_5_max_speed - 0.05) - gear_4_max_speed, 0.01),
-			0.0,
-			1.0
-		)
-
-		var target_display_rpm: float = lerpf(
-			5000.0,
-			6300.0,
-			speed_ratio
-		)
-
-		display_rpm = move_toward(
-			display_rpm,
-			target_display_rpm,
-			10000.0 * delta
-		)
-
 
 	else:
 		if drive_state == DriveState.NORMAL and throttle <= 0.0:
 			var rpm_fall_rate: float = 1800.0
 
-			if normal_brake or down_braking:
+			if input.normal_brake or down_braking:
 				rpm_fall_rate = 6000.0
 
 			display_rpm = move_toward(
@@ -682,10 +674,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			var display_response: float = 3000.0
 
-			if (
-				drive_state == DriveState.WHEELSPIN
-				and wheelspin_from_launch
-			):
+			if drive_state == DriveState.WHEELSPIN and wheelspin_from_launch:
 				display_response = 12000.0
 
 			display_rpm = move_toward(
@@ -694,7 +683,15 @@ func _physics_process(delta: float) -> void:
 				display_response * delta
 			)
 
+# ================================================================
+# GEARBOX UPDATE
+# ================================================================
 
+func update_gearbox(delta: float, input: Dictionary, velocity_state: Dictionary) -> void:
+	var speed = velocity_state.speed
+	var throttle: float = input.accelerate
+	if velocity_state.reversing:
+		throttle = -input.reverse
 
 	# ------------------------------------------------
 	# GEARBOX
@@ -768,16 +765,20 @@ func _physics_process(delta: float) -> void:
 			if throttle > 0.0:
 				neutral_timer = 0.0
 
-			elif speed < 0.2:
+			elif speed < NEUTRAL_SPEED_THRESHOLD:
 				neutral_timer += delta
 
-				if neutral_timer >= 2.0:
+				if neutral_timer >= NEUTRAL_TIMER_DURATION:
 					current_gear = 0
 					display_rpm = idle_rpm
 			else:
 				neutral_timer = 0.0
 
+# ================================================================
+# PHYSICS & MOVEMENT APPLICATION
+# ================================================================
 
+func apply_physics_and_movement(delta: float, input: Dictionary, horizontal_velocity: Vector3) -> void:
 	# ------------------------------------------------
 	# APPLY VELOCITY
 	# ------------------------------------------------
@@ -786,9 +787,9 @@ func _physics_process(delta: float) -> void:
 	velocity.z = horizontal_velocity.z
 
 	if is_on_floor():
-		if not normal_brake:
+		if not input.normal_brake:
 			var slope_gravity: Vector3 = (
-				Vector3.DOWN * gravity
+				Vector3.DOWN * GRAVITY
 			).slide(get_floor_normal())
 
 			var car_forward: Vector3 = get_ground_forward()
@@ -802,9 +803,11 @@ func _physics_process(delta: float) -> void:
 		else:
 			velocity.y = 0.0
 	else:
-		velocity.y -= gravity * delta
+		velocity.y -= GRAVITY * delta
 
 	move_and_slide()
+
+	handle_airborne_physics(delta)
 
 	align_to_ground(delta)
 
@@ -812,7 +815,11 @@ func _physics_process(delta: float) -> void:
 
 	speed_kmh = get_horizontal_velocity().length() * 3.6
 
+# ================================================================
+# VISUALS & EFFECTS UPDATE
+# ================================================================
 
+func update_visuals_and_effects(delta: float, input: Dictionary) -> void:
 	# ------------------------------------------------
 	# VISUALS
 	# ------------------------------------------------
@@ -825,10 +832,9 @@ func _physics_process(delta: float) -> void:
 
 	car_visuals.update_wheels(
 		delta,
-		steering_input,
+		input.steering,
 		visual_forward_speed
 	)
-
 
 	# ------------------------------------------------
 	# EFFECTS
@@ -839,9 +845,7 @@ func _physics_process(delta: float) -> void:
 		or drive_state == DriveState.WHEELSPIN
 	)
 
-	var skid_intensity: float = (
-		get_skid_intensity()
-	)
+	var skid_intensity: float = get_skid_intensity()
 
 	car_effects.update_effects(
 		is_skidding,
@@ -887,7 +891,7 @@ func handle_normal_driving(
 			movement_direction = -1.0
 
 		# Steering pivot slightly ahead of the car's centre.
-		var steering_pivot := Vector3(0.0, 0.0, -0.5)
+		var steering_pivot := STEERING_PIVOT_OFFSET
 
 		# Record the pivot's world position before rotation.
 		var pivot_before: Vector3 = global_transform * steering_pivot
@@ -911,12 +915,11 @@ func handle_normal_driving(
 		delta
 	)
 
-
 # ================================================================
-# DRIFT
+# CLASSIC DRIFT PHYSICS
 # ================================================================
 
-func handle_drift(
+func handle_drift_classic(
 	delta: float,
 	throttle: float,
 	steering_input: float,
@@ -933,7 +936,7 @@ func handle_drift(
 		* delta
 	)
 
-	# Steering still affects the car during the drift.
+	# Player steering.
 	rotate_y(
 		-steering_input
 		* drift_steering
@@ -979,22 +982,194 @@ func handle_drift(
 		delta
 	)
 
-	var drift_angle: float = get_drift_angle(
-		horizontal_velocity
-	)
+	var drift_angle: float = get_drift_angle(horizontal_velocity)
 
 	if speed < drift_exit_speed:
 		enter_normal()
 		return horizontal_velocity
 
 	if abs(drift_angle) < drift_exit_angle:
-		if (
-			throttle > wheelspin_min_throttle
-			and rpm > wheelspin_entry_rpm
-		):
+		if throttle > wheelspin_min_throttle and rpm > wheelspin_entry_rpm:
 			enter_wheelspin()
 		else:
 			enter_normal()
+
+	return horizontal_velocity
+
+
+# ================================================================
+# DRIFT
+# ================================================================
+
+func handle_drift_modern(
+	delta: float,
+	throttle: float,
+	steering_input: float,
+	handbrake: bool,
+	horizontal_velocity: Vector3
+) -> Vector3:
+	var speed: float = horizontal_velocity.length()
+	var drift_angle: float = get_drift_angle(horizontal_velocity)
+
+	# ================================================
+	# SPEED-BASED ARC MULTIPLIER
+	# ================================================
+	# Deeper arcs at higher speeds for more dramatic drifts
+	var arc_multiplier: float = get_drift_rotation_multiplier(speed)
+
+	# Throttle rotation with speed-based depth
+	rotate_y(
+		-drift_direction
+		* drift_throttle_rotation
+		* maxf(throttle, 0.0)
+		* arc_multiplier  # NEW: Deeper at high speed
+		* delta
+	)
+
+	# ================================================
+	# SPEED-BASED STEERING
+	# ================================================
+	# Less responsive at high speeds (more committed)
+	var current_drift_steering: float = get_drift_steering_for_speed(speed)
+
+	rotate_y(
+		-steering_input
+		* current_drift_steering  # NEW: Speed-based
+		* delta
+	)
+
+	# ================================================
+	# GRIP CALCULATION
+	# ================================================
+	var current_drift_grip: float = drift_grip
+
+	# NEW: Speed-based grip reduction (more slide at high speed)
+	current_drift_grip = get_drift_grip_for_speed(speed, current_drift_grip)
+
+	# NEW: Angle-based grip reduction (more slide at deep angles)
+	current_drift_grip = get_drift_grip_for_angle(drift_angle, current_drift_grip)
+
+	# ================================================
+	# COUNTER-STEERING
+	# ================================================
+	var counter_steer: float = get_counter_steer_amount(steering_input, drift_angle)
+
+	# Apply counter-steering grip bonus
+	if counter_steer > 0.0:
+		# Counter-steering increases grip (helps stabilize)
+		current_drift_grip += counter_steer * 1.5
+
+	# ================================================
+	# STEERING INTO DRIFT
+	# ================================================
+	# Steering into the drift tightens the radius
+	if (
+		steering_input != 0.0
+		and sign(steering_input) == drift_direction
+	):
+		current_drift_grip += (
+			abs(steering_input)
+			* drift_tightening_grip
+		)
+
+	# ================================================
+	# HANDBRAKE
+	# ================================================
+	# Handbrake reduces grip and removes speed
+	if handbrake:
+		current_drift_grip = handbrake_drift_grip
+
+		var handbrake_speed_ratio: float = clampf(
+			speed / max_speed,
+			0.0,
+			1.0
+		)
+
+		var current_handbrake_force: float = lerpf(
+			handbrake_force,
+			high_speed_handbrake_force,
+			handbrake_speed_ratio
+		)
+
+		horizontal_velocity = horizontal_velocity.move_toward(
+			Vector3.ZERO,
+			current_handbrake_force * delta
+		)
+
+	# ================================================
+	# APPLY GRIP
+	# ================================================
+	horizontal_velocity = apply_grip(
+		horizontal_velocity,
+		current_drift_grip,
+		delta
+	)
+
+	# ================================================
+	# DRIFT EXIT CONDITIONS
+	# ================================================
+	# Exit if too slow
+	if speed < drift_exit_speed:
+		enter_normal()
+		drift_exit_grace_timer = 0.0
+		return horizontal_velocity
+
+	# Check if drift angle is below threshold
+	if abs(drift_angle) < drift_exit_angle:
+		# NEW: Grace period before exiting (prevents instant exits)
+		drift_exit_grace_timer += delta
+
+		if drift_exit_grace_timer >= DRIFT_EXIT_GRACE_PERIOD:
+			# NEW: Stricter wheelspin conditions
+			# Only enter wheelspin in specific scenarios (low gear burnouts)
+			if (
+				throttle > 0.7              # High throttle (was 0.4)
+				and rpm > 6500              # Higher RPM (was 5000)
+				and speed < 8.0             # Low speed only
+				and current_gear <= 2       # Low gears only
+			):
+				enter_wheelspin()
+			else:
+				enter_normal()  # Clean exit instead
+
+			drift_exit_grace_timer = 0.0
+	else:
+		# Back in drift zone, reset grace timer
+		drift_exit_grace_timer = 0.0
+
+	return horizontal_velocity
+
+
+# ================================================================
+# DRIFT PHYSICS SELECTOR
+# ================================================================
+
+func handle_drift(
+	delta: float,
+	throttle: float,
+	steering_input: float,
+	handbrake: bool,
+	horizontal_velocity: Vector3
+) -> Vector3:
+
+	match drift_physics_mode:
+		DriftPhysicsMode.CLASSIC:
+			return handle_drift_classic(
+				delta,
+				throttle,
+				steering_input,
+				handbrake,
+				horizontal_velocity
+			)
+
+		DriftPhysicsMode.MODERN:
+			return handle_drift_modern(
+				delta,
+				throttle,
+				steering_input,
+				handbrake,
+				horizontal_velocity
+			)
 
 	return horizontal_velocity
 
@@ -1024,7 +1199,7 @@ func handle_wheelspin(
 		not donut_active
 		and wheelspin_from_launch
 		and current_gear == 1
-		and absf(steering_input) > 0.5
+		and absf(steering_input) > DONUT_STEERING_THRESHOLD
 		and throttle > wheelspin_min_throttle
 	):
 		donut_active = true
@@ -1032,14 +1207,14 @@ func handle_wheelspin(
 	# Continue rotating while the donut is active.
 	if donut_active:
 		var target_rotation: float = (
-			steering_input * donut_rotation_max
+			steering_input * DONUT_ROTATION_MAX
 		)
 
 		if absf(steering_input) > 0.01:
 			donut_angular_velocity = move_toward(
 				donut_angular_velocity,
 				target_rotation,
-				donut_rotation_acceleration * delta
+				DONUT_ROTATION_ACCEL * delta
 			)
 		else:
 			# Maintain rotation while accelerating during an active donut.
@@ -1047,7 +1222,7 @@ func handle_wheelspin(
 				donut_angular_velocity = move_toward(
 					donut_angular_velocity,
 					0.0,
-					donut_rotation_decay * delta
+					DONUT_ROTATION_DECAY * delta
 				)
 
 		rotate_y(-donut_angular_velocity * delta)
@@ -1182,6 +1357,73 @@ func get_drift_angle(
 
 
 # ================================================================
+# DRIFT DYNAMICS - SPEED-BASED
+# ================================================================
+
+func get_drift_rotation_multiplier(speed: float) -> float:
+	"""
+	Increases drift rotation at higher speeds for deeper, more dramatic arcs.
+	Low speed: 1.0x (controlled)
+	High speed: 2.2x (dramatic)
+	"""
+	var speed_ratio: float = clampf(speed / max_speed, 0.0, 1.0)
+	return 1.0 + (speed_ratio * 1.2)
+
+
+func get_drift_grip_for_speed(speed: float, base_grip: float) -> float:
+	"""
+	Reduces grip at higher speeds for more dramatic powerslide.
+	Low speed: 100% grip (more control)
+	High speed: 60% grip (more slide/spectacle)
+	"""
+	var speed_ratio: float = clampf(speed / max_speed, 0.0, 1.0)
+	var grip_multiplier: float = 1.0 - (speed_ratio * 0.4)
+	return base_grip * grip_multiplier
+
+
+func get_drift_grip_for_angle(drift_angle: float, base_grip: float) -> float:
+	"""
+	Reduces grip at deeper drift angles for more sideways slide.
+	Straight (0°): 100% grip
+	Deep angle (45°): 70% grip (sweet spot powerslide)
+	"""
+	var angle_ratio: float = clampf(abs(drift_angle) / 45.0, 0.0, 1.0)
+	var grip_multiplier: float = 1.0 - (angle_ratio * 0.3)
+	return base_grip * grip_multiplier
+
+
+func get_drift_steering_for_speed(speed: float) -> float:
+	"""
+	Reduces steering responsiveness at high speeds.
+	Low speed: Full responsiveness (maneuverable hairpins)
+	High speed: 70% responsiveness (committed sweepers)
+	"""
+	var speed_ratio: float = clampf(speed / max_speed, 0.0, 1.0)
+	return lerpf(drift_steering, drift_steering * 0.7, speed_ratio)
+
+
+func get_counter_steer_amount(steering_input: float, drift_angle: float) -> float:
+	"""
+	Detects when player is counter-steering (steering opposite to drift slide).
+	Returns 0.0-1.0 based on counter-steer intensity.
+
+	Counter-steering = steering opposite to drift angle
+	Example: Car sliding right (+angle), player steering left (-)
+	"""
+	if abs(drift_angle) < 2.0:
+		return 0.0  # No meaningful drift angle yet
+
+	var angle_direction: float = sign(drift_angle)
+	var steer_direction: float = sign(steering_input)
+
+	# Counter-steering: opposite directions
+	if angle_direction != steer_direction and abs(steering_input) > 0.1:
+		return abs(steering_input)  # Return intensity 0.0-1.0
+
+	return 0.0
+
+
+# ================================================================
 # RPM
 # ================================================================
 
@@ -1266,6 +1508,8 @@ func enter_drift(
 	wheelspin_from_launch = false
 	wheelspin_timer = 0.0
 
+	drift_exit_grace_timer = 0.0
+
 
 func enter_drift_from_angle(
 	drift_angle: float
@@ -1280,12 +1524,16 @@ func enter_drift_from_angle(
 	wheelspin_from_launch = false
 	wheelspin_timer = 0.0
 
+	drift_exit_grace_timer = 0.0
+
 
 func enter_wheelspin() -> void:
 	drive_state = DriveState.WHEELSPIN
 
 	wheelspin_from_launch = false
 	wheelspin_timer = wheelspin_max_time
+
+	drift_exit_grace_timer = 0.0
 
 
 func enter_launch_wheelspin() -> void:
@@ -1298,6 +1546,8 @@ func enter_launch_wheelspin() -> void:
 	donut_active = false
 	donut_angular_velocity = 0.0
 
+	drift_exit_grace_timer = 0.0
+
 
 func enter_normal() -> void:
 	drive_state = DriveState.NORMAL
@@ -1309,6 +1559,8 @@ func enter_normal() -> void:
 	donut_active = false
 	donut_angular_velocity = 0.0
 
+	drift_exit_grace_timer = 0.0
+
 
 # ================================================================
 # HELPERS
@@ -1318,8 +1570,8 @@ func tyre_has_ground(tyre: Marker3D) -> bool:
 	var space_state := get_world_3d().direct_space_state
 
 	var query := PhysicsRayQueryParameters3D.create(
-		tyre.global_position + Vector3.UP * 0.1,
-		tyre.global_position + Vector3.DOWN * 0.15
+		tyre.global_position + Vector3.UP * TYRE_RAYCAST_UP,
+		tyre.global_position + Vector3.DOWN * TYRE_RAYCAST_DOWN
 	)
 
 	query.exclude = [
@@ -1329,6 +1581,22 @@ func tyre_has_ground(tyre: Marker3D) -> bool:
 	var result := space_state.intersect_ray(query)
 
 	return not result.is_empty()
+
+func handle_airborne_physics(delta: float) -> void:
+	"""
+	Handle physics while airborne - SIMPLIFIED to prevent glitches
+	"""
+	var current_airborne: bool = not is_on_floor()
+
+	# Track airborne state
+	if current_airborne:
+		airborne_time += delta
+	else:
+		airborne_time = 0.0
+
+	# Update airborne state
+	was_airborne = current_airborne
+
 
 func apply_edge_tipping(delta: float) -> void:
 	var fl := tyre_has_ground(front_left)
@@ -1341,7 +1609,7 @@ func apply_edge_tipping(delta: float) -> void:
 	var left_supported := fl or rl
 	var right_supported := fr or rr
 
-	var tip_speed := deg_to_rad(30.0) * delta
+	var tip_speed := deg_to_rad(EDGE_TIPPING_SPEED_DEG) * delta
 
 	# Front hanging off.
 	if not front_supported and rear_supported:
@@ -1364,6 +1632,7 @@ func align_to_ground(delta: float) -> void:
 		return
 
 	var floor_normal: Vector3 = get_floor_normal()
+	last_ground_normal = floor_normal
 
 	var forward: Vector3 = global_transform.basis.z
 	forward = forward.slide(floor_normal).normalized()
@@ -1380,9 +1649,19 @@ func align_to_ground(delta: float) -> void:
 		forward
 	)
 
+	# Speed-based alignment - faster at high speed, slower for smooth hills
+	var speed: float = get_horizontal_velocity().length()
+	var speed_ratio: float = clampf(speed / max_speed, 0.0, 1.0)
+
+	var alignment_speed: float = lerpf(
+		GROUND_ALIGNMENT_SPEED_SLOW,   # Slow on hills
+		GROUND_ALIGNMENT_SPEED_FAST,   # Fast at speed
+		speed_ratio
+	)
+
 	global_transform.basis = global_transform.basis.slerp(
 		target_basis,
-		clampf(6.0 * delta, 0.0, 1.0)
+		clampf(alignment_speed * delta, 0.0, 1.0)
 	).orthonormalized()
 
 func get_forward() -> Vector3:
