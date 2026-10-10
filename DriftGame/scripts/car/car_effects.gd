@@ -19,6 +19,7 @@ extends Node3D
 	skid_marks_path
 ) as Node3D
 
+@onready var drift_smoke: Node3D = $"../DriftSmoke"
 
 # ================================================================
 # STATE
@@ -72,3 +73,5 @@ func update_effects(
 	previous_right = current_right
 
 	was_skidding = is_skidding
+	
+	drift_smoke.update_smoke(is_skidding, skid_intensity)

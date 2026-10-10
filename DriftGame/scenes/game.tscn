@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b12l2aa74h17b" path="res://DriftGame/scripts/game.gd" id="1_qd5k7"]
 [ext_resource type="PackedScene" uid="uid://b4inxilp3pijq" path="res://DriftGame/scenes/car.tscn" id="1_u5ws8"]
 [ext_resource type="Script" uid="uid://opb0touvh2d1" path="res://DriftGame/scripts/camera/camera.gd" id="2_148kw"]
+[ext_resource type="Script" uid="uid://staw6xxrvm4c" path="res://DriftGame/scripts/car/drift_smoke.gd" id="3_cxtah"]
 [ext_resource type="Script" uid="uid://m0lqr85fqii6" path="res://DriftGame/scripts/car/car_audio.gd" id="3_unl6j"]
 [ext_resource type="PackedScene" uid="uid://bew0qer8ue0hx" path="res://DriftGame/assets/models/cars/Car2.glb" id="3_x372x"]
 [ext_resource type="Script" uid="uid://dqrk0ot6ueouw" path="res://DriftGame/scripts/car/skid_marks.gd" id="3_y2k86"]
@@ -47,6 +48,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.68641186, 0, -1.1111118)
 
 [node name="RearRightTyre" parent="Car" index="5" unique_id=1523943464]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6601347, 0, -1.1334167)
+
+[node name="DriftSmoke" type="Node3D" parent="Car" unique_id=666882479]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+script = ExtResource("3_cxtah")
+skid_marks_path = NodePath("../../SkidMarks")
 
 [node name="FrontLeftTyre" type="Marker3D" parent="Car" unique_id=514919927]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6706493, 0, 1.1621025)
