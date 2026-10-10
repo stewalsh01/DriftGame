@@ -562,6 +562,16 @@ func update_drive_state(delta: float, input: Dictionary, velocity_state: Diction
 	if velocity_state.reversing:
 		throttle = -input.reverse
 
+	# Exit forward drifting when the car starts reversing.
+	# Shared by Classic and Modern drift physics.
+	if drive_state == DriveState.DRIFT:
+		var current_forward_speed: float = horizontal_velocity.dot(
+			get_ground_forward()
+		)
+
+		if current_forward_speed < -0.2:
+			enter_normal()
+
 	# ------------------------------------------------
 	# HANDBRAKE LAUNCH
 	# ------------------------------------------------

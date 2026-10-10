@@ -6,21 +6,30 @@ extends Node3D
 # ================================================================
 
 @export_category("Smoke Settings")
-@export_range(1, 200, 1) var max_particles: int = 60
-@export_range(0.1, 5.0, 0.1) var smoke_lifetime: float = 1.5
+@export_range(1, 200, 1) var max_particles: int = 120
+@export_range(0.1, 5.0, 0.1) var smoke_lifetime: float = 3.5
 
-@export var smoke_color: Color = Color(0.8, 0.8, 0.8, 0.25)
-@export var grass_smoke_color: Color = Color(0.55, 0.42, 0.28, 0.25)
+@export var smoke_color: Color = Color(0.8, 0.8, 0.8, 1.0)
+@export var grass_smoke_color: Color = Color(0.55, 0.42, 0.28, 1.0)
 
 @export_category("Smoke Intensity")
-@export_range(0.0, 1.0, 0.05)
-var smoke_threshold: float = 0.60
+@export_range(0.0, 1.0, 0.05) var smoke_threshold: float = 0.40
 
-@export_range(0.0, 1.0, 0.05)
-var min_smoke_opacity: float = 0.08
+@export_range(0.0, 1.0, 0.05) var light_opacity: float = 0.12
+@export_range(0.0, 1.0, 0.05) var medium_opacity: float = 0.30
+@export_range(0.0, 1.0, 0.05) var heavy_opacity: float = 0.55
 
-@export_range(0.0, 1.0, 0.05)
-var max_smoke_opacity: float = 0.55
+@export_range(0.0, 1.0, 0.05) var medium_threshold: float = 0.55
+@export_range(0.0, 1.0, 0.05) var heavy_threshold: float = 0.75
+
+@export_category("Speed-Based Smoke")
+
+# Speed is measured in metres per second.
+@export_range(5.0, 50.0, 1.0)
+var full_smoke_speed: float = 22.0
+
+@export_range(0.1, 1.0, 0.05)
+var low_speed_emission: float = 0.65
 
 @export_category("Surface Detection")
 @export var skid_marks_path: NodePath
@@ -40,8 +49,23 @@ var max_smoke_opacity: float = 0.55
 # STATE
 # ================================================================
 
-var rear_left_emitter: GPUParticles3D
-var rear_right_emitter: GPUParticles3D
+var left_emitters: Array[GPUParticles3D] = []
+var right_emitters: Array[GPUParticles3D] = []
+
+const SURFACE_ASPHALT: int = 0
+const SURFACE_GRASS: int = 1
+
+const LEVEL_LIGHT: int = 0
+const LEVEL_MEDIUM: int = 1
+const LEVEL_HEAVY: int = 2
+
+var left_level: int = -1
+var right_level: int = -1
+
+var left_level_timer: float = 0.0
+var right_level_timer: float = 0.0
+
+const LEVEL_CHANGE_DELAY: float = 0.12
 
 
 # ================================================================
@@ -49,20 +73,62 @@ var rear_right_emitter: GPUParticles3D
 # ================================================================
 
 func _ready() -> void:
-	rear_left_emitter = create_smoke_emitter()
-	rear_right_emitter = create_smoke_emitter()
+	left_emitters = create_tyre_emitters(rear_left)
+	right_emitters = create_tyre_emitters(rear_right)
 
-	rear_left.add_child(rear_left_emitter)
-	rear_right.add_child(rear_right_emitter)
+
+func create_tyre_emitters(tyre: Marker3D) -> Array[GPUParticles3D]:
+	var emitters: Array[GPUParticles3D] = []
+
+	var opacities: Array[float] = [
+		light_opacity,
+		medium_opacity,
+		heavy_opacity
+	]
+
+	var surface_colors: Array[Color] = [
+		smoke_color,
+		grass_smoke_color
+	]
+
+	var surface_names: Array[String] = [
+		"Asphalt",
+		"Grass"
+	]
+
+	var level_names: Array[String] = [
+		"Light",
+		"Medium",
+		"Heavy"
+	]
+
+	for surface in range(2):
+		for level in range(3):
+			var color: Color = surface_colors[surface]
+			color.a *= opacities[level]
+
+			var emitter: GPUParticles3D = create_smoke_emitter(
+				surface_names[surface] + level_names[level],
+				color
+			)
+
+			tyre.add_child(emitter)
+			emitters.append(emitter)
+
+	return emitters
 
 
 # ================================================================
 # PARTICLE CREATION
 # ================================================================
 
-func create_smoke_emitter() -> GPUParticles3D:
+func create_smoke_emitter(
+	emitter_name: String,
+	emitter_color: Color
+) -> GPUParticles3D:
 	var particles = GPUParticles3D.new()
 
+	particles.name = emitter_name
 	particles.emitting = false
 	particles.amount = max_particles
 	particles.lifetime = smoke_lifetime
@@ -74,7 +140,7 @@ func create_smoke_emitter() -> GPUParticles3D:
 	process_material.initial_velocity_min = 0.5
 	process_material.initial_velocity_max = 1.5
 	process_material.gravity = Vector3(0, 0.4, 0)
-	process_material.color = smoke_color
+	process_material.color = emitter_color
 
 	particles.process_material = process_material
 
@@ -123,70 +189,162 @@ func create_smoke_emitter() -> GPUParticles3D:
 # SURFACE DETECTION
 # ================================================================
 
-func get_smoke_color(world_position: Vector3) -> Color:
-	if skid_marks != null and skid_marks.has_method("is_on_grass"):
-		if skid_marks.is_on_grass(world_position):
-			return grass_smoke_color
+func is_tyre_on_grass(tyre: Marker3D) -> bool:
+	if skid_marks == null:
+		return false
 
-	return smoke_color
+	if not skid_marks.has_method("is_on_grass"):
+		return false
+
+	return skid_marks.is_on_grass(tyre.global_position)
+
+
+# ================================================================
+# SMOKE LEVELS
+# ================================================================
+
+func get_target_level(skid_intensity: float) -> int:
+	if skid_intensity < smoke_threshold:
+		return -1
+
+	if skid_intensity >= heavy_threshold:
+		return LEVEL_HEAVY
+
+	if skid_intensity >= medium_threshold:
+		return LEVEL_MEDIUM
+
+	return LEVEL_LIGHT
+
+
+func update_level(
+	current_level: int,
+	target_level: int,
+	timer: float,
+	delta: float
+) -> Dictionary:
+	if target_level == current_level:
+		return {
+			"level": current_level,
+			"timer": 0.0
+		}
+
+	if target_level == -1:
+		return {
+			"level": -1,
+			"timer": 0.0
+		}
+
+	if current_level == -1:
+		return {
+			"level": target_level,
+			"timer": 0.0
+		}
+
+	timer += delta
+
+	if timer >= LEVEL_CHANGE_DELAY:
+		return {
+			"level": target_level,
+			"timer": 0.0
+		}
+
+	return {
+		"level": current_level,
+		"timer": timer
+	}
 
 
 # ================================================================
 # SMOKE CONTROL
 # ================================================================
 
-func update_smoke(is_skidding: bool, skid_intensity: float) -> void:
-	var should_emit: bool = (
-		is_skidding
-		and skid_intensity >= smoke_threshold
+func get_speed_emission_ratio() -> float:
+	var car: CharacterBody3D = get_parent() as CharacterBody3D
+
+	if car == null:
+		return 1.0
+
+	var horizontal_speed: float = Vector2(
+		car.velocity.x,
+		car.velocity.z
+	).length()
+
+	var speed_ratio: float = clampf(
+		horizontal_speed / full_smoke_speed,
+		0.0,
+		1.0
 	)
 
-	var opacity: float = 0.0
+	return lerpf(
+		low_speed_emission,
+		1.0,
+		speed_ratio
+	)
 
-	if should_emit:
-		var intensity_ratio: float = inverse_lerp(
-			smoke_threshold,
-			1.0,
-			clampf(skid_intensity, smoke_threshold, 1.0)
-		)
 
-		opacity = lerpf(
-			min_smoke_opacity,
-			max_smoke_opacity,
-			intensity_ratio
-		)
+func update_smoke(is_skidding: bool, skid_intensity: float) -> void:
+	var delta: float = get_physics_process_delta_time()
 
-	var emitters: Array[GPUParticles3D] = [
-		rear_left_emitter,
-		rear_right_emitter
-	]
+	var target_level: int = -1
 
-	var tyres: Array[Marker3D] = [
+	if is_skidding:
+		target_level = get_target_level(skid_intensity)
+
+	var left_result: Dictionary = update_level(
+		left_level,
+		target_level,
+		left_level_timer,
+		delta
+	)
+
+	left_level = left_result["level"]
+	left_level_timer = left_result["timer"]
+
+	var right_result: Dictionary = update_level(
+		right_level,
+		target_level,
+		right_level_timer,
+		delta
+	)
+
+	right_level = right_result["level"]
+	right_level_timer = right_result["timer"]
+
+	update_tyre_emitters(
 		rear_left,
-		rear_right
-	]
+		left_emitters,
+		left_level
+	)
+
+	update_tyre_emitters(
+		rear_right,
+		right_emitters,
+		right_level
+	)
+
+
+func update_tyre_emitters(
+	tyre: Marker3D,
+	emitters: Array[GPUParticles3D],
+	level: int
+) -> void:
+	var surface: int = SURFACE_ASPHALT
+
+	if is_tyre_on_grass(tyre):
+		surface = SURFACE_GRASS
+
+	var emission_ratio: float = get_speed_emission_ratio()
 
 	for i in range(emitters.size()):
-		var emitter = emitters[i]
+		var emitter: GPUParticles3D = emitters[i]
 
-		if emitter == null:
-			continue
+		var emitter_surface: int = floori(float(i) / 3.0)
+		var emitter_level: int = i % 3
 
-		emitter.emitting = should_emit
+		emitter.amount_ratio = emission_ratio
 
-		if should_emit:
-			var surface_color: Color = get_smoke_color(
-				tyres[i].global_position
-			)
-
-			var process_material = emitter.process_material as ParticleProcessMaterial
-
-			if process_material == null:
-				continue
-
-			process_material.color = Color(
-				surface_color.r,
-				surface_color.g,
-				surface_color.b,
-				opacity
-			)
+		emitter.emitting = (
+			level >= 0
+			and emitter_surface == surface
+			and emitter_level == level
+		)
