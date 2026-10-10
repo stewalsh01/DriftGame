@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://d113v5ljk6r22"]
+
+[ext_resource type="PackedScene" uid="uid://kmutlqwsiej4" path="res://DriftGame/assets/terrain/location3_terrain.glb" id="1_65kfg"]
+
+[node name="Location3" type="Node3D" unique_id=1539090478]
+
+[node name="location3_terrain" parent="." unique_id=326547706 instance=ExtResource("1_65kfg")]
+
+[node name="CarSpawn" type="Marker3D" parent="." unique_id=1333287686]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=331113525]
+transform = Transform3D(0.71321005, 0.28396216, -0.6408563, 0.018980278, 0.906109, 0.42261827, 0.7006933, -0.31357923, 0.6408563, 515.17633, 530.4947, 601.8254)
+light_color = Color(1, 0.9529412, 0.9137255, 1)
+light_energy = 2.5
+shadow_enabled = true
+
+[editable path="location3_terrain"]
