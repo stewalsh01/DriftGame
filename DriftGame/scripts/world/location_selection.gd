@@ -1,5 +1,5 @@
 extends Node
 
 var selected_location: PackedScene = preload(
-	"res://DriftGame/scenes/location_01_environment.tscn"
+	"res://DriftGame/scenes/location_04.tscn"
 )

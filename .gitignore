@@ -10,3 +10,7 @@ Thumbs.db# Godot 4+ specific ignores
 .godot/
 /android/
 DriftGame/scenes/*.tmp
+
+/DriftGame/assets/terrain/location_04_backup/
+
+/addons/terrain_3d/bin/~*

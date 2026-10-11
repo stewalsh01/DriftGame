@@ -8,3 +8,4 @@ shader = ExtResource("1_nokye")
 shader_parameter/grass_dark = Color(0.1, 0.22, 0.055, 1)
 shader_parameter/grass_mid = Color(0.18, 0.34, 0.09, 1)
 shader_parameter/grass_light = Color(0.3, 0.46, 0.13, 1)
+shader_parameter/grass_scale = 1.999999955296

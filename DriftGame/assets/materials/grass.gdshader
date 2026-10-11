@@ -4,6 +4,14 @@ uniform vec3 grass_dark : source_color = vec3(0.07, 0.16, 0.035);
 uniform vec3 grass_mid : source_color = vec3(0.12, 0.27, 0.06);
 uniform vec3 grass_light : source_color = vec3(0.22, 0.38, 0.10);
 
+uniform float grass_scale : hint_range(0.01, 2.0, 0.01) = 0.3;
+
+varying vec3 world_pos;
+
+void vertex() {
+	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+}
+
 float hash(vec2 p) {
 	return fract(
 		sin(dot(p, vec2(127.1, 311.7))) * 43758.5453
@@ -29,7 +37,7 @@ float noise(vec2 p) {
 }
 
 void fragment() {
-	vec2 p = UV * 60.0;
+	vec2 p = world_pos.xz * grass_scale;
 
 	float large = noise(p * 0.35);
 	float medium = noise(p * 1.8);
