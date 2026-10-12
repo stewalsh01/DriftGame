@@ -34,7 +34,7 @@ const DONUT_ROTATION_MAX: float = 2.8
 const DONUT_ROTATION_DECAY: float = 1.5
 const DONUT_STEERING_THRESHOLD: float = 0.5
 
-@export var selected_car: int = 1
+@export var selected_car: int = 2
 @export_enum("Original", "Drift", "Race")
 var selected_tuning_preset: int = 0
 var car_config: Dictionary

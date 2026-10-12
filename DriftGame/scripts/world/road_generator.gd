@@ -412,13 +412,6 @@ func generate_terrain_shoulders() -> void:
 			1.0
 		)
 
-		var clearance: float = lerpf(
-			0.10,
-			0.02,
-			edge_progress
-		)
-
-		# Additional clearance beneath steep banking.
 		var bank_angle: float = atan2(
 			nearest_right.y - nearest_left.y,
 			road_width
@@ -430,6 +423,21 @@ func generate_terrain_shoulders() -> void:
 			1.0
 		)
 
+		# No edge clearance on flat roads.
+		# Increase to 2 cm on heavily banked sections.
+		var edge_clearance: float = lerpf(
+			0.0,
+			0.04,
+			bank_strength
+		)
+
+		var clearance: float = lerpf(
+			0.10,
+			edge_clearance,
+			edge_progress
+		)
+
+		# Additional clearance beneath steep banking.
 		clearance += 0.03 * bank_strength * (1.0 - edge_progress)
 
 		var target_height: float = road_surface_height - clearance
