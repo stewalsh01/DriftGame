@@ -55,6 +55,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Drift Hills"
 
+[node name="Location4Button" type="Button" parent="MenuCenter/MenuBox" unique_id=1327730175]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Oval Test Track"
+
 [node name="QuitButton" type="Button" parent="MenuCenter/MenuBox" unique_id=8602614]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
@@ -76,5 +81,7 @@ pitch_scale = 10.0
 [connection signal="pressed" from="MenuCenter/MenuBox/Location2Button" to="." method="_on_location_2_button_pressed"]
 [connection signal="focus_entered" from="MenuCenter/MenuBox/Location3Button" to="." method="_on_location_3_button_focus_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/Location3Button" to="." method="_on_location_3_button_pressed"]
+[connection signal="focus_entered" from="MenuCenter/MenuBox/Location4Button" to="." method="_on_location_4_button_focus_entered"]
+[connection signal="pressed" from="MenuCenter/MenuBox/Location4Button" to="." method="_on_location_4_button_pressed"]
 [connection signal="focus_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_focus_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]

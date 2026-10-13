@@ -35,6 +35,26 @@ var banking_angle: float = 0.0:
 @export_tool_button("Generate Terrain Shoulders")
 var generate_shoulders_button = generate_terrain_shoulders
 
+var _bank_point_distances := PackedFloat32Array()
+var _bank_curve_id: int = -1
+
+func _rebuild_bank_cache(curve: Curve3D) -> void:
+	_bank_point_distances.clear()
+	_bank_curve_id = curve.get_instance_id()
+	var length: float = curve.get_baked_length()
+	var sample_count: int = maxi(100, ceili(length / 0.5))
+	for i in range(curve.point_count):
+		var target: Vector3 = curve.get_point_position(i)
+		var best_distance := 0.0
+		var best_difference := INF
+		for j in range(sample_count + 1):
+			var d: float = length * float(j) / float(sample_count)
+			var difference: float = target.distance_squared_to(curve.sample_baked(d))
+			if difference < best_difference:
+				best_difference = difference
+				best_distance = d
+		_bank_point_distances.append(best_distance)
+
 func _ready() -> void:
 	var road_path: Path3D = get_node_or_null("../RoadPath") as Path3D
 
@@ -42,7 +62,7 @@ func _ready() -> void:
 		if not road_path.curve.changed.is_connected(update_road):
 			road_path.curve.changed.connect(update_road)
 
-	update_road()
+	#update_road()
 
 
 func update_road() -> void:
@@ -69,6 +89,8 @@ func update_road() -> void:
 
 	if length <= 0.0:
 		return
+
+	_rebuild_bank_cache(curve)
 
 	var segment_count: int = maxi(
 		3,
@@ -204,72 +226,48 @@ func get_road_edges(
 	return [left, right]
 
 func get_bank_at_distance(curve: Curve3D, distance: float) -> float:
-	var point_count: int = curve.point_count
+	var base_bank: float = deg_to_rad(banking_angle)
+	var count: int = curve.point_count
+	if count < 2:
+		return base_bank
 
-	if point_count < 2:
-		return deg_to_rad(banking_angle)
+	# Flat tracks need no distance lookup at all.
+	var has_tilt := false
+	for i in range(count):
+		if absf(curve.get_point_tilt(i)) > 0.000001:
+			has_tilt = true
+			break
+	if not has_tilt:
+		return base_bank
 
 	var length: float = curve.get_baked_length()
-
 	if length <= 0.0:
-		return deg_to_rad(banking_angle)
+		return base_bank
 
-	# Calculate the distance along the curve for each control point.
-	var point_distances := PackedFloat32Array()
+	if _bank_curve_id != curve.get_instance_id() or _bank_point_distances.size() != count:
+		_rebuild_bank_cache(curve)
 
-	for i in range(point_count):
-		var control_position: Vector3 = curve.get_point_position(i)
-		var closest_distance: float = 0.0
-		var closest_difference: float = INF
-
-		var sample_count: int = maxi(100, ceili(length / 0.5))
-
-		for j in range(sample_count + 1):
-			var sample_distance_along: float = length * float(j) / float(sample_count)
-			var sample_position: Vector3 = curve.sample_baked(sample_distance_along)
-			var difference: float = control_position.distance_squared_to(sample_position)
-
-			if difference < closest_difference:
-				closest_difference = difference
-				closest_distance = sample_distance_along
-
-		point_distances.append(closest_distance)
-
-	# Find the segment containing our road sample.
 	var sample_at: float = clampf(distance, 0.0, length)
-
-	for i in range(point_count):
+	for i in range(count):
 		var next_index: int = i + 1
-		var start_distance: float = point_distances[i]
+		var start_distance: float = _bank_point_distances[i]
 		var end_distance: float
-
-		if next_index >= point_count:
+		if next_index >= count:
 			if not curve.closed:
 				break
-
 			next_index = 0
 			end_distance = length
 		else:
-			end_distance = point_distances[next_index]
-
+			end_distance = _bank_point_distances[next_index]
 		if sample_at >= start_distance and sample_at <= end_distance:
-			var segment_length: float = end_distance - start_distance
-
-			if segment_length <= 0.0001:
-				return deg_to_rad(banking_angle) + curve.get_point_tilt(i)
-
-			var blend: float = (sample_at - start_distance) / segment_length
-
-			# Smooth the transition between control points.
+			var span: float = end_distance - start_distance
+			if span <= 0.0001:
+				return base_bank + curve.get_point_tilt(i)
+			var blend: float = (sample_at - start_distance) / span
 			blend = blend * blend * (3.0 - 2.0 * blend)
+			return base_bank + lerp_angle(curve.get_point_tilt(i), curve.get_point_tilt(next_index), blend)
+	return base_bank
 
-			return deg_to_rad(banking_angle) + lerp_angle(
-				curve.get_point_tilt(i),
-				curve.get_point_tilt(next_index),
-				blend
-			)
-
-	return deg_to_rad(banking_angle)
 
 func get_width_at_distance(_curve: Curve3D, _distance: float) -> float:
 	return road_width
@@ -291,6 +289,8 @@ func generate_terrain_shoulders() -> void:
 
 	if length <= 0.0:
 		return
+
+	_rebuild_bank_cache(curve)
 
 	var data: Terrain3DData = terrain.data
 	var half_width: float = road_width * 0.5

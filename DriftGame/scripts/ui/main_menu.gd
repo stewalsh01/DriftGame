@@ -56,3 +56,16 @@ func _on_location_3_button_pressed() -> void:
 
 func _on_location_3_button_focus_entered() -> void:
 	$MenuMoveSound.play()
+
+func _on_location_4_button_pressed() -> void:
+	$MenuSelectSound.play()
+	await $MenuSelectSound.finished
+
+	LocationSelection.selected_location = preload(
+		"res://DriftGame/scenes/location_04.tscn"
+	)
+	get_tree().change_scene_to_file("res://DriftGame/scenes/game.tscn")
+
+
+func _on_location_4_button_focus_entered() -> void:
+	$MenuMoveSound.play()
