@@ -23,6 +23,11 @@ func _ready() -> void:
 		"CarSpawn/StartFinishLine"
 	)
 
+	if start_finish_line == null:
+		start_finish_line = selected_location.get_node_or_null(
+			"StartFinishArch/StartFinishLine"
+	)
+
 	var is_track_mode: bool = start_finish_line != null
 
 	$HUD/LapInfoPanel.visible = is_track_mode

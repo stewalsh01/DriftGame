@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://mtvkwowcevic" path="res://DriftGame/assets/models/buildings/lamp-post.glb" id="9_g5bvw"]
 [ext_resource type="ArrayMesh" uid="uid://ibkn5bfh0ej2" path="res://DriftGame/assets/terrain/textures/road1.tres" id="9_valy0"]
 [ext_resource type="Shape3D" uid="uid://b8px5y4ultbfn" path="res://DriftGame/assets/terrain/textures/road_collision.tres" id="11_3hhty"]
+[ext_resource type="PackedScene" uid="uid://cc78e5ufabr4g" path="res://DriftGame/scenes/start_finish_line.tscn" id="15_8xodo"]
 
 [sub_resource type="Gradient" id="Gradient_i8xw8"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -195,12 +196,15 @@ shape = ExtResource("11_3hhty")
 [node name="CarSpawn" type="Marker3D" parent="." unique_id=769411965]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85.883804, 1, -36.1568)
 
+[node name="StartFinishLine" parent="CarSpawn" unique_id=423812783 instance=ExtResource("15_8xodo")]
+transform = Transform3D(1.1420012, 0, 0.13539739, 0, 1.15, 0, -0.13539739, 0, 1.1420012, 1.1909637, -0.22265625, 10.714516)
+
+[node name="StartFinishArch" parent="." unique_id=476110203 instance=ExtResource("8_15kov")]
+transform = Transform3D(1.1437, 0, 0.12020772, 0, 1.15, 0, -0.12020772, 0, 1.1437, 87.23878, 0, -25.638275)
+
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1298865761]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
 light_energy = 1.5
-
-[node name="StartFinishArch" parent="." unique_id=476110203 instance=ExtResource("8_15kov")]
-transform = Transform3D(1.1437, 0, 0.12020772, 0, 1.15, 0, -0.12020772, 0, 1.1437, 87.23878, 0, -25.592651)
 
 [node name="lamp-post2" parent="." unique_id=534716231 instance=ExtResource("9_g5bvw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.561577, -0.07525635, 44.105217)
@@ -209,3 +213,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.561577, -0.07525635, 44.10
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="lamp-post2/StaticBody3D" unique_id=144743371]
 shape = SubResource("CylinderShape3D_mb84a")
+
+[editable path="CarSpawn/StartFinishLine"]
