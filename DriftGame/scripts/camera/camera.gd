@@ -253,11 +253,6 @@ func update_camera_zoom(
 ) -> void:
 
 	var target_size: float = preset["size"]
-	if preset["name"] == "WORLD_OVERVIEW":
-		var location: Node3D = get_node_or_null("../../Location") as Node3D
-
-		if location != null and location.scene_file_path.ends_with("location_02_environment.tscn"):
-			target_size = location_2_overview_size
 
 	if preset["speed_zoom"]:
 		var speed: float = car.velocity.length()
