@@ -40,25 +40,21 @@ theme_override_font_sizes/font_size = 48
 text = "Drift Game"
 horizontal_alignment = 1
 
-[node name="Location1Button" type="Button" parent="MenuCenter/MenuBox" unique_id=1749924754]
+[node name="DemoTrackButton" type="Button" parent="MenuCenter/MenuBox" unique_id=1479148566]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "DRIFT YARD"
-
-[node name="Location2Button" type="Button" parent="MenuCenter/MenuBox" unique_id=900157256]
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "GT Drift Track"
-
-[node name="Location3Button" type="Button" parent="MenuCenter/MenuBox" unique_id=2037598490]
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "Drift Hills"
+text = "Demo Track
+"
 
 [node name="Location4Button" type="Button" parent="MenuCenter/MenuBox" unique_id=1327730175]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "Oval Test Track"
+text = "Oval Track"
+
+[node name="Location1Button" type="Button" parent="MenuCenter/MenuBox" unique_id=1749924754]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Drift Yard"
 
 [node name="QuitButton" type="Button" parent="MenuCenter/MenuBox" unique_id=8602614]
 layout_mode = 2
@@ -75,13 +71,11 @@ stream = ExtResource("2_kgjj3")
 volume_db = -15.0
 pitch_scale = 10.0
 
-[connection signal="focus_entered" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_focus_entered"]
-[connection signal="pressed" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_pressed"]
-[connection signal="focus_entered" from="MenuCenter/MenuBox/Location2Button" to="." method="_on_location_2_button_focus_entered"]
-[connection signal="pressed" from="MenuCenter/MenuBox/Location2Button" to="." method="_on_location_2_button_pressed"]
-[connection signal="focus_entered" from="MenuCenter/MenuBox/Location3Button" to="." method="_on_location_3_button_focus_entered"]
-[connection signal="pressed" from="MenuCenter/MenuBox/Location3Button" to="." method="_on_location_3_button_pressed"]
+[connection signal="focus_entered" from="MenuCenter/MenuBox/DemoTrackButton" to="." method="_on_demo_track_button_focus_entered"]
+[connection signal="pressed" from="MenuCenter/MenuBox/DemoTrackButton" to="." method="_on_demo_track_button_pressed"]
 [connection signal="focus_entered" from="MenuCenter/MenuBox/Location4Button" to="." method="_on_location_4_button_focus_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/Location4Button" to="." method="_on_location_4_button_pressed"]
+[connection signal="focus_entered" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_focus_entered"]
+[connection signal="pressed" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_pressed"]
 [connection signal="focus_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_focus_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]
