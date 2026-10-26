@@ -67,7 +67,6 @@ func update_road() -> void:
 		var centre: Vector3 = curve.sample_baked(distance)
 
 		var world_centre: Vector3 = road_path.to_global(centre)
-		var terrain_height: float = get_terrain_height(world_centre)
 
 		centres.append(to_local(world_centre))
 		heights.append(world_centre.y)
