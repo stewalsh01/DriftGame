@@ -91,6 +91,7 @@ void fragment() {
 
 	vec3 final_asphalt = asphalt + vec3(variation);
 
+	NORMAL = vec3(0.0, 0.0, 1.0);
 	ALBEDO = final_asphalt;
 	EMISSION = final_asphalt * ambient_fill;
 
