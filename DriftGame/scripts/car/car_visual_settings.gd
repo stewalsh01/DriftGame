@@ -31,6 +31,11 @@ const CAR_1 := {
 	"brake_lights": [
 		"BrakeLightLeft",
 		"BrakeLightRight"
+	],
+
+	"headlights": [
+		"HeadlightLeft",
+		"HeadlightRight"
 	]
 }
 
@@ -68,6 +73,11 @@ const CAR_2 := {
 		"BrakeLightLeft",
 		"BrakeLightRight"
 	],
+
+	"headlights": [
+		"HeadlightLeft",
+		"HeadlightRight"
+	]
 }
 
 

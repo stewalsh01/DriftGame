@@ -63,17 +63,49 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.67986643, 0, 1.2091062)
 [node name="Car2" parent="Car" unique_id=671212632 instance=ExtResource("3_x372x")]
 transform = Transform3D(0.89, 0, 0, 0, 0.89, 0, 0, 0, 0.89, 0, 0, 0)
 
-[node name="BrakeLightRight" type="OmniLight3D" parent="Car/Car2" unique_id=219941269]
-transform = Transform3D(1.1235955, 0, -7.1054274e-14, 0, 1.1235955, 0, 7.1054274e-14, 0, 1.1235955, -0.51827353, 0.7650756, -2.0086477)
-light_color = Color(1, 0, 0, 1)
-omni_range = 1.0
-omni_attenuation = 2.0
+[node name="HeadlightLeft" type="SpotLight3D" parent="Car/Car2" unique_id=337669256]
+transform = Transform3D(1.1235955, -9.8227844e-08, 9.8227886e-08, -9.8227844e-08, -1.1235955, -6.345871e-22, 9.8227886e-08, -8.587354e-15, -1.1235955, 0.6494975, 0.6752832, 1.9388472)
+light_color = Color(1, 0.9490196, 0.8627451, 1)
+light_energy = 20.0
+shadow_enabled = true
+spot_range = 35.0
+spot_angle = 50.0
 
-[node name="BrakeLightLeft" type="OmniLight3D" parent="Car/Car2" unique_id=635913056]
-transform = Transform3D(1.1235955, 0, -6.3948846e-14, 0, 1.1235955, 0, 6.3948846e-14, 0, 1.1235955, 0.6222694, 0.75844634, -1.9884413)
+[node name="HeadlightRight" type="SpotLight3D" parent="Car/Car2" unique_id=184395361]
+transform = Transform3D(1.1235955, -9.8227844e-08, 9.822792e-08, -9.8227844e-08, -1.1235955, -4.1243415e-21, 9.822792e-08, -8.587354e-15, -1.1235955, -0.64302677, 0.6752832, 1.9388472)
+light_color = Color(1, 0.9490196, 0.8627451, 1)
+light_energy = 20.0
+shadow_enabled = true
+spot_range = 35.0
+spot_angle = 50.0
+
+[node name="TailLightLeft" type="SpotLight3D" parent="Car/Car2" unique_id=1293702917]
+transform = Transform3D(1.1235955, 0, 0, 0, 0.9730622, 0.56179774, 0, -0.56179774, 0.9730622, -0.7566041, 0.76839125, -1.9263791)
+light_color = Color(1, 0.1882353, 0.1882353, 1)
+light_energy = 0.4
+spot_range = 1.0
+spot_angle_attenuation = 2.0
+
+[node name="TailLightRight" type="SpotLight3D" parent="Car/Car2" unique_id=1202740279]
+transform = Transform3D(1.1235955, 3.5527137e-15, 0, 0, 0.9730622, 0.5617977, 7.1054274e-15, -0.5617977, 0.9730622, 0.7357183, 0.76839125, -1.9263788)
+light_color = Color(1, 0.1882353, 0.1882353, 1)
+light_energy = 0.4
+spot_range = 1.0
+spot_angle_attenuation = 2.0
+
+[node name="BrakeLightRight" type="OmniLight3D" parent="Car/Car2" unique_id=1015609147]
+transform = Transform3D(1.1235955, 0, -4.973799e-14, 0, 1.1235955, 0, 4.973799e-14, 0, 1.1235955, -0.6117855, 0.6752767, -1.9658376)
 light_color = Color(1, 0, 0, 1)
-omni_range = 1.0
-omni_attenuation = 2.0
+light_energy = 2.0
+omni_range = 1.2
+omni_attenuation = 2.5
+
+[node name="BrakeLightLeft" type="OmniLight3D" parent="Car/Car2" unique_id=310619700]
+transform = Transform3D(1.1235955, 0, -7.81597e-14, 0, 1.1235955, 0, 7.81597e-14, 0, 1.1235955, 0.68636984, 0.7089763, -1.9221507)
+light_color = Color(1, 0, 0, 1)
+light_energy = 2.0
+omni_range = 1.2
+omni_attenuation = 2.5
 
 [node name="CarAudio" type="Node" parent="Car" unique_id=1037054325]
 script = ExtResource("3_unl6j")

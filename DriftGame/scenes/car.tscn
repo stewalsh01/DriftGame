@@ -25,6 +25,37 @@ light_color = Color(1, 0, 0, 1)
 omni_range = 1.0
 omni_attenuation = 2.0
 
+[node name="HeadlightLeft" type="SpotLight3D" parent="SportsCar2" unique_id=182935832]
+transform = Transform3D(1, -8.742277e-08, 8.742277e-08, -8.742278e-08, -0.99999994, 0, 8.742278e-08, -7.642741e-15, -0.99999994, 0.4950864, 0.4459557, 1.9270523)
+light_color = Color(1, 0.9490196, 0.8627451, 1)
+light_energy = 20.0
+shadow_enabled = true
+spot_range = 35.0
+spot_angle = 50.0
+
+[node name="HeadlightRight" type="SpotLight3D" parent="SportsCar2" unique_id=701417957]
+transform = Transform3D(1, -8.742278e-08, 8.742278e-08, -8.742278e-08, -1, 0, 8.742278e-08, -7.642742e-15, -1, -0.5123281, 0.4459557, 1.9270523)
+light_color = Color(1, 0.9490196, 0.8627451, 1)
+light_energy = 20.0
+shadow_enabled = true
+spot_range = 35.0
+spot_angle = 50.0
+
+[node name="TailLightLeft" type="SpotLight3D" parent="SportsCar2" unique_id=1705684165]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0.4031152, 0.69227684, -1.8792436)
+light_color = Color(1, 0.1882353, 0.1882353, 1)
+light_energy = 4.0
+spot_range = 1.0
+spot_angle_attenuation = 2.0
+
+[node name="TailLightRight" type="SpotLight3D" parent="SportsCar2" unique_id=6630595]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, -0.4722054, 0.69227684, -1.8792436)
+light_color = Color(1, 0.1882353, 0.1882353, 1)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 1.0
+spot_angle_attenuation = 2.0
+
 [node name="CarVisuals" type="Node3D" parent="." unique_id=1630913572]
 script = ExtResource("3_i0cy3")
 

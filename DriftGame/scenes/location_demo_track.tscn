@@ -244,7 +244,7 @@ spot_range = 20.0
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1298865761]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
-light_energy = 0.7
+light_energy = 0.0
 
 [node name="TrackMarkings" type="Node3D" parent="." unique_id=125200562]
 
@@ -304,50 +304,6 @@ transform = Transform3D(0.15493052, 0, -0.98792535, 0, 1, 0, 0.98792535, 0, 0.15
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="wall4/StaticBody3D" unique_id=47946063]
 shape = SubResource("BoxShape3D_edvm6")
-
-[node name="light1purple" parent="." unique_id=235883728 instance=ExtResource("22_immm6")]
-transform = Transform3D(0.5632525, 0, 0.8262848, 0, 1, 0, -0.8262848, 0, 0.5632525, 92.77671, 0.64038086, -31.749777)
-
-[node name="StaticBody3D" type="StaticBody3D" parent="light1purple" unique_id=1124543814]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="light1purple/StaticBody3D" unique_id=421706211]
-shape = SubResource("CylinderShape3D_edvm6")
-
-[node name="SpotLightFront" type="SpotLight3D" parent="light1purple" unique_id=1412085254]
-transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0, 7.161865, -1.4074821)
-light_color = Color(0.7019608, 0.5411765, 0.7176471, 1)
-light_energy = 40.0
-light_indirect_energy = 0.5
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 50.0
-
-[node name="SpotLightBack" type="SpotLight3D" parent="light1purple" unique_id=1663681377]
-transform = Transform3D(-0.99862945, -0.00908806, 0.05154094, 0, 0.9848077, 0.17364816, -0.052336045, 0.17341019, -0.983458, 0, 7.126343, 1.6081543)
-light_color = Color(0.7019608, 0.5411765, 0.7176471, 1)
-light_energy = 40.0
-light_indirect_energy = 0.5
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 50.0
-
-[node name="SpotLightLeft" type="SpotLight3D" parent="light1purple" unique_id=1806989783]
-transform = Transform3D(0.08889425, -0.17296071, 0.98090893, 0, 0.9848077, 0.17364818, -0.99604106, -0.015436324, 0.08754374, -1.5184937, 7.1517334, 0)
-light_color = Color(0.7019608, 0.5411765, 0.7176471, 1)
-light_energy = 40.0
-light_indirect_energy = 0.5
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 50.0
-
-[node name="SpotLightRight" type="SpotLight3D" parent="light1purple" unique_id=768324950]
-transform = Transform3D(-0.071497455, 0.17320377, -0.9822873, 0, 0.9848077, 0.17364816, 0.9974407, 0.012415404, -0.07041125, 1.4440308, 7.109009, 0)
-light_color = Color(0.7019608, 0.5411765, 0.7176471, 1)
-light_energy = 40.0
-light_indirect_energy = 0.5
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 50.0
 
 [node name="light1warm" parent="." unique_id=1858816486 instance=ExtResource("22_immm6")]
 transform = Transform3D(0.663236, 0, -0.74841017, 0, 1, 0, 0.74841017, 0, 0.663236, 59.567196, 2.0581665, -69.54688)
@@ -667,6 +623,7 @@ shape = SubResource("CylinderShape3D_edvm6")
 
 [node name="SpotLightFront" type="SpotLight3D" parent="light1warm8" unique_id=1084543397]
 transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0, 7.161865, -1.4074821)
+visible = false
 light_color = Color(1, 0.9098039, 0.76862746, 1)
 light_energy = 50.0
 light_indirect_energy = 0.5
@@ -676,6 +633,7 @@ spot_angle = 50.0
 
 [node name="SpotLightBack" type="SpotLight3D" parent="light1warm8" unique_id=1630621797]
 transform = Transform3D(-0.99862945, -0.00908806, 0.05154094, 0, 0.9848077, 0.17364816, -0.052336045, 0.17341019, -0.983458, 0, 7.126343, 1.6081543)
+visible = false
 light_color = Color(1, 0.9098039, 0.76862746, 1)
 light_energy = 50.0
 light_indirect_energy = 0.5
@@ -685,6 +643,7 @@ spot_angle = 50.0
 
 [node name="SpotLightLeft" type="SpotLight3D" parent="light1warm8" unique_id=1126382922]
 transform = Transform3D(0.08889425, -0.17296071, 0.98090893, 0, 0.9848077, 0.17364818, -0.99604106, -0.015436324, 0.08754374, -1.5184937, 7.1517334, 0)
+visible = false
 light_color = Color(1, 0.9098039, 0.76862746, 1)
 light_energy = 50.0
 light_indirect_energy = 0.5
@@ -694,6 +653,7 @@ spot_angle = 50.0
 
 [node name="SpotLightRight" type="SpotLight3D" parent="light1warm8" unique_id=1742609146]
 transform = Transform3D(-0.071497455, 0.17320377, -0.9822873, 0, 0.9848077, 0.17364816, 0.9974407, 0.012415404, -0.07041125, 1.4440308, 7.109009, 0)
+visible = false
 light_color = Color(1, 0.9098039, 0.76862746, 1)
 light_energy = 50.0
 light_indirect_energy = 0.5
@@ -755,6 +715,7 @@ shape = SubResource("CylinderShape3D_edvm6")
 
 [node name="SpotLightFront" type="SpotLight3D" parent="light1warm10" unique_id=261946266]
 transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0, 7.161865, -1.4074821)
+visible = false
 light_color = Color(1, 0.9098039, 0.76862746, 1)
 light_energy = 50.0
 light_indirect_energy = 0.5
@@ -764,6 +725,7 @@ spot_angle = 50.0
 
 [node name="SpotLightBack" type="SpotLight3D" parent="light1warm10" unique_id=432789012]
 transform = Transform3D(-0.99862945, -0.00908806, 0.05154094, 0, 0.9848077, 0.17364816, -0.052336045, 0.17341019, -0.983458, 0, 7.126343, 1.6081543)
+visible = false
 light_color = Color(1, 0.9098039, 0.76862746, 1)
 light_energy = 50.0
 light_indirect_energy = 0.5
@@ -773,6 +735,7 @@ spot_angle = 50.0
 
 [node name="SpotLightLeft" type="SpotLight3D" parent="light1warm10" unique_id=744416813]
 transform = Transform3D(0.08889425, -0.17296071, 0.98090893, 0, 0.9848077, 0.17364818, -0.99604106, -0.015436324, 0.08754374, -1.5184937, 7.1517334, 0)
+visible = false
 light_color = Color(1, 0.9098039, 0.76862746, 1)
 light_energy = 50.0
 light_indirect_energy = 0.5
@@ -782,6 +745,7 @@ spot_angle = 50.0
 
 [node name="SpotLightRight" type="SpotLight3D" parent="light1warm10" unique_id=584322697]
 transform = Transform3D(-0.071497455, 0.17320377, -0.9822873, 0, 0.9848077, 0.17364816, 0.9974407, 0.012415404, -0.07041125, 1.4440308, 7.109009, 0)
+visible = false
 light_color = Color(1, 0.9098039, 0.76862746, 1)
 light_energy = 50.0
 light_indirect_energy = 0.5
@@ -831,50 +795,6 @@ light_energy = 50.0
 light_indirect_energy = 0.5
 shadow_enabled = true
 spot_range = 50.0
-spot_angle = 50.0
-
-[node name="light3purple" parent="." unique_id=194948099 instance=ExtResource("22_immm6")]
-transform = Transform3D(-0.11566448, 0, -0.9932883, 0, 1, 0, 0.9932883, 0, -0.11566448, 79.92863, 0.62841797, -31.124405)
-
-[node name="StaticBody3D" type="StaticBody3D" parent="light3purple" unique_id=1176813506]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="light3purple/StaticBody3D" unique_id=680695990]
-shape = SubResource("CylinderShape3D_edvm6")
-
-[node name="SpotLightFront" type="SpotLight3D" parent="light3purple" unique_id=1322508904]
-transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0, 7.161865, -1.4074821)
-light_color = Color(0.7019608, 0.5411765, 0.7176471, 1)
-light_energy = 40.0
-light_indirect_energy = 0.5
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 50.0
-
-[node name="SpotLightBack" type="SpotLight3D" parent="light3purple" unique_id=647750111]
-transform = Transform3D(-0.99862945, -0.00908806, 0.05154094, 0, 0.9848077, 0.17364816, -0.052336045, 0.17341019, -0.983458, 0, 7.126343, 1.6081543)
-light_color = Color(0.7019608, 0.5411765, 0.7176471, 1)
-light_energy = 40.0
-light_indirect_energy = 0.5
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 50.0
-
-[node name="SpotLightLeft" type="SpotLight3D" parent="light3purple" unique_id=37942700]
-transform = Transform3D(0.08889425, -0.17296071, 0.98090893, 0, 0.9848077, 0.17364818, -0.99604106, -0.015436324, 0.08754374, -1.5184937, 7.1517334, 0)
-light_color = Color(0.7019608, 0.5411765, 0.7176471, 1)
-light_energy = 40.0
-light_indirect_energy = 0.5
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 50.0
-
-[node name="SpotLightRight" type="SpotLight3D" parent="light3purple" unique_id=1589484810]
-transform = Transform3D(-0.071497455, 0.17320377, -0.9822873, 0, 0.9848077, 0.17364816, 0.9974407, 0.012415404, -0.07041125, 1.4440308, 7.109009, 0)
-light_color = Color(0.7019608, 0.5411765, 0.7176471, 1)
-light_energy = 40.0
-light_indirect_energy = 0.5
-shadow_enabled = true
-spot_range = 30.0
 spot_angle = 50.0
 
 [editable path="CarSpawn/StartFinishLine"]

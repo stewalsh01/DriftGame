@@ -126,7 +126,12 @@ func update_wheel_rotation(
 # LIGHTS
 # ================================================================
 
+@export_category("Rear Lights")
+@export var tail_light_energy: float = 0.4
+@export var brake_light_energy: float = 2.0
+
 var brake_lights: Array[Node3D] = []
+var headlights: Array[SpotLight3D] = []
 
 
 # ================================================================
@@ -171,6 +176,10 @@ func _ready() -> void:
 	brake_lights = find_visual_nodes(
 		visual_config["brake_lights"]
 	)
+	
+	for node: Node3D in find_visual_nodes(visual_config["headlights"]):
+		if node is SpotLight3D:
+			headlights.append(node)
 
 	set_brake_lights(false)
 	
@@ -202,6 +211,10 @@ func find_visual_nodes(node_names: Array) -> Array[Node3D]:
 
 func set_brake_lights(enabled: bool) -> void:
 	for brake_light: Node3D in brake_lights:
-		brake_light.visible = enabled
+		if brake_light is Light3D:
+			brake_light.visible = true
+			brake_light.light_energy = (
+				brake_light_energy if enabled else tail_light_energy
+			)
 	
 	
