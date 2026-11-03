@@ -34,12 +34,13 @@ const DONUT_ROTATION_MAX: float = 2.8
 const DONUT_ROTATION_DECAY: float = 1.5
 const DONUT_STEERING_THRESHOLD: float = 0.5
 
-@export var selected_car: int = 2
+@export var selected_car: int = 3
 @export_enum("Original", "Drift", "Race")
 var selected_tuning_preset: int = 0
 var car_config: Dictionary
 @onready var car_1_model: Node3D = $SportsCar2
 @onready var car_2_model: Node3D = $Car2
+@onready var car_3_model: Node3D = $Subaru_BRZ_TS1
 
 # ================================================================
 # DRIFT PHYSICS MODE
@@ -288,6 +289,7 @@ func _ready() -> void:
 	car_config = CarSettings.get_car(selected_car, selected_tuning_preset)
 	car_1_model.visible = selected_car == 1
 	car_2_model.visible = selected_car == 2
+	car_3_model.visible = selected_car == 3
 
 	acceleration = car_config["acceleration"]
 	reverse_acceleration = car_config["reverse_acceleration"]

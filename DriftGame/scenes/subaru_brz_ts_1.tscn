@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bttql7x41njen"]
+
+[ext_resource type="PackedScene" uid="uid://c30cjt5pigguc" path="res://DriftGame/assets/models/cars/Subaru_BRZ_TS1.glb" id="1_sxddd"]
+
+[node name="Subaru_BRZ_TS1" unique_id=965095420 instance=ExtResource("1_sxddd")]

@@ -82,6 +82,28 @@ const CAR_2 := {
 
 
 # ================================================================
+# CAR 3 - SUBARU BRZ
+# ================================================================
+
+
+const CAR_3 := {
+	"model_node": "Subaru_BRZ_TS1",
+	"steer_axis": "z",
+
+	"front_left_steer": "FL_Steer",
+	"front_right_steer": "FR_Steer",
+
+	"front_left_spin": ["FL_Pivot"],
+	"front_right_spin": ["FR_Pivot"],
+	"rear_left_spin": ["BL_Pivot"],
+	"rear_right_spin": ["BR_Pivot"],
+
+	"brake_lights": [],
+	"headlights": []
+}
+
+
+# ================================================================
 # GET VISUAL SETTINGS
 # ================================================================
 
@@ -89,6 +111,7 @@ static func get_car(car_number: int) -> Dictionary:
 	match car_number:
 		2:
 			return CAR_2.duplicate(true)
-
+		3:
+			return CAR_3.duplicate(true)
 		_:
 			return CAR_1.duplicate(true)

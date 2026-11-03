@@ -54,27 +54,37 @@ func update_wheels(
 # WHEEL STEERING
 # ================================================================
 
-func update_wheel_steering(
-	delta: float,
-	steering_input: float
-) -> void:
-	var target_angle: float = deg_to_rad(
-		-wheel_steer_angle * steering_input
-	)
 
-	var steer_weight: float = clampf(
-		wheel_steer_speed * delta,
-		0.0,
-		1.0
-	)
+func update_wheel_steering(delta: float, steering_input: float) -> void:
+	if front_left_steer == null or front_right_steer == null:
+		return
 
-	if visual_config["steer_axis"] == "z":
+	var target_angle: float = deg_to_rad(-wheel_steer_angle * steering_input)
+	var steer_weight: float = clampf(wheel_steer_speed * delta, 0.0, 1.0)
+
+	if car.selected_car == 3:
+		target_angle = deg_to_rad(-15.0 * steering_input)
+		steer_weight = clampf(5.0 * delta, 0.0, 1.0)
+
+	if car.selected_car == 3:
+		# Subaru: corrected steering directions
 		front_left_steer.rotation.z = lerp_angle(
 			front_left_steer.rotation.z,
 			target_angle,
 			steer_weight
 		)
+		front_right_steer.rotation.z = lerp_angle(
+			front_right_steer.rotation.z,
+			-target_angle,
+			steer_weight
+		)
 
+	elif visual_config["steer_axis"] == "z":
+		front_left_steer.rotation.z = lerp_angle(
+			front_left_steer.rotation.z,
+			target_angle,
+			steer_weight
+		)
 		front_right_steer.rotation.z = lerp_angle(
 			front_right_steer.rotation.z,
 			target_angle,
@@ -87,7 +97,6 @@ func update_wheel_steering(
 			target_angle,
 			steer_weight
 		)
-
 		front_right_steer.rotation.y = lerp_angle(
 			front_right_steer.rotation.y,
 			target_angle,
@@ -148,6 +157,20 @@ func _ready() -> void:
 		true,
 		false
 	) as Node3D
+	
+	for model_name: String in [
+		"SportsCar2",
+		"Car2",
+		"Subaru_BRZ_TS1"
+	]:
+		var model: Node3D = car.find_child(
+			model_name,
+			false,
+			false
+		) as Node3D
+
+		if model != null:
+			model.visible = model == car_model
 
 	front_left_steer = find_visual_node(
 		visual_config["front_left_steer"]
@@ -183,7 +206,27 @@ func _ready() -> void:
 
 	set_brake_lights(false)
 	
+	if car.selected_car == 3:
+		var rear_lights := car_model.find_child(
+			"SUBARU_BRZ_TS_rear_lights", true, false
+		) as MeshInstance3D
+
+		if rear_lights != null:
+			var material := rear_lights.get_active_material(3)
+
+			if material is BaseMaterial3D:
+				subaru_brake_material = material.duplicate()
+				rear_lights.set_surface_override_material(
+					3, subaru_brake_material
+				)
+
+				subaru_brake_material.emission_enabled = true
+				subaru_brake_material.emission = Color("#FF2020")
+	
 func find_visual_node(node_name: String) -> Node3D:
+	if car_model == null or node_name.is_empty():
+		return null
+
 	return car_model.find_child(
 		node_name,
 		true,
@@ -208,13 +251,20 @@ func find_visual_nodes(node_names: Array) -> Array[Node3D]:
 # ================================================================
 # BRAKE LIGHTS
 # ================================================================
-
+var subaru_brake_material: BaseMaterial3D
 func set_brake_lights(enabled: bool) -> void:
+	# Existing lights for Cars 1 and 2
 	for brake_light: Node3D in brake_lights:
 		if brake_light is Light3D:
 			brake_light.visible = true
 			brake_light.light_energy = (
 				brake_light_energy if enabled else tail_light_energy
 			)
+
+	# Subaru BRZ brake-light material
+	if car.selected_car == 3 and subaru_brake_material != null:
+		subaru_brake_material.emission_energy_multiplier = (
+			10.0 if enabled else 2.5
+		)
 	
 	

@@ -133,6 +133,44 @@ const CAR_2 := {
 
 
 # ================================================================
+# CAR 3 - SUBARU BRZ
+# ================================================================
+
+const CAR_3 := {
+	"name": "Subaru BRZ",
+	"engine_sound": 1,
+
+	"brake_force": 16.0,
+	"high_speed_brake_force": 10.0,
+
+	"handbrake_force": 7.0,
+	"high_speed_handbrake_force": 4.0,
+
+	"acceleration": 5.0,
+	"reverse_acceleration": 7.0,
+
+	"gear_acceleration": [
+		12.0,
+		10.0,
+		8.0,
+		6.0,
+		5.0
+	],
+
+	"gear_max_speed": [
+		7.0,
+		14.0,
+		20.0,
+		26.0,
+		32.0
+	],
+
+	"max_speed": 14.0,
+	"max_reverse_speed": 6.0
+}
+
+
+# ================================================================
 # TUNING PRESETS
 # ================================================================
 
@@ -178,8 +216,11 @@ static func get_car(
 	match car_number:
 		2:
 			car = CAR_2.duplicate(true)
+		3:
+			car = CAR_3.duplicate(true)
 		_:
 			car = CAR_1.duplicate(true)
+
 
 	car.merge(SHARED)
 
