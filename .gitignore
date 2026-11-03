@@ -14,3 +14,9 @@ DriftGame/scenes/*.tmp
 /DriftGame/assets/terrain/location_04_backup/
 
 /addons/terrain_3d/bin/~*
+
+# Purchased 3D car assets
+/DriftGame/assets/models/cars/purchased/
+
+# Temporary local scene backup
+/DriftGame/scenes/car_backup.tscn

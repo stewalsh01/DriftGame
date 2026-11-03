@@ -63,7 +63,7 @@ func update_wheel_steering(delta: float, steering_input: float) -> void:
 	var steer_weight: float = clampf(wheel_steer_speed * delta, 0.0, 1.0)
 
 	if car.selected_car == 3:
-		target_angle = deg_to_rad(-15.0 * steering_input)
+		target_angle = deg_to_rad(-18.0 * steering_input)
 		steer_weight = clampf(5.0 * delta, 0.0, 1.0)
 
 	if car.selected_car == 3:

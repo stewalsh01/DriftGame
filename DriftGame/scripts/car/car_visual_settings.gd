@@ -98,7 +98,10 @@ const CAR_3 := {
 	"rear_left_spin": ["BL_Pivot"],
 	"rear_right_spin": ["BR_Pivot"],
 
-	"brake_lights": [],
+	"brake_lights": [
+		"BrakeLightLeft",
+		"BrakeLightRight"
+	],
 	"headlights": []
 }
 
