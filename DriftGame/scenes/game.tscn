@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dalfyn6utiihi"]
 
 [ext_resource type="Script" uid="uid://b12l2aa74h17b" path="res://DriftGame/scripts/game.gd" id="1_qd5k7"]
-[ext_resource type="PackedScene" uid="uid://b4inxilp3pijq" path="res://DriftGame/scenes/car.tscn" id="1_u5ws8"]
+[ext_resource type="PackedScene" uid="uid://0i3faub7w1od" path="res://DriftGame/scenes/car.tscn" id="1_u5ws8"]
 [ext_resource type="Script" uid="uid://opb0touvh2d1" path="res://DriftGame/scripts/camera/camera.gd" id="2_148kw"]
 [ext_resource type="Script" uid="uid://staw6xxrvm4c" path="res://DriftGame/scripts/car/drift_smoke.gd" id="3_cxtah"]
 [ext_resource type="Script" uid="uid://m0lqr85fqii6" path="res://DriftGame/scripts/car/car_audio.gd" id="3_unl6j"]
@@ -298,4 +298,5 @@ script = ExtResource("8_w2q3i")
 
 [editable path="Car"]
 [editable path="Car/SportsCar2"]
+[editable path="Car/Subaru_BRZ_TS1"]
 [editable path="Car/Car2"]

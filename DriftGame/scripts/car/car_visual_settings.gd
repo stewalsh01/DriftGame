@@ -87,7 +87,7 @@ const CAR_2 := {
 
 
 const CAR_3 := {
-	"model_node": "Subaru_BRZ_TS1",
+	"model_node": "Subaru_BRZ_Optimised",
 	"steer_axis": "z",
 
 	"front_left_steer": "FL_Steer",

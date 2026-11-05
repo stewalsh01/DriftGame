@@ -1,10 +1,10 @@
-[gd_scene format=3 uid="uid://b4inxilp3pijq"]
+[gd_scene format=3 uid="uid://0i3faub7w1od"]
 
 [ext_resource type="Script" uid="uid://cffaapancdx1l" path="res://DriftGame/scripts/car/car_controller.gd" id="1_640n6"]
 [ext_resource type="PackedScene" uid="uid://d18pxbfg2nw7p" path="res://DriftGame/assets/models/cars/Car1.glb" id="2_atbgf"]
 [ext_resource type="Script" uid="uid://bmt6oqf6bv2rl" path="res://DriftGame/scripts/car/car_visuals.gd" id="3_i0cy3"]
 [ext_resource type="Script" uid="uid://mxkrgwkaodi4" path="res://DriftGame/scripts/car/car_effects.gd" id="4_mktpu"]
-[ext_resource type="PackedScene" uid="uid://rgwgn7ihvcr4" path="res://DriftGame/assets/models/cars/purchased/subaru_brz_game.tscn" id="5_atbgf"]
+[ext_resource type="PackedScene" uid="uid://7j0ufyo02gb2" path="res://DriftGame/scenes/subaru_optimised.tscn" id="6_i0cy3"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_edvm6"]
 
@@ -74,7 +74,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.66645604, 0, -1.2112548)
 [node name="RearRightTyre" type="Marker3D" parent="." unique_id=1523943464]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6717156, 0, -1.2707145)
 
-[node name="Subaru_BRZ_TS1" parent="." unique_id=1087856979 instance=ExtResource("5_atbgf")]
-transform = Transform3D(-0.93, 0, -1.404261e-07, 0, 0.93, 0, 1.404261e-07, 0, -0.93, 0, 0, 0)
+[node name="Subaru_BRZ_Optimised" parent="." unique_id=1905095576 instance=ExtResource("6_i0cy3")]
+transform = Transform3D(-0.93, 0, 1.404261e-07, 0, 0.93, 0, -1.404261e-07, 0, -0.93, 0, 0, 0)
 
 [editable path="SportsCar2"]

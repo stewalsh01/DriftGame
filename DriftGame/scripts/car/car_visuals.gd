@@ -158,10 +158,14 @@ func _ready() -> void:
 		false
 	) as Node3D
 	
+	if car_model == null:
+		push_error("Car model not found: " + str(visual_config["model_node"]))
+		return
+	
 	for model_name: String in [
 		"SportsCar2",
 		"Car2",
-		"Subaru_BRZ_TS1"
+		"Subaru_BRZ_Optimised"
 	]:
 		var model: Node3D = car.find_child(
 			model_name,

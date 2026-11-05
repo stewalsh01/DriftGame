@@ -40,7 +40,7 @@ var selected_tuning_preset: int = 0
 var car_config: Dictionary
 @onready var car_1_model: Node3D = $SportsCar2
 @onready var car_2_model: Node3D = $Car2
-@onready var car_3_model: Node3D = $Subaru_BRZ_TS1
+@onready var car_3_model: Node3D = $Subaru_BRZ_Optimised
 
 # ================================================================
 # DRIFT PHYSICS MODE
@@ -289,6 +289,8 @@ func _ready() -> void:
 	car_config = CarSettings.get_car(selected_car, selected_tuning_preset)
 	car_1_model.visible = selected_car == 1
 	car_2_model.visible = selected_car == 2
+	print("CAR 3 MODEL: ", car_3_model)
+	print("CAR CHILDREN: ", get_children())
 	car_3_model.visible = selected_car == 3
 
 	acceleration = car_config["acceleration"]
