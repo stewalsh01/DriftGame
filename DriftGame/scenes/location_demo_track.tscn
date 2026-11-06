@@ -248,7 +248,7 @@ spot_range = 20.0
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1298865761]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
-light_energy = 0.0
+light_energy = 1.5
 
 [node name="TrackMarkings" type="Node3D" parent="." unique_id=125200562]
 
@@ -698,7 +698,7 @@ spot_range = 50.0
 spot_angle = 50.0
 
 [node name="light1warm16" parent="." unique_id=1100562206 instance=ExtResource("22_immm6")]
-transform = Transform3D(-0.8736743, 0, -0.48651108, 0, 1, 0, 0.48651108, 0, -0.8736743, 88.23116, -0.6331177, 71.888794)
+transform = Transform3D(-0.8736743, 0, -0.48651108, 0, 1, 0, 0.48651108, 0, -0.8736743, 88.23116, -2.133728, 71.888794)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="light1warm16" unique_id=2071374424]
 
@@ -829,6 +829,53 @@ spot_range = 50.0
 spot_angle = 50.0
 
 [node name="SpotLightRight" type="SpotLight3D" parent="light1warm21" unique_id=504648904]
+transform = Transform3D(-0.071497455, 0.6411425, -0.7640838, 0, 0.7660444, 0.6427875, 0.99744064, 0.045957677, -0.054770228, 1.4440308, 7.109009, 0)
+visible = false
+light_color = Color(1, 0.9098039, 0.76862746, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="light1warm23" parent="." unique_id=27244494 instance=ExtResource("22_immm6")]
+transform = Transform3D(0.17710523, 0, -0.9841917, 0, 1, 0, 0.9841917, 0, 0.17710523, 104.836754, -0.09411621, -2.1635294)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="light1warm23" unique_id=1905963682]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="light1warm23/StaticBody3D" unique_id=1221450589]
+shape = SubResource("CylinderShape3D_edvm6")
+
+[node name="SpotLightFront" type="SpotLight3D" parent="light1warm23" unique_id=192654600]
+transform = Transform3D(1, 0, 0, 0, 0.7660444, 0.6427875, 0, -0.6427875, 0.7660444, 0, 7.161865, -1.4074821)
+visible = false
+light_color = Color(1, 0.9098039, 0.76862746, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightBack" type="SpotLight3D" parent="light1warm23" unique_id=1272881763]
+transform = Transform3D(-0.99862945, -0.03364096, 0.040091734, 0, 0.7660444, 0.6427875, -0.052336045, 0.64190656, -0.76499444, 0, 7.126343, 1.6081543)
+light_color = Color(0.99999946, 0.78347313, 0.4148975, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightLeft" type="SpotLight3D" parent="light1warm23" unique_id=1496907539]
+transform = Transform3D(0.08889425, -0.64024276, 0.76301163, 0, 0.7660444, 0.6427875, -0.99604106, -0.057140116, 0.068096936, -1.5184937, 7.1517334, 0)
+visible = false
+light_color = Color(1, 0.9098039, 0.76862746, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightRight" type="SpotLight3D" parent="light1warm23" unique_id=810113477]
 transform = Transform3D(-0.071497455, 0.6411425, -0.7640838, 0, 0.7660444, 0.6427875, 0.99744064, 0.045957677, -0.054770228, 1.4440308, 7.109009, 0)
 visible = false
 light_color = Color(1, 0.9098039, 0.76862746, 1)

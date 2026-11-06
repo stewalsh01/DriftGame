@@ -3,7 +3,7 @@ extends Control
 
 
 func _ready() -> void:
-	$MenuCenter/MenuBox/DemoTrackButton.grab_focus()
+	$MenuCenter/MenuBox/PlayButton.grab_focus()
 	$MenuMoveSound.stop()
 
 
@@ -61,3 +61,22 @@ func _on_quit_button_focus_entered() -> void:
 
 func _on_menu_button_focus_entered() -> void:
 	$MenuMoveSound.play()
+
+
+func _on_play_button_pressed() -> void:
+	$MenuSelectSound.play()
+	await $MenuSelectSound.finished
+
+	$MenuCenter.hide()
+	$CarSelection.show()
+
+func _on_play_button_mouse_entered() -> void:
+	$MenuCenter/MenuBox/PlayButton.grab_focus()
+
+
+func _on_settings_button_mouse_entered() -> void:
+	$MenuCenter/MenuBox/SettingsButton.grab_focus()
+
+
+func _on_quit_button_mouse_entered() -> void:
+	$MenuCenter/MenuBox/QuitButton.grab_focus()

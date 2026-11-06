@@ -4,6 +4,34 @@
 [ext_resource type="AudioStream" uid="uid://c15ra4lvfptj5" path="res://DriftGame/assets/audio/menu/MenuMoveSound.wav" id="2_kgjj3"]
 [ext_resource type="AudioStream" uid="uid://b610yg7jp6a33" path="res://DriftGame/assets/audio/menu/SelectSound.wav" id="3_pcvyj"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pcvyj"]
+bg_color = Color(0.13333334, 0.14901961, 0.16078432, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7kg3g"]
+bg_color = Color(0.13333334, 0.14901961, 0.16078432, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jyio2"]
+bg_color = Color(0.9607843, 0.61960787, 0.043137256, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d68wm"]
+bg_color = Color(0.13333334, 0.14901961, 0.16078432, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [node name="MainMenu" type="Control" unique_id=1417694871]
 layout_mode = 3
 anchors_preset = 15
@@ -20,7 +48,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.0627451, 0.07058824, 0.08627451, 1)
+color = Color(0.09411765, 0.105882354, 0.12156863, 1)
 
 [node name="MenuCenter" type="CenterContainer" parent="." unique_id=1513668970]
 layout_mode = 1
@@ -34,11 +62,26 @@ grow_vertical = 2
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Title" type="Label" parent="MenuCenter/MenuBox" unique_id=663814960]
+[node name="TitleBox" type="VBoxContainer" parent="MenuCenter/MenuBox" unique_id=1777113310]
 layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "Drift Game"
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="MenuCenter/MenuBox/TitleBox" unique_id=663814960]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "APEX ZERO"
 horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="MenuCenter/MenuBox/TitleBox" unique_id=1464446033]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9607843, 0.61960787, 0.043137256, 1)
+theme_override_font_sizes/font_size = 14
+text = "ARCADE DRIFT EXPERIENCE"
+horizontal_alignment = 1
+
+[node name="TitleSpacer" type="Control" parent="MenuCenter/MenuBox" unique_id=1445310142]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
 [node name="DemoTrackButton" type="Button" parent="MenuCenter/MenuBox" unique_id=1479148566]
 layout_mode = 2
@@ -47,19 +90,86 @@ text = "Demo Track
 "
 
 [node name="Location4Button" type="Button" parent="MenuCenter/MenuBox" unique_id=1327730175]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Oval Track"
 
 [node name="Location1Button" type="Button" parent="MenuCenter/MenuBox" unique_id=1749924754]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Drift Yard"
 
-[node name="QuitButton" type="Button" parent="MenuCenter/MenuBox" unique_id=8602614]
+[node name="PlayButton" type="Button" parent="MenuCenter/MenuBox" unique_id=1958847913]
+custom_minimum_size = Vector2(270, 55)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+theme_override_colors/font_pressed_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+theme_override_colors/font_hover_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_pcvyj")
+theme_override_styles/hover = SubResource("StyleBoxFlat_7kg3g")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jyio2")
+text = "Play"
+
+[node name="SettingsButton" type="Button" parent="MenuCenter/MenuBox" unique_id=893393453]
+custom_minimum_size = Vector2(270, 55)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+theme_override_colors/font_pressed_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+theme_override_colors/font_hover_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_pcvyj")
+theme_override_styles/hover = SubResource("StyleBoxFlat_7kg3g")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jyio2")
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="MenuCenter/MenuBox" unique_id=782243978]
+custom_minimum_size = Vector2(270, 55)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+theme_override_colors/font_pressed_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+theme_override_colors/font_hover_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_pcvyj")
+theme_override_styles/hover = SubResource("StyleBoxFlat_d68wm")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jyio2")
+text = "Quit"
+
+[node name="QuitButton2" type="Button" parent="MenuCenter/MenuBox" unique_id=8602614]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Quit"
+
+[node name="CarSelection" type="Control" parent="." unique_id=1390372003]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CarSelection" unique_id=1552218729]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -172.5
+offset_top = 40.0
+offset_right = 172.5
+offset_bottom = 95.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 40
+text = "SELECT YOUR CAR"
+horizontal_alignment = 1
 
 [node name="MenuSelectSound" type="AudioStreamPlayer" parent="." unique_id=893936971]
 stream = ExtResource("3_pcvyj")
@@ -77,5 +187,9 @@ pitch_scale = 10.0
 [connection signal="pressed" from="MenuCenter/MenuBox/Location4Button" to="." method="_on_location_4_button_pressed"]
 [connection signal="focus_entered" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_focus_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_pressed"]
-[connection signal="focus_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_focus_entered"]
-[connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="mouse_entered" from="MenuCenter/MenuBox/PlayButton" to="." method="_on_play_button_mouse_entered"]
+[connection signal="pressed" from="MenuCenter/MenuBox/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="mouse_entered" from="MenuCenter/MenuBox/SettingsButton" to="." method="_on_settings_button_mouse_entered"]
+[connection signal="mouse_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_mouse_entered"]
+[connection signal="focus_entered" from="MenuCenter/MenuBox/QuitButton2" to="." method="_on_quit_button_focus_entered"]
+[connection signal="pressed" from="MenuCenter/MenuBox/QuitButton2" to="." method="_on_quit_button_pressed"]
