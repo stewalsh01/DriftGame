@@ -288,7 +288,10 @@ offset_right = 168.0
 offset_bottom = 54.0
 text = "km/h"
 
-[node name="PauseMenu" parent="." unique_id=1919010377 instance=ExtResource("5_qd5k7")]
+[node name="PauseLayer" type="CanvasLayer" parent="." unique_id=898370635]
+layer = 10
+
+[node name="PauseMenu" parent="PauseLayer" unique_id=1919010377 instance=ExtResource("5_qd5k7")]
 
 [node name="DriftScoring" type="Node3D" parent="." unique_id=989257217]
 script = ExtResource("7_qd5k7")

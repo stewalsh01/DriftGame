@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://dkfsgxcq2ssk" path="res://DriftGame/scripts/world/smooth_road_path.gd" id="5_uqy5r"]
 [ext_resource type="Material" uid="uid://crnb0d7wq56st" path="res://DriftGame/assets/materials/asphalt_material.tres" id="6_piv5t"]
 [ext_resource type="Script" uid="uid://ciahp2kne72qx" path="res://DriftGame/scripts/world/road_generator.gd" id="6_yrwh6"]
+[ext_resource type="PackedScene" uid="uid://cc78e5ufabr4g" path="res://DriftGame/scenes/start_finish_line.tscn" id="8_agyq7"]
+[ext_resource type="PackedScene" uid="uid://t5ptb1snkvb3" path="res://DriftGame/assets/models/track/StartFinishArch.glb" id="9_20rll"]
 
 [sub_resource type="Gradient" id="Gradient_i8xw8"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -163,9 +165,45 @@ shoulder_width = 12.0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Racetrack/RoadCollision" unique_id=1693820983]
 shape = SubResource("ConcavePolygonShape3D_tl5n7")
 
-[node name="CarSpawn" type="Marker3D" parent="." unique_id=769411965]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -30)
-
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1298865761]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
 light_energy = 1.5
+
+[node name="CarSpawn" type="Marker3D" parent="." unique_id=282820020]
+transform = Transform3D(2.6897587e-05, 0, -1, 0, 1, 0, 1, 0, 2.6897587e-05, 4.255975, 1, -32.3311)
+
+[node name="StartFinishLine" parent="CarSpawn" unique_id=423812783 instance=ExtResource("8_agyq7")]
+transform = Transform3D(1.1491833, 0, 0.04332665, 0, 1.1500001, 0, -0.04332665, 0, 1.1491833, 0.09799194, -0.9873047, 7.5286236)
+
+[node name="StartFinishArch" parent="." unique_id=476110203 instance=ExtResource("9_20rll")]
+transform = Transform3D(-0.0292079, 0, 1.1496286, 0, 1.15, 0, -1.1496286, 0, -0.0292079, -3.136322, -0.016540527, -32.516293)
+
+[node name="FrontLight1" type="SpotLight3D" parent="StartFinishArch" unique_id=1168146045]
+transform = Transform3D(0.8695653, 0, 0, 0, 0.7530656, 0.43478265, 0, -0.43478262, 0.75306565, -4.0851593, 3.6397123, -0.24521255)
+light_energy = 30.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 20.0
+
+[node name="FrontLight2" type="SpotLight3D" parent="StartFinishArch" unique_id=1084562064]
+transform = Transform3D(0.8695653, 3.7252903e-09, -7.450581e-09, 0, 0.75306565, 0.4347826, 0, -0.4347826, 0.75306565, 4.221489, 3.6397123, -0.29453087)
+light_energy = 30.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 20.0
+
+[node name="FrontLight3" type="SpotLight3D" parent="StartFinishArch" unique_id=98149696]
+transform = Transform3D(-0.8650865, 0.044071138, -0.076333515, -1.678985e-17, 0.7530658, 0.4347824, 0.08814232, 0.43254307, -0.7491871, -3.7009735, 3.6397123, 0.35419655)
+light_energy = 30.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 20.0
+
+[node name="FrontLight4" type="SpotLight3D" parent="StartFinishArch" unique_id=437920961]
+transform = Transform3D(-0.8650865, 0.044071134, -0.0763335, -1.6789854e-17, 0.75306576, 0.43478233, 0.08814232, 0.43254295, -0.7491871, 3.9363632, 3.6397123, 0.29043198)
+light_energy = 30.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 20.0
+
+[editable path="CarSpawn/StartFinishLine"]

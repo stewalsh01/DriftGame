@@ -135,3 +135,28 @@ func _on_sound_button_pressed() -> void:
 		sound_button.text = "SOUND: ON"
 	else:
 		sound_button.text = "SOUND: OFF"
+
+
+func _focus_button_on_hover(button: Button) -> void:
+	if button != null:
+		button.grab_focus()
+
+
+func _on_resume_button_mouse_entered() -> void:
+	_focus_button_on_hover(resume_button)
+
+
+func _on_restart_button_mouse_entered() -> void:
+	_focus_button_on_hover(menu_center.find_child("RestartButton", true, false) as Button)
+
+
+func _on_main_menu_button_mouse_entered() -> void:
+	_focus_button_on_hover(menu_center.find_child("MainMenuButton", true, false) as Button)
+
+
+func _on_options_button_mouse_entered() -> void:
+	_focus_button_on_hover(options_button)
+
+
+func _on_quit_button_mouse_entered() -> void:
+	_focus_button_on_hover(menu_center.find_child("QuitButton", true, false) as Button)
