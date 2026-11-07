@@ -20,6 +20,9 @@ extends Control
 @onready var menu_select_sound: AudioStreamPlayer = $MenuSelectSound
 @onready var menu_move_sound: AudioStreamPlayer = $MenuMoveSound
 
+@onready var track_selection: Control = $TrackSelection
+@onready var track_name_button: Button = $TrackSelection/TrackNavigation/TrackName
+
 
 var suppress_focus_sound: bool = false
 
@@ -216,3 +219,20 @@ func _grab_focus_silently(button: Button) -> void:
 
 func _on_car_selection_car_selected(car_index: int) -> void:
 	LocationSelection.selected_car = car_index
+	await _play_select_sound()
+	car_selection.hide()
+	track_selection.show()
+	_grab_focus_silently(track_name_button)
+
+
+func _on_track_selection_track_selected(track_scene: PackedScene) -> void:
+	LocationSelection.selected_location = track_scene
+	await _play_select_sound()
+	get_tree().change_scene_to_file("res://DriftGame/scenes/game.tscn")
+
+
+func _on_track_back_button_pressed() -> void:
+	await _play_select_sound()
+	track_selection.hide()
+	car_selection.show()
+	_grab_focus_silently(car_name_button)
