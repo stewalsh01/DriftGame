@@ -128,12 +128,6 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_d68wm")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "Quit"
 
-[node name="QuitButton2" type="Button" parent="MenuCenter/MenuBox" unique_id=8602614]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "Quit"
-
 [node name="CarSelection" type="Control" parent="." unique_id=1390372003]
 visible = false
 layout_mode = 1
@@ -249,6 +243,57 @@ theme_override_styles/hover = ExtResource("3_l0qa7")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "← Back"
 
+[node name="SettingsMenu" type="Control" parent="." unique_id=788726733]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SettingsBox" type="VBoxContainer" parent="SettingsMenu" unique_id=1087326922]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -33.0
+offset_right = 50.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="SoundButton" type="Button" parent="SettingsMenu/SettingsBox" unique_id=987397234]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("2_k6d0i")
+theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/focus = ExtResource("4_qtt5u")
+text = "SOUND: ON"
+
+[node name="BackButton" type="Button" parent="SettingsMenu/SettingsBox" unique_id=442707027]
+custom_minimum_size = Vector2(220, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("2_k6d0i")
+theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/focus = ExtResource("4_qtt5u")
+text = "BACK"
+
 [node name="MenuSelectSound" type="AudioStreamPlayer" parent="." unique_id=893936971]
 stream = ExtResource("3_pcvyj")
 volume_db = -15.0
@@ -268,9 +313,11 @@ pitch_scale = 10.0
 [connection signal="mouse_entered" from="MenuCenter/MenuBox/PlayButton" to="." method="_on_play_button_mouse_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="mouse_entered" from="MenuCenter/MenuBox/SettingsButton" to="." method="_on_settings_button_mouse_entered"]
+[connection signal="pressed" from="MenuCenter/MenuBox/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="mouse_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_mouse_entered"]
-[connection signal="focus_entered" from="MenuCenter/MenuBox/QuitButton2" to="." method="_on_quit_button_focus_entered"]
-[connection signal="pressed" from="MenuCenter/MenuBox/QuitButton2" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="CarSelection/CarNavigation/PreviousCarButton" to="CarSelection" method="_on_previous_car_button_pressed"]
 [connection signal="pressed" from="CarSelection/CarNavigation/NextCarButton" to="CarSelection" method="_on_next_car_button_pressed"]
 [connection signal="pressed" from="CarSelection/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="SettingsMenu/SettingsBox/SoundButton" to="." method="_on_sound_button_pressed"]
+[connection signal="pressed" from="SettingsMenu/SettingsBox/BackButton" to="." method="_on_settings_back_button_pressed"]

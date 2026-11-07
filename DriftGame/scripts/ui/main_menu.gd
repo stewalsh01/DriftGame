@@ -95,3 +95,44 @@ func _on_back_button_pressed() -> void:
 	$MenuCenter.show()
 
 	$MenuCenter/MenuBox/PlayButton.grab_focus()
+
+
+
+func _on_settings_button_pressed() -> void:
+	$MenuSelectSound.play()
+	await $MenuSelectSound.finished
+
+	$MenuCenter.hide()
+	$SettingsMenu.show()
+
+	var master_bus: int = AudioServer.get_bus_index("Master")
+	var is_muted: bool = AudioServer.is_bus_mute(master_bus)
+
+	if is_muted:
+		$SettingsMenu/SettingsBox/SoundButton.text = "SOUND: OFF"
+	else:
+		$SettingsMenu/SettingsBox/SoundButton.text = "SOUND: ON"
+
+	$SettingsMenu/SettingsBox/SoundButton.grab_focus()
+
+
+func _on_sound_button_pressed() -> void:
+	var master_bus: int = AudioServer.get_bus_index("Master")
+	var is_muted: bool = AudioServer.is_bus_mute(master_bus)
+
+	AudioServer.set_bus_mute(master_bus, not is_muted)
+
+	if is_muted:
+		$SettingsMenu/SettingsBox/SoundButton.text = "SOUND: ON"
+	else:
+		$SettingsMenu/SettingsBox/SoundButton.text = "SOUND: OFF"
+
+
+func _on_settings_back_button_pressed() -> void:
+	$MenuSelectSound.play()
+	await $MenuSelectSound.finished
+
+	$SettingsMenu.hide()
+	$MenuCenter.show()
+
+	$MenuCenter/MenuBox/SettingsButton.grab_focus()
