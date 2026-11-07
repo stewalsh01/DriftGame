@@ -63,12 +63,16 @@ func _on_menu_button_focus_entered() -> void:
 	$MenuMoveSound.play()
 
 
+
 func _on_play_button_pressed() -> void:
 	$MenuSelectSound.play()
 	await $MenuSelectSound.finished
 
 	$MenuCenter.hide()
 	$CarSelection.show()
+
+	$CarSelection/CarNavigation/CarName.grab_focus()
+
 
 func _on_play_button_mouse_entered() -> void:
 	$MenuCenter/MenuBox/PlayButton.grab_focus()
@@ -80,3 +84,14 @@ func _on_settings_button_mouse_entered() -> void:
 
 func _on_quit_button_mouse_entered() -> void:
 	$MenuCenter/MenuBox/QuitButton.grab_focus()
+
+
+
+func _on_back_button_pressed() -> void:
+	$MenuSelectSound.play()
+	await $MenuSelectSound.finished
+
+	$CarSelection.hide()
+	$MenuCenter.show()
+
+	$MenuCenter/MenuBox/PlayButton.grab_focus()

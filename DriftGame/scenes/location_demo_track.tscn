@@ -248,7 +248,7 @@ spot_range = 20.0
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1298865761]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
-light_energy = 1.5
+light_energy = 0.0
 
 [node name="TrackMarkings" type="Node3D" parent="." unique_id=125200562]
 
