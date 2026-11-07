@@ -60,7 +60,6 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
 [node name="DemoTrackButton" type="Button" parent="MenuCenter/MenuBox" unique_id=1479148566]
-visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Demo Track
@@ -311,20 +310,29 @@ pitch_scale = 10.0
 [connection signal="pressed" from="MenuCenter/MenuBox/Location4Button" to="." method="_on_location_4_button_pressed"]
 [connection signal="focus_entered" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_focus_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/Location1Button" to="." method="_on_location_1_button_pressed"]
+[connection signal="focus_entered" from="MenuCenter/MenuBox/PlayButton" to="." method="_on_play_button_focus_entered"]
 [connection signal="mouse_entered" from="MenuCenter/MenuBox/PlayButton" to="." method="_on_play_button_mouse_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="focus_entered" from="MenuCenter/MenuBox/SettingsButton" to="." method="_on_settings_button_focus_entered"]
 [connection signal="mouse_entered" from="MenuCenter/MenuBox/SettingsButton" to="." method="_on_settings_button_mouse_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="focus_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_focus_entered"]
 [connection signal="mouse_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_mouse_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="focus_entered" from="CarSelection/CarNavigation/PreviousCarButton" to="." method="_on_previous_car_button_focus_entered"]
 [connection signal="mouse_entered" from="CarSelection/CarNavigation/PreviousCarButton" to="CarSelection" method="_on_previous_car_button_mouse_entered"]
 [connection signal="pressed" from="CarSelection/CarNavigation/PreviousCarButton" to="CarSelection" method="_on_previous_car_button_pressed"]
+[connection signal="focus_entered" from="CarSelection/CarNavigation/CarName" to="." method="_on_car_name_focus_entered"]
 [connection signal="mouse_entered" from="CarSelection/CarNavigation/CarName" to="CarSelection" method="_on_car_name_mouse_entered"]
+[connection signal="focus_entered" from="CarSelection/CarNavigation/NextCarButton" to="." method="_on_next_car_button_focus_entered"]
 [connection signal="mouse_entered" from="CarSelection/CarNavigation/NextCarButton" to="CarSelection" method="_on_next_car_button_mouse_entered"]
 [connection signal="pressed" from="CarSelection/CarNavigation/NextCarButton" to="CarSelection" method="_on_next_car_button_pressed"]
+[connection signal="focus_entered" from="CarSelection/BackButton" to="." method="_on_back_button_focus_entered"]
 [connection signal="mouse_entered" from="CarSelection/BackButton" to="CarSelection" method="_on_back_button_mouse_entered"]
 [connection signal="pressed" from="CarSelection/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="focus_entered" from="SettingsMenu/SettingsBox/SoundButton" to="." method="_on_sound_button_focus_entered"]
 [connection signal="mouse_entered" from="SettingsMenu/SettingsBox/SoundButton" to="." method="_on_sound_button_mouse_entered"]
 [connection signal="pressed" from="SettingsMenu/SettingsBox/SoundButton" to="." method="_on_sound_button_pressed"]
+[connection signal="focus_entered" from="SettingsMenu/SettingsBox/BackButton" to="." method="_on_back_button_focus_entered"]
 [connection signal="mouse_entered" from="SettingsMenu/SettingsBox/BackButton" to="." method="_on_back_button_mouse_entered"]
 [connection signal="pressed" from="SettingsMenu/SettingsBox/BackButton" to="." method="_on_settings_back_button_pressed"]

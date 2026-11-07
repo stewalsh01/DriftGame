@@ -2,6 +2,8 @@
 extends Control
 
 
+# NODE REFERENCES
+
 @onready var menu_center: Control = $MenuCenter
 @onready var car_selection: Control = $CarSelection
 @onready var settings_menu: Control = $SettingsMenu
@@ -19,8 +21,11 @@ extends Control
 @onready var menu_move_sound: AudioStreamPlayer = $MenuMoveSound
 
 
+var suppress_focus_sound: bool = false
+
+
 func _ready() -> void:
-	play_button.grab_focus()
+	_grab_focus_silently(play_button)
 	menu_move_sound.stop()
 
 
@@ -32,7 +37,7 @@ func _on_play_button_pressed() -> void:
 	menu_center.hide()
 	car_selection.show()
 
-	car_name_button.grab_focus()
+	_grab_focus_silently(car_name_button)
 
 
 func _on_settings_button_pressed() -> void:
@@ -42,7 +47,7 @@ func _on_settings_button_pressed() -> void:
 	settings_menu.show()
 
 	_update_sound_button()
-	sound_button.grab_focus()
+	_grab_focus_silently(sound_button)
 
 
 func _on_quit_button_pressed() -> void:
@@ -58,7 +63,7 @@ func _on_back_button_pressed() -> void:
 	car_selection.hide()
 	menu_center.show()
 
-	play_button.grab_focus()
+	_grab_focus_silently(play_button)
 
 
 # SETTINGS
@@ -84,7 +89,7 @@ func _on_settings_back_button_pressed() -> void:
 	settings_menu.hide()
 	menu_center.show()
 
-	settings_button.grab_focus()
+	_grab_focus_silently(settings_button)
 
 
 # LEGACY TRACK BUTTONS
@@ -141,24 +146,59 @@ func _on_settings_back_button_mouse_entered() -> void:
 
 # FOCUS SOUNDS
 
-func _on_menu_button_focus_entered() -> void:
+func _on_button_focus_entered() -> void:
+	if suppress_focus_sound:
+		return
+
 	menu_move_sound.play()
+
+
+func _on_menu_button_focus_entered() -> void:
+	_on_button_focus_entered()
 
 
 func _on_quit_button_focus_entered() -> void:
-	menu_move_sound.play()
+	_on_button_focus_entered()
 
 
 func _on_demo_track_button_focus_entered() -> void:
-	menu_move_sound.play()
+	_on_button_focus_entered()
 
 
 func _on_location_4_button_focus_entered() -> void:
-	menu_move_sound.play()
+	_on_button_focus_entered()
 
 
 func _on_location_1_button_focus_entered() -> void:
-	menu_move_sound.play()
+	_on_button_focus_entered()
+
+
+func _on_play_button_focus_entered() -> void:
+	_on_button_focus_entered()
+
+
+func _on_settings_button_focus_entered() -> void:
+	_on_button_focus_entered()
+
+
+func _on_sound_button_focus_entered() -> void:
+	_on_button_focus_entered()
+
+
+func _on_back_button_focus_entered() -> void:
+	_on_button_focus_entered()
+
+
+func _on_previous_car_button_focus_entered() -> void:
+	_on_button_focus_entered()
+
+
+func _on_car_name_focus_entered() -> void:
+	_on_button_focus_entered()
+
+
+func _on_next_car_button_focus_entered() -> void:
+	_on_button_focus_entered()
 
 
 # SHARED HELPERS
@@ -166,3 +206,9 @@ func _on_location_1_button_focus_entered() -> void:
 func _play_select_sound() -> void:
 	menu_select_sound.play()
 	await menu_select_sound.finished
+
+
+func _grab_focus_silently(button: Button) -> void:
+	suppress_focus_sound = true
+	button.grab_focus()
+	suppress_focus_sound = false
