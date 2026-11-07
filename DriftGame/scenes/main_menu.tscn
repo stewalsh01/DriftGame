@@ -5,16 +5,8 @@
 [ext_resource type="Script" uid="uid://chmll7gylk5ex" path="res://DriftGame/scenes/car_selection.gd" id="2_jyio2"]
 [ext_resource type="StyleBox" uid="uid://cho5dmtjbnh5u" path="res://DriftGame/assets/themes/button_normal.tres" id="2_k6d0i"]
 [ext_resource type="AudioStream" uid="uid://c15ra4lvfptj5" path="res://DriftGame/assets/audio/menu/MenuMoveSound.wav" id="2_kgjj3"]
-[ext_resource type="StyleBox" uid="uid://dep5k8x47wtw5" path="res://DriftGame/assets/themes/button_hover.tres" id="3_l0qa7"]
 [ext_resource type="AudioStream" uid="uid://b610yg7jp6a33" path="res://DriftGame/assets/audio/menu/SelectSound.wav" id="3_pcvyj"]
 [ext_resource type="StyleBox" uid="uid://cd0qkjqbswgb3" path="res://DriftGame/assets/themes/button_focus.tres" id="4_qtt5u"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d68wm"]
-bg_color = Color(0.13333334, 0.14901961, 0.16078432, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
 
 [node name="MainMenu" type="Control" unique_id=1417694871]
 layout_mode = 3
@@ -96,7 +88,8 @@ theme_override_colors/font_pressed_color = Color(0.06666667, 0.06666667, 0.06666
 theme_override_colors/font_hover_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = ExtResource("2_k6d0i")
-theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "Play"
 
@@ -110,7 +103,8 @@ theme_override_colors/font_pressed_color = Color(0.06666667, 0.06666667, 0.06666
 theme_override_colors/font_hover_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = ExtResource("2_k6d0i")
-theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "Settings"
 
@@ -124,7 +118,8 @@ theme_override_colors/font_pressed_color = Color(0.06666667, 0.06666667, 0.06666
 theme_override_colors/font_hover_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = ExtResource("2_k6d0i")
-theme_override_styles/hover = SubResource("StyleBoxFlat_d68wm")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "Quit"
 
@@ -192,7 +187,8 @@ theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = ExtResource("2_k6d0i")
-theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "◀"
 
@@ -206,7 +202,7 @@ theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("2_k6d0i")
 theme_override_styles/pressed = ExtResource("4_qtt5u")
-theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/hover = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "MAZDA RX-7"
 
@@ -218,7 +214,8 @@ theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = ExtResource("2_k6d0i")
-theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "▶"
 
@@ -239,7 +236,8 @@ theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("2_k6d0i")
-theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "← Back"
 
@@ -277,7 +275,8 @@ theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("2_k6d0i")
-theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "SOUND: ON"
 
@@ -290,7 +289,9 @@ theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("2_k6d0i")
-theme_override_styles/hover = ExtResource("3_l0qa7")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
+theme_override_styles/disabled = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "BACK"
 
@@ -316,8 +317,14 @@ pitch_scale = 10.0
 [connection signal="pressed" from="MenuCenter/MenuBox/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="mouse_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_mouse_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="mouse_entered" from="CarSelection/CarNavigation/PreviousCarButton" to="CarSelection" method="_on_previous_car_button_mouse_entered"]
 [connection signal="pressed" from="CarSelection/CarNavigation/PreviousCarButton" to="CarSelection" method="_on_previous_car_button_pressed"]
+[connection signal="mouse_entered" from="CarSelection/CarNavigation/CarName" to="CarSelection" method="_on_car_name_mouse_entered"]
+[connection signal="mouse_entered" from="CarSelection/CarNavigation/NextCarButton" to="CarSelection" method="_on_next_car_button_mouse_entered"]
 [connection signal="pressed" from="CarSelection/CarNavigation/NextCarButton" to="CarSelection" method="_on_next_car_button_pressed"]
+[connection signal="mouse_entered" from="CarSelection/BackButton" to="CarSelection" method="_on_back_button_mouse_entered"]
 [connection signal="pressed" from="CarSelection/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="mouse_entered" from="SettingsMenu/SettingsBox/SoundButton" to="." method="_on_sound_button_mouse_entered"]
 [connection signal="pressed" from="SettingsMenu/SettingsBox/SoundButton" to="." method="_on_sound_button_pressed"]
+[connection signal="mouse_entered" from="SettingsMenu/SettingsBox/BackButton" to="." method="_on_back_button_mouse_entered"]
 [connection signal="pressed" from="SettingsMenu/SettingsBox/BackButton" to="." method="_on_settings_back_button_pressed"]
