@@ -1,6 +1,11 @@
 extends Node3D
 
 
+func _enter_tree() -> void:
+	var car = get_node("Car")
+	car.selected_car = LocationSelection.selected_car
+
+
 func _ready() -> void:
 	var selected_location: Node3D = LocationSelection.selected_location.instantiate()
 	selected_location.name = "Location"

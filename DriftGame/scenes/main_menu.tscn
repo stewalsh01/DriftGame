@@ -60,6 +60,7 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
 [node name="DemoTrackButton" type="Button" parent="MenuCenter/MenuBox" unique_id=1479148566]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Demo Track
@@ -319,11 +320,13 @@ pitch_scale = 10.0
 [connection signal="focus_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_focus_entered"]
 [connection signal="mouse_entered" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_mouse_entered"]
 [connection signal="pressed" from="MenuCenter/MenuBox/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="car_selected" from="CarSelection" to="." method="_on_car_selection_car_selected"]
 [connection signal="focus_entered" from="CarSelection/CarNavigation/PreviousCarButton" to="." method="_on_previous_car_button_focus_entered"]
 [connection signal="mouse_entered" from="CarSelection/CarNavigation/PreviousCarButton" to="CarSelection" method="_on_previous_car_button_mouse_entered"]
 [connection signal="pressed" from="CarSelection/CarNavigation/PreviousCarButton" to="CarSelection" method="_on_previous_car_button_pressed"]
 [connection signal="focus_entered" from="CarSelection/CarNavigation/CarName" to="." method="_on_car_name_focus_entered"]
 [connection signal="mouse_entered" from="CarSelection/CarNavigation/CarName" to="CarSelection" method="_on_car_name_mouse_entered"]
+[connection signal="pressed" from="CarSelection/CarNavigation/CarName" to="CarSelection" method="_on_car_name_pressed"]
 [connection signal="focus_entered" from="CarSelection/CarNavigation/NextCarButton" to="." method="_on_next_car_button_focus_entered"]
 [connection signal="mouse_entered" from="CarSelection/CarNavigation/NextCarButton" to="CarSelection" method="_on_next_car_button_mouse_entered"]
 [connection signal="pressed" from="CarSelection/CarNavigation/NextCarButton" to="CarSelection" method="_on_next_car_button_pressed"]

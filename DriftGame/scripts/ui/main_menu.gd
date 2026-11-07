@@ -212,3 +212,7 @@ func _grab_focus_silently(button: Button) -> void:
 	suppress_focus_sound = true
 	button.grab_focus()
 	suppress_focus_sound = false
+
+
+func _on_car_selection_car_selected(car_index: int) -> void:
+	LocationSelection.selected_car = car_index

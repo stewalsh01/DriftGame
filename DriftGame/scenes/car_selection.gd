@@ -1,13 +1,17 @@
 
 extends Control
 
+signal car_selected(car_index: int)
+
 
 const CARS = [
 	{
+		"id": 2,
 		"name": "MAZDA RX-7",
 		"texture": preload("res://DriftGame/assets/menu/cars/car_mazda_rx7.png")
 	},
 	{
+		"id": 3,
 		"name": "SUBARU BRZ",
 		"texture": preload("res://DriftGame/assets/menu/cars/car_subaru_brz.png")
 	}
@@ -72,3 +76,8 @@ func _on_next_car_button_mouse_entered() -> void:
 
 func _on_back_button_mouse_entered() -> void:
 	back_button.grab_focus()
+
+
+func _on_car_name_pressed() -> void:
+	var car_id: int = CARS[selected_car_index]["id"]
+	car_selected.emit(car_id)
