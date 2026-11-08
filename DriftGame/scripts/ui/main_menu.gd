@@ -28,6 +28,11 @@ var suppress_focus_sound: bool = false
 
 
 func _ready() -> void:
+	menu_center.show()
+	car_selection.hide()
+	track_selection.hide()
+	settings_menu.hide()
+
 	_grab_focus_silently(play_button)
 	menu_move_sound.stop()
 
@@ -126,6 +131,9 @@ func _on_location_1_button_pressed() -> void:
 
 
 # MOUSE HOVER
+
+func _on_track_time_button_mouse_entered(button: Button) -> void:
+	button.grab_focus()
 
 func _on_play_button_mouse_entered() -> void:
 	play_button.grab_focus()
@@ -236,3 +244,15 @@ func _on_track_back_button_pressed() -> void:
 	track_selection.hide()
 	car_selection.show()
 	_grab_focus_silently(car_name_button)
+
+
+func _on_previous_time_button_mouse_entered() -> void:
+	$TrackSelection/TimeOfDaySelection/PreviousTimeButton.grab_focus()
+
+
+func _on_time_of_day_button_mouse_entered() -> void:
+	$TrackSelection/TimeOfDaySelection/TimeOfDayButton.grab_focus()
+
+
+func _on_next_time_button_mouse_entered() -> void:
+	$TrackSelection/TimeOfDaySelection/NextTimeButton.grab_focus()

@@ -243,7 +243,6 @@ theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "← Back"
 
 [node name="TrackSelection" type="Control" parent="." unique_id=1833128802]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -350,6 +349,53 @@ theme_override_styles/hover = ExtResource("4_qtt5u")
 theme_override_styles/focus = ExtResource("4_qtt5u")
 text = "← Back"
 
+[node name="TimeOfDaySelection" type="HBoxContainer" parent="TrackSelection" unique_id=1481135655]
+layout_mode = 0
+offset_left = 800.5
+offset_top = 760.0
+offset_right = 1098.5
+offset_bottom = 810.0
+
+[node name="PreviousTimeButton" type="Button" parent="TrackSelection/TimeOfDaySelection" unique_id=1110077863]
+custom_minimum_size = Vector2(60, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("2_k6d0i")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
+theme_override_styles/focus = ExtResource("4_qtt5u")
+text = "◀"
+
+[node name="TimeOfDayButton" type="Button" parent="TrackSelection/TimeOfDaySelection" unique_id=978566396]
+custom_minimum_size = Vector2(170, 45)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("2_k6d0i")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
+theme_override_styles/focus = ExtResource("4_qtt5u")
+text = "DAY"
+
+[node name="NextTimeButton" type="Button" parent="TrackSelection/TimeOfDaySelection" unique_id=435177723]
+custom_minimum_size = Vector2(60, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("2_k6d0i")
+theme_override_styles/pressed = ExtResource("4_qtt5u")
+theme_override_styles/hover = ExtResource("4_qtt5u")
+theme_override_styles/focus = ExtResource("4_qtt5u")
+text = "▶"
+
 [node name="SettingsMenu" type="Control" parent="." unique_id=788726733]
 visible = false
 layout_mode = 1
@@ -455,6 +501,14 @@ pitch_scale = 10.0
 [connection signal="focus_entered" from="TrackSelection/BackButton" to="." method="_on_button_focus_entered"]
 [connection signal="mouse_entered" from="TrackSelection/BackButton" to="TrackSelection" method="_on_back_button_mouse_entered"]
 [connection signal="pressed" from="TrackSelection/BackButton" to="." method="_on_track_back_button_pressed"]
+[connection signal="focus_entered" from="TrackSelection/TimeOfDaySelection/PreviousTimeButton" to="." method="_on_button_focus_entered"]
+[connection signal="mouse_entered" from="TrackSelection/TimeOfDaySelection/PreviousTimeButton" to="." method="_on_previous_time_button_mouse_entered"]
+[connection signal="pressed" from="TrackSelection/TimeOfDaySelection/PreviousTimeButton" to="TrackSelection" method="_on_previous_time_button_pressed"]
+[connection signal="focus_entered" from="TrackSelection/TimeOfDaySelection/TimeOfDayButton" to="." method="_on_button_focus_entered"]
+[connection signal="mouse_entered" from="TrackSelection/TimeOfDaySelection/TimeOfDayButton" to="." method="_on_time_of_day_button_mouse_entered"]
+[connection signal="focus_entered" from="TrackSelection/TimeOfDaySelection/NextTimeButton" to="." method="_on_button_focus_entered"]
+[connection signal="mouse_entered" from="TrackSelection/TimeOfDaySelection/NextTimeButton" to="." method="_on_next_time_button_mouse_entered"]
+[connection signal="pressed" from="TrackSelection/TimeOfDaySelection/NextTimeButton" to="TrackSelection" method="_on_next_time_button_pressed"]
 [connection signal="focus_entered" from="SettingsMenu/SettingsBox/SoundButton" to="." method="_on_sound_button_focus_entered"]
 [connection signal="mouse_entered" from="SettingsMenu/SettingsBox/SoundButton" to="." method="_on_sound_button_mouse_entered"]
 [connection signal="pressed" from="SettingsMenu/SettingsBox/SoundButton" to="." method="_on_sound_button_pressed"]

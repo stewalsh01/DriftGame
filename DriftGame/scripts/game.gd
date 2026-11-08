@@ -11,6 +11,11 @@ func _ready() -> void:
 	selected_location.name = "Location"
 	add_child(selected_location)
 
+	$TimeOfDayManager.apply_time_of_day(
+			selected_location,
+			LocationSelection.is_day
+		)
+
 	var car: CharacterBody3D = $Car
 	car.global_transform = selected_location.get_node("CarSpawn").global_transform
 

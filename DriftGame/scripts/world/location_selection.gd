@@ -6,3 +6,5 @@ var selected_location: PackedScene = preload(
 )
 
 var selected_car: int = 3
+
+var is_day: bool = true
