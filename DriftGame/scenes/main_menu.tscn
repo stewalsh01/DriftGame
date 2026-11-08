@@ -46,7 +46,7 @@ theme_override_constants/separation = 0
 [node name="Title" type="Label" parent="MenuCenter/MenuBox/TitleBox" unique_id=663814960]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
-text = "APEX ZERO"
+text = "Drift Game"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="MenuCenter/MenuBox/TitleBox" unique_id=1464446033]
