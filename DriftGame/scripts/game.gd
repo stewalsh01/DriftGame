@@ -16,6 +16,8 @@ func _ready() -> void:
 			LocationSelection.is_day
 		)
 
+	$TimeOfDayManager.apply_car_lights(LocationSelection.is_day)
+
 	var car: CharacterBody3D = $Car
 	car.global_transform = selected_location.get_node("CarSpawn").global_transform
 

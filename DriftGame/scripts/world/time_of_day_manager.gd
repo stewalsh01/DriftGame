@@ -21,3 +21,11 @@ func _set_track_lights(node: Node, enabled: bool) -> void:
 			child.visible = enabled
 
 		_set_track_lights(child, enabled)
+
+
+func apply_car_lights(is_day: bool) -> void:
+	var car: Node3D = get_parent().get_node("Car")
+
+	for light in car.find_children("*", "Light3D", true, false):
+		if light.name.begins_with("Headlight") or light.name.begins_with("TailLight"):
+			light.visible = not is_day

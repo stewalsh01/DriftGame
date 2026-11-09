@@ -209,7 +209,7 @@ func _ready() -> void:
 			headlights.append(node)
 
 	set_brake_lights(false)
-	
+
 	if car.selected_car == 3:
 		var rear_lights := car_model.find_child(
 			"SUBARU_BRZ_TS_rear_lights", true, false
@@ -256,19 +256,19 @@ func find_visual_nodes(node_names: Array) -> Array[Node3D]:
 # BRAKE LIGHTS
 # ================================================================
 var subaru_brake_material: BaseMaterial3D
+
 func set_brake_lights(enabled: bool) -> void:
-	# Existing lights for Cars 1 and 2
 	for brake_light: Node3D in brake_lights:
 		if brake_light is Light3D:
-			brake_light.visible = true
+			brake_light.visible = enabled or not LocationSelection.is_day
 			brake_light.light_energy = (
 				brake_light_energy if enabled else tail_light_energy
 			)
 
-	# Subaru BRZ brake-light material
+	# Subaru BRZ rear-light material
 	if car.selected_car == 3 and subaru_brake_material != null:
 		subaru_brake_material.emission_energy_multiplier = (
-			10.0 if enabled else 2.5
+			10.0 if enabled
+			else 2.5 if not LocationSelection.is_day
+			else 0.0
 		)
-	
-	
