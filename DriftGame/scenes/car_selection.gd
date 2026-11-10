@@ -24,6 +24,7 @@ const CARS = [
 @onready var previous_car_button: Button = $CarNavigation/PreviousCarButton
 @onready var next_car_button: Button = $CarNavigation/NextCarButton
 @onready var back_button: Button = $BackButton
+@onready var continue_button: Button = $ContinueButton
 
 
 var selected_car_index: int = 0
@@ -80,8 +81,8 @@ func _on_continue_button_pressed() -> void:
 
 
 func _on_continue_button_mouse_entered() -> void:
-	pass # Replace with function body.
+	continue_button.grab_focus()
 
 
 func _on_continue_button_focus_entered() -> void:
-	pass # Replace with function body.
+	$"../MenuMoveSound".play()
