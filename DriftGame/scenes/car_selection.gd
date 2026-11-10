@@ -19,7 +19,7 @@ const CARS = [
 
 
 @onready var car_preview: TextureRect = $CarPreview
-@onready var car_name_button: Button = $CarNavigation/CarName
+@onready var car_name_label: Label = $CarNavigation/CarName
 
 @onready var previous_car_button: Button = $CarNavigation/PreviousCarButton
 @onready var next_car_button: Button = $CarNavigation/NextCarButton
@@ -57,17 +57,13 @@ func _update_car_preview() -> void:
 	var car = CARS[selected_car_index]
 
 	car_preview.texture = car["texture"]
-	car_name_button.text = car["name"]
+	car_name_label.text = car["name"]
 
 
 # MOUSE HOVER
 
 func _on_previous_car_button_mouse_entered() -> void:
 	previous_car_button.grab_focus()
-
-
-func _on_car_name_mouse_entered() -> void:
-	car_name_button.grab_focus()
 
 
 func _on_next_car_button_mouse_entered() -> void:
@@ -78,6 +74,14 @@ func _on_back_button_mouse_entered() -> void:
 	back_button.grab_focus()
 
 
-func _on_car_name_pressed() -> void:
+func _on_continue_button_pressed() -> void:
 	var car_id: int = CARS[selected_car_index]["id"]
 	car_selected.emit(car_id)
+
+
+func _on_continue_button_mouse_entered() -> void:
+	pass # Replace with function body.
+
+
+func _on_continue_button_focus_entered() -> void:
+	pass # Replace with function body.

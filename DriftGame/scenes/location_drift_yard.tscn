@@ -2,7 +2,6 @@
 
 [ext_resource type="Material" uid="uid://crnb0d7wq56st" path="res://DriftGame/assets/materials/asphalt_material.tres" id="1_dixj2"]
 [ext_resource type="Texture2D" uid="uid://bs7x1k00el4hq" path="res://DriftGame/assets/markings/circle.png" id="2_dixj2"]
-[ext_resource type="PackedScene" uid="uid://mtvkwowcevic" path="res://DriftGame/assets/models/buildings/lamp-post.glb" id="2_o3dyy"]
 [ext_resource type="Texture2D" uid="uid://ebbrfruo7grm" path="res://DriftGame/assets/markings/blackyellowboundary.png" id="3_1g1jn"]
 [ext_resource type="Texture2D" uid="uid://b1rbotu0sv8ki" path="res://DriftGame/assets/markings/donutzone.png" id="4_083ba"]
 [ext_resource type="Script" uid="uid://bs0qp33emmdeq" path="res://DriftGame/scripts/rounded_hill.gd" id="4_6686y"]
@@ -20,6 +19,7 @@
 [ext_resource type="Material" uid="uid://cthgb51ay72ib" path="res://DriftGame/assets/materials/grass_material.tres" id="15_1g1jn"]
 [ext_resource type="PackedScene" uid="uid://7tunk3w4ris6" path="res://DriftGame/assets/models/buildings/building_test.glb" id="16_dixj2"]
 [ext_resource type="PackedScene" uid="uid://ce1jgiqegpmnn" path="res://DriftGame/assets/models/track/RedWhiteApexCurve.glb" id="17_1g1jn"]
+[ext_resource type="PackedScene" uid="uid://b7t3h0i8u7tbh" path="res://DriftGame/assets/models/track/light.glb" id="20_n1gxc"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_1tv2y"]
 material = ExtResource("1_dixj2")
@@ -31,10 +31,6 @@ size = Vector3(150, 0.2, 100)
 [sub_resource type="BoxShape3D" id="BoxShape3D_edvm6"]
 size = Vector3(100, 0.2, 100)
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_edvm6"]
-height = 15.0
-radius = 0.3
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o3dyy"]
 albedo_color = Color(0.99215686, 0.62352943, 0.44313726, 1)
 
@@ -44,14 +40,14 @@ size = Vector3(30, 0.2, 20)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_o3dyy"]
 data = PackedVector3Array(-15, 0.099999994, 10, 15, 0.099999994, 10, -15, -0.099999994, 10, 15, 0.099999994, 10, 15, -0.099999994, 10, -15, -0.099999994, 10, 15, 0.099999994, -10, -15, 0.099999994, -10, 15, -0.099999994, -10, -15, 0.099999994, -10, -15, -0.099999994, -10, 15, -0.099999994, -10, 15, 0.099999994, 10, 15, 0.099999994, -10, 15, -0.099999994, 10, 15, 0.099999994, -10, 15, -0.099999994, -10, 15, -0.099999994, 10, -15, 0.099999994, -10, -15, 0.099999994, 10, -15, -0.099999994, -10, -15, 0.099999994, 10, -15, -0.099999994, 10, -15, -0.099999994, -10, 15, 0.099999994, 10, -15, 0.099999994, 10, 15, 0.099999994, -10, -15, 0.099999994, 10, -15, 0.099999994, -10, 15, 0.099999994, -10, -15, -0.099999994, 10, 15, -0.099999994, 10, -15, -0.099999994, -10, 15, -0.099999994, 10, 15, -0.099999994, -10, -15, -0.099999994, -10)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n1gxc"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eimt8"]
 albedo_color = Color(0.8, 0.35, 0.1, 1)
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_eimt8"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_x8cth"]
 _surfaces = [{
 "aabb": AABB(-6, 0, -15, 12, 3, 30),
 "format": 34359738375,
-"material": SubResource("StandardMaterial3D_n1gxc"),
+"material": SubResource("StandardMaterial3D_eimt8"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 180,
@@ -61,14 +57,14 @@ _surfaces = [{
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_cjyx7"]
 data = PackedVector3Array(-6, 0, -15, 6, 0, -15, -6, 0.3136, -14, 6, 0, -15, 6, 0.3136, -14, -6, 0.3136, -14, -6, 0.3136, -14, 6, 0.3136, -14, -6, 0.62369996, -13, 6, 0.3136, -14, 6, 0.62369996, -13, -6, 0.62369996, -13, -6, 0.62369996, -13, 6, 0.62369996, -13, -6, 0.9271, -12, 6, 0.62369996, -13, 6, 0.9271, -12, -6, 0.9271, -12, -6, 0.9271, -12, 6, 0.9271, -12, -6, 1.2202, -11, 6, 0.9271, -12, 6, 1.2202, -11, -6, 1.2202, -11, -6, 1.2202, -11, 6, 1.2202, -11, -6, 1.5, -10, 6, 1.2202, -11, 6, 1.5, -10, -6, 1.5, -10, -6, 1.5, -10, 6, 1.5, -10, -6, 1.7634, -9, 6, 1.5, -10, 6, 1.7634, -9, -6, 1.7634, -9, -6, 1.7634, -9, 6, 1.7634, -9, -6, 2.0074, -8, 6, 1.7634, -9, 6, 2.0074, -8, -6, 2.0074, -8, -6, 2.0074, -8, 6, 2.0074, -8, -6, 2.2294, -7, 6, 2.0074, -8, 6, 2.2294, -7, -6, 2.2294, -7, -6, 2.2294, -7, 6, 2.2294, -7, -6, 2.4271, -6, 6, 2.2294, -7, 6, 2.4271, -6, -6, 2.4271, -6, -6, 2.4271, -6, 6, 2.4271, -6, -6, 2.5981, -5, 6, 2.4271, -6, 6, 2.5981, -5, -6, 2.5981, -5, -6, 2.5981, -5, 6, 2.5981, -5, -6, 2.7405999, -4, 6, 2.5981, -5, 6, 2.7405999, -4, -6, 2.7405999, -4, -6, 2.7405999, -4, 6, 2.7405999, -4, -6, 2.8532, -3, 6, 2.7405999, -4, 6, 2.8532, -3, -6, 2.8532, -3, -6, 2.8532, -3, 6, 2.8532, -3, -6, 2.9343998, -2, 6, 2.8532, -3, 6, 2.9343998, -2, -6, 2.9343998, -2, -6, 2.9343998, -2, 6, 2.9343998, -2, -6, 2.9836, -1, 6, 2.9343998, -2, 6, 2.9836, -1, -6, 2.9836, -1, -6, 2.9836, -1, 6, 2.9836, -1, -6, 3, 0, 6, 2.9836, -1, 6, 3, 0, -6, 3, 0, -6, 3, 0, 6, 3, 0, -6, 2.9836, 1, 6, 3, 0, 6, 2.9836, 1, -6, 2.9836, 1, -6, 2.9836, 1, 6, 2.9836, 1, -6, 2.9343998, 2, 6, 2.9836, 1, 6, 2.9343998, 2, -6, 2.9343998, 2, -6, 2.9343998, 2, 6, 2.9343998, 2, -6, 2.8532, 3, 6, 2.9343998, 2, 6, 2.8532, 3, -6, 2.8532, 3, -6, 2.8532, 3, 6, 2.8532, 3, -6, 2.7405999, 4, 6, 2.8532, 3, 6, 2.7405999, 4, -6, 2.7405999, 4, -6, 2.7405999, 4, 6, 2.7405999, 4, -6, 2.5981, 5, 6, 2.7405999, 4, 6, 2.5981, 5, -6, 2.5981, 5, -6, 2.5981, 5, 6, 2.5981, 5, -6, 2.4271, 6, 6, 2.5981, 5, 6, 2.4271, 6, -6, 2.4271, 6, -6, 2.4271, 6, 6, 2.4271, 6, -6, 2.2294, 7, 6, 2.4271, 6, 6, 2.2294, 7, -6, 2.2294, 7, -6, 2.2294, 7, 6, 2.2294, 7, -6, 2.0074, 8, 6, 2.2294, 7, 6, 2.0074, 8, -6, 2.0074, 8, -6, 2.0074, 8, 6, 2.0074, 8, -6, 1.7634, 9, 6, 2.0074, 8, 6, 1.7634, 9, -6, 1.7634, 9, -6, 1.7634, 9, 6, 1.7634, 9, -6, 1.5, 10, 6, 1.7634, 9, 6, 1.5, 10, -6, 1.5, 10, -6, 1.5, 10, 6, 1.5, 10, -6, 1.2202, 11, 6, 1.5, 10, 6, 1.2202, 11, -6, 1.2202, 11, -6, 1.2202, 11, 6, 1.2202, 11, -6, 0.9271, 12, 6, 1.2202, 11, 6, 0.9271, 12, -6, 0.9271, 12, -6, 0.9271, 12, 6, 0.9271, 12, -6, 0.62369996, 13, 6, 0.9271, 12, 6, 0.62369996, 13, -6, 0.62369996, 13, -6, 0.62369996, 13, 6, 0.62369996, 13, -6, 0.3136, 14, 6, 0.62369996, 13, 6, 0.3136, 14, -6, 0.3136, 14, -6, 0.3136, 14, 6, 0.3136, 14, -6, 0, 15, 6, 0.3136, 14, 6, 0, 15, -6, 0, 15)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x8cth"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jmol6"]
 albedo_color = Color(0.8, 0.35, 0.1, 1)
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_jmol6"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_l07k3"]
 _surfaces = [{
 "aabb": AABB(-5, 0, -7.5, 10, 4, 15),
 "format": 34359738375,
-"material": SubResource("StandardMaterial3D_x8cth"),
+"material": SubResource("StandardMaterial3D_jmol6"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 180,
@@ -88,6 +84,10 @@ rings = 1
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ipcpc"]
 height = 0.1
 radius = 10.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_p81ab"]
+height = 10.0
+radius = 0.2
 
 [node name="LocationDriftYard" type="Node3D" unique_id=720615559]
 
@@ -116,22 +116,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -0.1, 0)
 use_collision = true
 size = Vector3(102, 0.1, 100)
 
-[node name="lamp-post" parent="ElevationTestArea" unique_id=534716231 instance=ExtResource("2_o3dyy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96.74631, 0, 31.230007)
-
-[node name="StaticBody3D" type="StaticBody3D" parent="ElevationTestArea/lamp-post" unique_id=1866404481]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ElevationTestArea/lamp-post/StaticBody3D" unique_id=1139040021]
-shape = SubResource("CylinderShape3D_edvm6")
-
-[node name="lamp-post2" parent="ElevationTestArea" unique_id=1609026729 instance=ExtResource("2_o3dyy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -69.22739, 0, 31.230007)
-
-[node name="StaticBody3D" type="StaticBody3D" parent="ElevationTestArea/lamp-post2" unique_id=1226799855]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ElevationTestArea/lamp-post2/StaticBody3D" unique_id=1486036457]
-shape = SubResource("CylinderShape3D_edvm6")
-
 [node name="cone2" parent="ElevationTestArea" unique_id=2099154918 instance=ExtResource("4_cjyx7")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -170.00914, 0, 27.00505)
 
@@ -156,7 +140,7 @@ shape = SubResource("ConcavePolygonShape3D_o3dyy")
 
 [node name="RoundedHill" type="MeshInstance3D" parent="ElevationTestArea" unique_id=262179090]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -37.505424, -0.2755394, -11.006897)
-mesh = SubResource("ArrayMesh_eimt8")
+mesh = SubResource("ArrayMesh_x8cth")
 script = ExtResource("4_6686y")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="ElevationTestArea/RoundedHill" unique_id=1393079737]
@@ -166,7 +150,7 @@ shape = SubResource("ConcavePolygonShape3D_cjyx7")
 
 [node name="SteepHill" type="MeshInstance3D" parent="ElevationTestArea" unique_id=1864374312]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -43.03591, -0.2755394, 2.4287415)
-mesh = SubResource("ArrayMesh_jmol6")
+mesh = SubResource("ArrayMesh_l07k3")
 script = ExtResource("4_6686y")
 hill_length = 15.0
 hill_width = 10.0
@@ -337,3 +321,95 @@ transform = Transform3D(-1.7, 0, -1.4861872e-07, 0, 1.7, 0, 1.4861872e-07, 0, -1
 
 [node name="RedWhiteApexCurve4" parent="." unique_id=1875043042 instance=ExtResource("17_1g1jn")]
 transform = Transform3D(-7.430936e-08, 0, -1.7, 0, 1.7, 0, 1.7, 0, -7.430936e-08, -0.030749321, 0, -0.52976894)
+
+[node name="light1warm6" parent="." unique_id=235883728 instance=ExtResource("20_n1gxc")]
+transform = Transform3D(0.00480783, 0, 0.9999884, 0, 1, 0, -0.9999884, 0, 0.00480783, 28.271172, -0.15808105, 31.230015)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="light1warm6" unique_id=1479177537]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="light1warm6/StaticBody3D" unique_id=973491058]
+shape = SubResource("CylinderShape3D_p81ab")
+
+[node name="SpotLightFront" type="SpotLight3D" parent="light1warm6" unique_id=970840630]
+transform = Transform3D(1, 0, 0, 0, 0.7660444, 0.6427875, 0, -0.6427875, 0.7660444, 0, 7.161865, -1.4074821)
+visible = false
+light_color = Color(1, 0.9098039, 0.76862746, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightBack" type="SpotLight3D" parent="light1warm6" unique_id=601302142]
+transform = Transform3D(-0.99862945, -0.03364096, 0.040091734, 0, 0.7660444, 0.6427875, -0.052336045, 0.64190656, -0.76499444, 0, 7.126343, 1.6081543)
+light_color = Color(1, 0.78431374, 0.41568628, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightLeft" type="SpotLight3D" parent="light1warm6" unique_id=802772159]
+transform = Transform3D(0.08889425, -0.64024276, 0.76301163, 0, 0.7660444, 0.6427875, -0.99604106, -0.057140116, 0.068096936, -1.5184937, 7.1517334, 0)
+visible = false
+light_color = Color(1, 0.9098039, 0.76862746, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightRight" type="SpotLight3D" parent="light1warm6" unique_id=2074038331]
+transform = Transform3D(-0.071497455, 0.6411425, -0.7640838, 0, 0.7660444, 0.6427875, 0.99744064, 0.045957677, -0.054770228, 1.4440308, 7.109009, 0)
+light_color = Color(1, 0.78431374, 0.41568628, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="light1warm7" parent="." unique_id=1210072163 instance=ExtResource("20_n1gxc")]
+transform = Transform3D(0.00480783, 0, 0.9999884, 0, 1, 0, -0.9999884, 0, 0.00480783, 55.721508, -0.15808105, 31.230015)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="light1warm7" unique_id=2090748155]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="light1warm7/StaticBody3D" unique_id=1791613605]
+shape = SubResource("CylinderShape3D_p81ab")
+
+[node name="SpotLightFront" type="SpotLight3D" parent="light1warm7" unique_id=2069458786]
+transform = Transform3D(1, 0, 0, 0, 0.7660444, 0.6427875, 0, -0.6427875, 0.7660444, 0, 7.161865, -1.4074821)
+visible = false
+light_color = Color(1, 0.9098039, 0.76862746, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightBack" type="SpotLight3D" parent="light1warm7" unique_id=1369612812]
+transform = Transform3D(-0.99862945, -0.03364096, 0.040091734, 0, 0.7660444, 0.6427875, -0.052336045, 0.64190656, -0.76499444, 0, 7.126343, 1.6081543)
+light_color = Color(1, 0.78431374, 0.41568628, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightLeft" type="SpotLight3D" parent="light1warm7" unique_id=893045519]
+transform = Transform3D(0.08889425, -0.64024276, 0.76301163, 0, 0.7660444, 0.6427875, -0.99604106, -0.057140116, 0.068096936, -1.5184937, 7.1517334, 0)
+visible = false
+light_color = Color(1, 0.9098039, 0.76862746, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightRight" type="SpotLight3D" parent="light1warm7" unique_id=2132642167]
+transform = Transform3D(-0.071497455, 0.6411425, -0.7640838, 0, 0.7660444, 0.6427875, 0.99744064, 0.045957677, -0.054770228, 1.4440308, 7.109009, 0)
+light_color = Color(1, 0.78431374, 0.41568628, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0

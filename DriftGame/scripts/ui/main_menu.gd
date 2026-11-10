@@ -12,7 +12,8 @@ extends Control
 @onready var settings_button: Button = $MenuCenter/MenuBox/SettingsButton
 @onready var quit_button: Button = $MenuCenter/MenuBox/QuitButton
 
-@onready var car_name_button: Button = $CarSelection/CarNavigation/CarName
+@onready var car_name_label: Label = $CarSelection/CarNavigation/CarName
+@onready var next_car_button: Button = $CarSelection/CarNavigation/NextCarButton
 
 @onready var sound_button: Button = $SettingsMenu/SettingsBox/SoundButton
 @onready var settings_back_button: Button = $SettingsMenu/SettingsBox/BackButton
@@ -21,7 +22,8 @@ extends Control
 @onready var menu_move_sound: AudioStreamPlayer = $MenuMoveSound
 
 @onready var track_selection: Control = $TrackSelection
-@onready var track_name_button: Button = $TrackSelection/TrackNavigation/TrackName
+@onready var track_name_label: Label = $TrackSelection/TrackNavigation/TrackName
+@onready var next_track_button: Button = $TrackSelection/TrackNavigation/NextTrackButton
 
 
 var suppress_focus_sound: bool = false
@@ -45,7 +47,7 @@ func _on_play_button_pressed() -> void:
 	menu_center.hide()
 	car_selection.show()
 
-	_grab_focus_silently(car_name_button)
+	_grab_focus_silently(next_car_button)
 
 
 func _on_settings_button_pressed() -> void:
@@ -230,7 +232,7 @@ func _on_car_selection_car_selected(car_index: int) -> void:
 	await _play_select_sound()
 	car_selection.hide()
 	track_selection.show()
-	_grab_focus_silently(track_name_button)
+	_grab_focus_silently(next_track_button)
 
 
 func _on_track_selection_track_selected(track_scene: PackedScene) -> void:
@@ -241,17 +243,15 @@ func _on_track_selection_track_selected(track_scene: PackedScene) -> void:
 
 func _on_track_back_button_pressed() -> void:
 	await _play_select_sound()
+
 	track_selection.hide()
 	car_selection.show()
-	_grab_focus_silently(car_name_button)
+
+	_grab_focus_silently(next_car_button)
 
 
 func _on_previous_time_button_mouse_entered() -> void:
 	$TrackSelection/TimeOfDaySelection/PreviousTimeButton.grab_focus()
-
-
-func _on_time_of_day_button_mouse_entered() -> void:
-	$TrackSelection/TimeOfDaySelection/TimeOfDayButton.grab_focus()
 
 
 func _on_next_time_button_mouse_entered() -> void:
