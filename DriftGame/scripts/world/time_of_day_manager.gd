@@ -18,7 +18,10 @@ func apply_time_of_day(location: Node3D, is_day: bool) -> void:
 func _set_track_lights(node: Node, enabled: bool) -> void:
 	for child in node.get_children():
 		if child is Light3D and not child is DirectionalLight3D:
-			child.visible = enabled
+			if not child.has_meta("original_visible"):
+				child.set_meta("original_visible", child.visible)
+
+			child.visible = enabled and child.get_meta("original_visible")
 
 		_set_track_lights(child, enabled)
 

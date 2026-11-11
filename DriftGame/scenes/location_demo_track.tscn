@@ -259,12 +259,12 @@ light_energy = 0.0
 [node name="TrackMarkings" type="Node3D" parent="." unique_id=125200562]
 
 [node name="RoadCrack1" type="Decal" parent="TrackMarkings" unique_id=541318318]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3031006, 0)
+transform = Transform3D(0.9996316, 0.027141947, 0, -0.027141947, 0.9996316, 0, 0, 0, 1, 0, -1.6651611, 0)
 size = Vector3(10, 1, 3)
 texture_albedo = ExtResource("18_h5m4a")
 
 [node name="RoadCrack2" type="Decal" parent="TrackMarkings" unique_id=1963046146]
-transform = Transform3D(0.88099164, 0, 0.4731318, 0, 1, 0, -0.4731318, 0, 0.88099164, -23.176052, 1.8741455, 87.27507)
+transform = Transform3D(0.88094556, 0.010222563, 0.47310707, -0.009005992, 0.9999477, -0.0048366194, -0.4731318, 0, 0.88099164, -23.176052, 1.5108948, 87.27507)
 size = Vector3(10, 1, 3)
 texture_albedo = ExtResource("19_immm6")
 
@@ -274,12 +274,12 @@ size = Vector3(15, 1, 1)
 texture_albedo = ExtResource("10_do5v6")
 
 [node name="TyreMark1" type="Decal" parent="TrackMarkings" unique_id=2062310713]
-transform = Transform3D(0.9629694, 0, 0.2696106, 0, 1, 0, -0.2696106, 0, 0.9629694, -43.47568, 1.8809814, 93.52017)
+transform = Transform3D(0.9621096, -0.042249095, 0.26936987, 0.040684585, 0.9991071, 0.011390804, -0.2696106, 0, 0.9629694, -43.47568, 1.5266724, 93.52017)
 size = Vector3(10, 1, 0.4)
 texture_albedo = ExtResource("17_6nuts")
 
 [node name="TyreMark2" type="Decal" parent="TrackMarkings" unique_id=1668666782]
-transform = Transform3D(0.9629694, 0, 0.2696106, 0, 1, 0, -0.2696106, 0, 0.9629694, -43.47568, 2.0373535, 94.73079)
+transform = Transform3D(0.9620792, -0.04298821, 0.26936135, 0.041396327, 0.99907553, 0.011590074, -0.2696106, 0, 0.9629694, -43.47568, 1.5184631, 94.73079)
 size = Vector3(10, 1, 0.4)
 texture_albedo = ExtResource("17_6nuts")
 
@@ -463,6 +463,52 @@ spot_range = 50.0
 spot_angle = 50.0
 
 [node name="SpotLightRight" type="SpotLight3D" parent="light1warm4" unique_id=505622527]
+transform = Transform3D(-0.071497455, 0.6411425, -0.7640838, 0, 0.7660444, 0.6427875, 0.99744064, 0.045957677, -0.054770228, 1.4440308, 7.109009, 0)
+light_color = Color(1, 0.78431374, 0.41568628, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="light1warm8" parent="." unique_id=835206871 instance=ExtResource("22_immm6")]
+transform = Transform3D(0.66350496, 0, -0.7481719, 0, 1, 0, 0.7481719, 0, 0.66350496, -65.33462, -0.3764038, -41.244347)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="light1warm8" unique_id=1521463657]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="light1warm8/StaticBody3D" unique_id=548441957]
+shape = SubResource("CylinderShape3D_edvm6")
+
+[node name="SpotLightFront" type="SpotLight3D" parent="light1warm8" unique_id=701005361]
+transform = Transform3D(1, 0, 0, 0, 0.7660444, 0.6427875, 0, -0.6427875, 0.7660444, 0, 7.161865, -1.4074821)
+visible = false
+light_color = Color(1, 0.9098039, 0.76862746, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightBack" type="SpotLight3D" parent="light1warm8" unique_id=532729235]
+transform = Transform3D(-0.99862945, -0.03364096, 0.040091734, 0, 0.7660444, 0.6427875, -0.052336045, 0.64190656, -0.76499444, 0, 7.126343, 1.6081543)
+light_color = Color(1, 0.78431374, 0.41568628, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightLeft" type="SpotLight3D" parent="light1warm8" unique_id=1788614497]
+transform = Transform3D(0.08889425, -0.64024276, 0.76301163, 0, 0.7660444, 0.6427875, -0.99604106, -0.057140116, 0.068096936, -1.5184937, 7.1517334, 0)
+visible = false
+light_color = Color(1, 0.9098039, 0.76862746, 1)
+light_energy = 60.0
+light_indirect_energy = 0.5
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 50.0
+
+[node name="SpotLightRight" type="SpotLight3D" parent="light1warm8" unique_id=1145372085]
 transform = Transform3D(-0.071497455, 0.6411425, -0.7640838, 0, 0.7660444, 0.6427875, 0.99744064, 0.045957677, -0.054770228, 1.4440308, 7.109009, 0)
 light_color = Color(1, 0.78431374, 0.41568628, 1)
 light_energy = 60.0
