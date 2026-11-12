@@ -968,7 +968,7 @@ func handle_drift_classic(
 		and sign(steering_input) == drift_direction
 	):
 		current_drift_grip += (
-			abs(steering_input)
+			absf(steering_input)
 			* drift_tightening_grip
 		)
 
@@ -1034,12 +1034,22 @@ func handle_drift_modern(
 	# Deeper arcs at higher speeds for more dramatic drifts
 	var arc_multiplier: float = get_drift_rotation_multiplier(speed)
 
+	# Allow slightly deeper rotation while steering into the drift.
+	if steering_input != 0.0 and sign(steering_input) == drift_direction:
+		var angle_ratio: float = clampf(
+			absf(drift_angle) / 65.0,
+			0.0,
+			1.0
+		)
+
+		arc_multiplier *= lerpf(1.0, 1.15, angle_ratio)
+
 	# Throttle rotation with speed-based depth
 	rotate_y(
 		-drift_direction
 		* drift_throttle_rotation
 		* maxf(throttle, 0.0)
-		* arc_multiplier  # NEW: Deeper at high speed
+		* arc_multiplier
 		* delta
 	)
 
@@ -1049,12 +1059,12 @@ func handle_drift_modern(
 	# Less responsive at high speeds (more committed)
 	var current_drift_steering: float = get_drift_steering_for_speed(speed)
 
-	var counter_steer: float = get_counter_steer_amount(
+	var counter_steer_amount: float = get_counter_steer_amount(
 		steering_input,
 		drift_angle
 	)
 
-	if counter_steer > 0.0:
+	if counter_steer_amount > 0.0:
 		# Slower counter-steering response at higher speeds.
 		var speed_ratio: float = clampf(speed / max_speed, 0.0, 1.0)
 		var response: float = lerpf(8.0, 4.0, speed_ratio)
@@ -1089,12 +1099,10 @@ func handle_drift_modern(
 	# ================================================
 	# COUNTER-STEERING
 	# ================================================
-	var counter_steer_amount: float = get_counter_steer_amount(steering_input, drift_angle)
-
 	# Apply counter-steering grip bonus
 	if counter_steer_amount  > 0.0:
 		# Counter-steering increases grip (helps stabilize)
-		current_drift_grip += counter_steer * 1.5
+		current_drift_grip += counter_steer_amount * 1.5
 
 	# ================================================
 	# STEERING INTO DRIFT
@@ -1104,9 +1112,17 @@ func handle_drift_modern(
 		steering_input != 0.0
 		and sign(steering_input) == drift_direction
 	):
+		# Reduce the tightening grip bonus as the drift angle increases.
+		var angle_ratio: float = clampf(
+			absf(drift_angle) / 65.0,
+			0.0,
+			1.0
+		)
+		var tightening_multiplier: float = lerpf(1.0, 0.35, angle_ratio)
 		current_drift_grip += (
-			abs(steering_input)
+			absf(steering_input)
 			* drift_tightening_grip
+			* tightening_multiplier
 		)
 
 	# ================================================
