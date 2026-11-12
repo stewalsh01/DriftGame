@@ -140,6 +140,7 @@ var handbrake_drift_grip: float
 var donut_angular_velocity: float = 0.0
 var donut_active: bool = false
 
+var modern_counter_steer_input: float = 0.0
 # ================================================================
 # WHEELSPIN
 # ================================================================
@@ -1048,11 +1049,31 @@ func handle_drift_modern(
 	# Less responsive at high speeds (more committed)
 	var current_drift_steering: float = get_drift_steering_for_speed(speed)
 
+	var counter_steer: float = get_counter_steer_amount(
+		steering_input,
+		drift_angle
+	)
+
+	if counter_steer > 0.0:
+		# Slower counter-steering response at higher speeds.
+		var speed_ratio: float = clampf(speed / max_speed, 0.0, 1.0)
+		var response: float = lerpf(8.0, 4.0, speed_ratio)
+
+		modern_counter_steer_input = move_toward(
+			modern_counter_steer_input,
+			steering_input,
+			response * delta
+		)
+	else:
+		# Keep normal steering responsive.
+		modern_counter_steer_input = steering_input
+
 	rotate_y(
-		-steering_input
-		* current_drift_steering  # NEW: Speed-based
+		-modern_counter_steer_input
+		* current_drift_steering
 		* delta
 	)
+
 
 	# ================================================
 	# GRIP CALCULATION
@@ -1068,10 +1089,10 @@ func handle_drift_modern(
 	# ================================================
 	# COUNTER-STEERING
 	# ================================================
-	var counter_steer: float = get_counter_steer_amount(steering_input, drift_angle)
+	var counter_steer_amount: float = get_counter_steer_amount(steering_input, drift_angle)
 
 	# Apply counter-steering grip bonus
-	if counter_steer > 0.0:
+	if counter_steer_amount  > 0.0:
 		# Counter-steering increases grip (helps stabilize)
 		current_drift_grip += counter_steer * 1.5
 
