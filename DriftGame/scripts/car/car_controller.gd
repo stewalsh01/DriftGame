@@ -744,12 +744,12 @@ func update_gearbox(delta: float, input: Dictionary, velocity_state: Dictionary)
 			# SPEED-BASED DOWNSHIFTING
 			# ------------------------------------------------
 
-			# Check every frame, including while braking or
-			# reapplying the accelerator.
-			if current_gear == 3 and speed <= gear_2_max_speed:
+			# Allow speed to drop below the shift point before downshifting.
+			# Prevents repeated gear changes when climbing hills.
+			if current_gear == 3 and speed <= gear_2_max_speed - 1.5:
 				current_gear = 2
 
-			if current_gear == 2 and speed <= gear_1_max_speed:
+			if current_gear == 2 and speed <= gear_1_max_speed - 1.5:
 				current_gear = 1
 
 			if current_gear == 4 and speed <= gear_3_max_speed - 0.5:
