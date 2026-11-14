@@ -141,6 +141,7 @@ var donut_angular_velocity: float = 0.0
 var donut_active: bool = false
 
 var modern_counter_steer_input: float = 0.0
+
 # ================================================================
 # WHEELSPIN
 # ================================================================
@@ -290,8 +291,6 @@ func _ready() -> void:
 	car_config = CarSettings.get_car(selected_car, selected_tuning_preset)
 	car_1_model.visible = selected_car == 1
 	car_2_model.visible = selected_car == 2
-	print("CAR 3 MODEL: ", car_3_model)
-	print("CAR CHILDREN: ", get_children())
 	car_3_model.visible = selected_car == 3
 
 	acceleration = car_config["acceleration"]
@@ -430,7 +429,6 @@ func calculate_velocity_state(input: Dictionary) -> Dictionary:
 func update_throttle_and_brake(delta: float, input: Dictionary, velocity_state: Dictionary, horizontal_velocity: Vector3) -> Vector3:
 	var forward = velocity_state.forward
 	var speed = velocity_state.speed
-	var forward_speed = velocity_state.forward_speed
 	var down_braking = velocity_state.down_braking
 	var reversing = velocity_state.reversing
 
@@ -480,12 +478,19 @@ func update_throttle_and_brake(delta: float, input: Dictionary, velocity_state: 
 		)
 
 	elif throttle < 0.0:
-		horizontal_velocity += (
+		var reverse_velocity: Vector3 = horizontal_velocity + (
 			forward
 			* reverse_acceleration
 			* throttle
 			* delta
 		)
+
+		# Reverse input may slow an existing slide, but cannot accelerate
+		# the car beyond the configured reverse speed.
+		if reverse_velocity.length() <= max_reverse_speed:
+			horizontal_velocity = reverse_velocity
+		elif reverse_velocity.length() < horizontal_velocity.length():
+			horizontal_velocity = reverse_velocity
 
 	else:
 		# Coast when the accelerator is released.
@@ -513,11 +518,10 @@ func update_throttle_and_brake(delta: float, input: Dictionary, velocity_state: 
 			)
 
 	speed = horizontal_velocity.length()
-	forward = get_forward()
-	forward_speed = horizontal_velocity.dot(forward)
 
-	if forward_speed < -max_reverse_speed:
-		horizontal_velocity = -forward * max_reverse_speed
+	# Limit actual reverse-gear speed without interrupting a forward-gear drift.
+	if current_gear == -1 and speed > max_reverse_speed:
+		horizontal_velocity = horizontal_velocity.normalized() * max_reverse_speed
 
 	# ------------------------------------------------
 	# NORMAL BRAKE
@@ -567,15 +571,8 @@ func update_drive_state(delta: float, input: Dictionary, velocity_state: Diction
 	if velocity_state.reversing:
 		throttle = -input.reverse
 
-	# Exit forward drifting when the car starts reversing.
-	# Shared by Classic and Modern drift physics.
-	if drive_state == DriveState.DRIFT:
-		var current_forward_speed: float = horizontal_velocity.dot(
-			get_ground_forward()
-		)
-
-		if current_forward_speed < -0.2:
-			enter_normal()
+	# Allow high-angle drifts to retain momentum even when the car
+	# rotates beyond 90 degrees relative to its direction of travel.
 
 	# ------------------------------------------------
 	# HANDBRAKE LAUNCH
@@ -1090,10 +1087,10 @@ func handle_drift_modern(
 	# ================================================
 	var current_drift_grip: float = drift_grip
 
-	# NEW: Speed-based grip reduction (more slide at high speed)
+	# Speed-based grip reduction (more slide at high speed)
 	current_drift_grip = get_drift_grip_for_speed(speed, current_drift_grip)
 
-	# NEW: Angle-based grip reduction (more slide at deep angles)
+	# Angle-based grip reduction (more slide at deep angles)
 	current_drift_grip = get_drift_grip_for_angle(drift_angle, current_drift_grip)
 
 	# ================================================
@@ -1169,11 +1166,11 @@ func handle_drift_modern(
 
 	# Check if drift angle is below threshold
 	if abs(drift_angle) < drift_exit_angle:
-		# NEW: Grace period before exiting (prevents instant exits)
+		# Grace period before exiting (prevents instant exits)
 		drift_exit_grace_timer += delta
 
 		if drift_exit_grace_timer >= DRIFT_EXIT_GRACE_PERIOD:
-			# NEW: Stricter wheelspin conditions
+			# Stricter wheelspin conditions
 			# Only enter wheelspin in specific scenarios (low gear burnouts)
 			if (
 				throttle > 0.7              # High throttle (was 0.4)
