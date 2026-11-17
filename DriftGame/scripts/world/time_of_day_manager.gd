@@ -12,6 +12,22 @@ func apply_time_of_day(location: Node3D, is_day: bool) -> void:
 		else:
 			sun.light_energy = 0.0
 
+	# Update sky colours
+	var world_environment: WorldEnvironment = location.get_node_or_null("WorldEnvironment")
+
+	if world_environment and world_environment.environment:
+		var sky: Sky = world_environment.environment.sky
+
+		if sky and sky.sky_material is ProceduralSkyMaterial:
+			var material: ProceduralSkyMaterial = sky.sky_material
+
+			if is_day:
+				material.sky_top_color = Color("#62748c")
+				material.sky_horizon_color = Color("#a5a7ab")
+			else:
+				material.sky_top_color = Color("#030712")
+				material.sky_horizon_color = Color("#101827")
+
 	_set_track_lights(location, not is_day)
 
 

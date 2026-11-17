@@ -9,7 +9,7 @@ const GRAVITY: float = 16.0
 const FLOOR_SNAP_LENGTH: float = 0.1
 const FLOOR_MAX_ANGLE_DEG: float = 60.0
 
-const STEERING_PIVOT_OFFSET: Vector3 = Vector3(0.0, 0.0, -0.5)
+const STEERING_PIVOT_OFFSET: Vector3 = Vector3(0.0, 0.0, -1.1)
 
 const TYRE_RAYCAST_UP: float = 0.1
 const TYRE_RAYCAST_DOWN: float = 0.15

@@ -11,8 +11,8 @@ const SHARED := {
 	"coast_deceleration": 2.0,
 
 	# Steering
-	"low_speed_steering": 2.2,
-	"high_speed_steering": 1.15,
+	"low_speed_steering": 1.5,
+	"high_speed_steering": 1.05,
 	"min_steering_speed": 0.5,
 	"normal_grip": 8.0,
 
@@ -165,8 +165,8 @@ const CAR_3 := {
 		32.0
 	],
 
-	"max_speed": 14.0,
-	"max_reverse_speed": 6.0
+	"max_speed": 15.0,
+	"max_reverse_speed": 7.0
 }
 
 

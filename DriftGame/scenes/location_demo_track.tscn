@@ -23,6 +23,29 @@
 [ext_resource type="PackedScene" uid="uid://b7t3h0i8u7tbh" path="res://DriftGame/assets/models/track/light.glb" id="22_immm6"]
 [ext_resource type="PackedScene" uid="uid://2f726jlnxdld" path="res://DriftGame/assets/models/track/crash_barrier.glb" id="22_wunkq"]
 [ext_resource type="PackedScene" uid="uid://vcmpd4nh852m" path="res://DriftGame/assets/models/track/bollards6.glb" id="23_wunkq"]
+[ext_resource type="PackedScene" uid="uid://dkfp245x0ohnb" path="res://DriftGame/assets/models/track/distant_mountains1.glb" id="24_4xetx"]
+[ext_resource type="PackedScene" uid="uid://rrio6274gb6i" path="res://DriftGame/assets/models/track/moon.glb" id="25_xsl7h"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7gp1n"]
+
+[sub_resource type="Sky" id="Sky_xsl7h"]
+sky_material = SubResource("ProceduralSkyMaterial_7gp1n")
+
+[sub_resource type="Environment" id="Environment_edvm6"]
+background_mode = 2
+sky = SubResource("Sky_xsl7h")
+tonemap_mode = 4
+ssao_intensity = 5.0
+glow_enabled = true
+glow_intensity = 6.0
+glow_strength = 0.8
+glow_bloom = 0.1
+glow_blend_mode = 2
+glow_hdr_threshold = 0.2
+fog_light_color = Color(0.5294118, 0.58431375, 0.64705884, 1)
+fog_light_energy = 0.5
+fog_density = 0.003
+fog_aerial_perspective = 0.3
 
 [sub_resource type="Gradient" id="Gradient_i8xw8"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -189,6 +212,9 @@ size = Vector3(11.967529, 4.5185547, 1)
 
 [node name="LocationDemoTrack" type="Node3D" unique_id=1580683034]
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1398278784]
+environment = SubResource("Environment_edvm6")
+
 [node name="Terrain3D" type="Terrain3D" parent="." unique_id=1873844649]
 data_directory = "res://DriftGame/assets/terrain/location_05"
 material = SubResource("Terrain3DMaterial_oeko2")
@@ -254,7 +280,7 @@ spot_range = 20.0
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1298865761]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
-light_energy = 0.0
+light_energy = 1.5
 
 [node name="TrackMarkings" type="Node3D" parent="." unique_id=125200562]
 
@@ -1396,5 +1422,11 @@ transform = Transform3D(0.9938772, 0, 0.11049009, 0, 1, 0, -0.11049009, 0, 0.993
 transform = Transform3D(0.8454912, 0, 0.53398913, 0, 1, 0, -0.53398913, 0, 0.8454912, -12.826122, 1.7592773, -2.4307404)
 shape = SubResource("BoxShape3D_mba2q")
 debug_color = Color(0, 0.6, 0.69803923, 1)
+
+[node name="distant_mountains1" parent="." unique_id=1103710333 instance=ExtResource("24_4xetx")]
+transform = Transform3D(0.38268092, 0, -0.9238807, 0, 1, 0, 0.9238807, 0, 0.38268092, -4.1594505, -35.271034, 39.91441)
+
+[node name="moon" parent="." unique_id=994539852 instance=ExtResource("25_xsl7h")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -59.477936, 160.33368, 773.4984)
 
 [editable path="CarSpawn/StartFinishLine"]
